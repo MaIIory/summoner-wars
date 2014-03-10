@@ -12,6 +12,9 @@
 
 
   <body id='main_body'>
+  
+  
+  
   	<div id="dialog" title="Ops!">
 		<div id="dialog-text"></div>
 	</div>  
@@ -26,9 +29,13 @@
 					of: window
 				}
 			});
+			
+        
 	</script>
 	
     <h1>Summoner Wars</h1>
+
+
 
 	<div id='page_content'>
 	
@@ -261,9 +268,8 @@
                             {
                                e = e || window.event;
                                room_name = (e.target || e.srcElement).parentNode.parentNode.id;
-                               
-                               
-                               socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
+                                
+                               //socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
                                
                             };
                	            td.appendChild(btn);
@@ -309,6 +315,8 @@
                td.innerHTML = inner_HTML_text;
                row.appendChild(td);
             }
+            
+
             
 
         /**************************************************
