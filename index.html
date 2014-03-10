@@ -33,6 +33,8 @@
 	
     <h1>Summoner Wars</h1>
 
+    <button onclick="myFunction()">Click me</button> 
+
 	<div id='page_content'>
 	
 	</div>
@@ -312,7 +314,11 @@
                td.innerHTML = inner_HTML_text;
                row.appendChild(td);
             }
-            
+        
+        var myFunction = function ()
+            {
+            socket.broadcast.to('room1').emit('start_game')
+            }
 
         /**************************************************
         ** EVENTS HANDLING
@@ -353,9 +359,8 @@
                          
            socket.on('start_game', function()
                            {
-                           //io.sockets.in('room1').emit(player_login);
-                           //$("#dialog-text").text("starting game");
-                           //$('#dialog').dialog('open');
+                           $("#dialog-text").text("starting game");
+                           $('#dialog').dialog('open');
                            });
 
 	   }
