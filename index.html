@@ -8,14 +8,8 @@
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="/socket.io/socket.io.js"></script>
-</head>
 
-
-  <body id='main_body'>
-  	<div id="dialog" title="Ops!">
-		<div id="dialog-text"></div>
-	</div>  
-  	<script type="text/javascript">
+<script type="text/javascript">
 
 		      $("#dialog").dialog({
 		        autoOpen: false,
@@ -26,7 +20,16 @@
 					of: window
 				}
 			});
-	</script>
+</script>
+	
+</head>
+
+
+  <body id='main_body'>
+  	<div id="dialog" title="Ops!">
+		<div id="dialog-text"></div>
+	</div>  
+
 	
     <h1>Summoner Wars</h1>
 
@@ -350,8 +353,9 @@
                          
            socket.on('start_game', function()
                            {
-                           $("#dialog-text").text("starting game");
-                           $('#dialog').dialog('open');
+                           io.sockets.in('room1').emit(player_login);
+                           //$("#dialog-text").text("starting game");
+                           //$('#dialog').dialog('open');
                            });
 
 	   }
