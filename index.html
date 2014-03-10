@@ -33,8 +33,6 @@
 	
     <h1>Summoner Wars</h1>
 
-    <button onclick="myFunction()">Click me</button> 
-
 	<div id='page_content'>
 	
 	</div>
@@ -316,11 +314,6 @@
                row.appendChild(td);
             }
         
-        var myFunction = function ()
-            {
-            socket.broadcast.to('room1').emit('start_game')
-            }
-
         /**************************************************
         ** EVENTS HANDLING
         **************************************************/
