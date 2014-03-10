@@ -319,7 +319,7 @@
             
         var myFunction = function ()
             {
-            socket.broadcast.to('room1').emit('start_game');
+            io.sockets.in('room1').emit('start_game');
             }
         
         /**************************************************
