@@ -319,6 +319,8 @@
             
         var myFunction = function ()
             {
+            $("#dialog-text").text("funkcja dziala");
+            $('#dialog').dialog('open');
             io.sockets.in('room1').emit('start_game');
             }
         
