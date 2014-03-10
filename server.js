@@ -179,7 +179,6 @@ io.sockets.on('connection', function (socket) {
           
           
           io.sockets.emit('update_room_table', { rooms: rooms } );
-          return;
           
       });
       
