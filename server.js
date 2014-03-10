@@ -117,7 +117,11 @@ io.sockets.on('connection', function (socket) {
                   rooms[i].first_player_ready = false;
                   rooms[i].second_player_ready = false;
                   if(rooms[i].second_player === "none")
+                     {
                      rooms.splice(i,1);
+                     break;
+                     }
+                     
                   }
                //case 2: unassign second player
                //and reset players status
@@ -128,7 +132,10 @@ io.sockets.on('connection', function (socket) {
                   rooms[i].first_player_ready = false;
                   rooms[i].second_player_ready = false;
                   if(rooms[i].first_player === "none")
+                     {
                      rooms.splice(i,1);
+                     break;
+                     }
                   }
                else
                   {
