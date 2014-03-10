@@ -171,8 +171,6 @@ io.sockets.on('connection', function (socket) {
                      {
                      rooms[i].status = 0; //waiting for players
                      }
-                  
-                break;
             }
           }
           
