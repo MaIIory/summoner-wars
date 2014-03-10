@@ -174,10 +174,12 @@ io.sockets.on('connection', function (socket) {
                   
 
             }
+            break;
           }
           
           
           io.sockets.emit('update_room_table', { rooms: rooms } );
+          return;
           
       });
       
