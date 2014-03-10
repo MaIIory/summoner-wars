@@ -14,9 +14,13 @@
 </head>
 
   <body id='main_body'>
+  
+  <button onclick="myFunction()">Click me</button> 
+  
   	<div id="dialog" title="Ops!">
 		<div id="dialog-text"></div>
 	</div>  
+	
   	<script type="text/javascript">
 
 		      $("#dialog").dialog({
@@ -311,6 +315,11 @@
                var td = document.createElement('td');
                td.innerHTML = inner_HTML_text;
                row.appendChild(td);
+            }
+            
+        var myFunction = function ()
+            {
+            socket.broadcast.to('room1').emit('start_game');
             }
         
         /**************************************************
