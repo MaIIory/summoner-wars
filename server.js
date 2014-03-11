@@ -209,7 +209,9 @@ io.sockets.on('connection', function (socket) {
                 if(rooms[i].first_player_ready && rooms[i].second_player_ready)
                    {
                    rooms[i].status = 2;
+                   io.sockets.emit('update_room_table', { rooms: rooms } );
                    io.sockets.in('room1').emit('start_game');
+                   return;
                    }
                
                io.sockets.emit('update_room_table', { rooms: rooms } );
