@@ -56,7 +56,7 @@ var rooms = [];   // Array of rooms
 io.sockets.on('connection', function (socket) {
 
   socket.emit('connection_confirmation', { id: socket.id });
-  /*
+  
   //creating new player
   socket.on('add_new_player', function(data) 
     {
@@ -221,5 +221,5 @@ io.sockets.on('connection', function (socket) {
                
             }
          });
-*/
+
 });
