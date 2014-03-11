@@ -52,8 +52,8 @@ $(function() {
         /**************************************************
         ** NODE.JS REQUIREMENTS
         **************************************************/
-                 
-        var socket = io.connect(window.location.hostname);
+                
+        var socket = io.connect(window.location.hostname, {'force new connection': true});
 
         /**************************************************
         ** APPLICATION VARIABLES
