@@ -15,8 +15,6 @@
 
   <body id='main_body'>
   
-  <button onclick="myFunction()">Click me</button> 
-  
   	<div id="dialog" title="Ops!">
 		<div id="dialog-text"></div>
 	</div>  
@@ -315,13 +313,6 @@
                var td = document.createElement('td');
                td.innerHTML = inner_HTML_text;
                row.appendChild(td);
-            }
-            
-        var myFunction = function ()
-            {
-            $("#dialog-text").text("funkcja dziala");
-            $('#dialog').dialog('open');
-            io.sockets.in('room1').emit('start_game');
             }
         
         /**************************************************
