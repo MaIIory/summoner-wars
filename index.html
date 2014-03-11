@@ -110,8 +110,9 @@
                              }
                              
                           removeLoginSection();
-                          socket.emit('add_new_player', { login: player_login });
                           rebuildBriefingSection();
+                          socket.emit('add_new_player', { login: player_login });
+                          
                           }, true);
                
                new_section.appendChild(btn);
