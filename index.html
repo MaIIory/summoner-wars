@@ -109,6 +109,7 @@
                              
                           removeLoginSection();
                           rebuildBriefingSection();
+                          sleep(1000);
                           socket.emit('add_new_player', { login: player_login });
                           
                           }, true);
@@ -314,6 +315,20 @@
                td.innerHTML = inner_HTML_text;
                row.appendChild(td);
             }
+            
+        
+
+        function sleep(milliseconds) {
+            var start = new Date().getTime();
+            for (var i = 0; i < 1e7; i++) 
+            {
+                if ((new Date().getTime() - start) > milliseconds){
+                break;
+                }
+            }
+        }
+
+
         
         /**************************************************
         ** EVENTS HANDLING
