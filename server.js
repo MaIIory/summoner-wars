@@ -57,8 +57,10 @@ io.sockets.on('connection', function (socket) {
 
   socket.emit('connection_confirmation'/*, { id: socket.id }*/);
   
+  });
+  
   //creating new player
-  socket.on('add_new_player', function(data) 
+io.sockets.on('add_new_player', function(data) 
     {
        var new_player = new Player(data.login)  
        players.push(new_player);
@@ -71,7 +73,7 @@ io.sockets.on('connection', function (socket) {
    });
    
   //listen for new room creation request
-  socket.on('create_new_room',function(data)
+io.sockets.on('create_new_room',function(data)
      {
      
      //check if this room dont exist already
@@ -101,7 +103,7 @@ io.sockets.on('connection', function (socket) {
      io.sockets.emit('update_room_table', { rooms: rooms } );
      });  
       
-   socket.on('assign_player_to_room', function(data)
+io.sockets.on('assign_player_to_room', function(data)
       {
           for(var i=0; i < rooms.length; i=i+1)
           {
@@ -186,7 +188,7 @@ io.sockets.on('connection', function (socket) {
           
       });
       
-      socket.on('join_to_game', function(data) 
+io.sockets.on('join_to_game', function(data) 
          {
          
             socket.join('room1');
@@ -222,4 +224,3 @@ io.sockets.on('connection', function (socket) {
             }
          });
 
-});
