@@ -268,7 +268,6 @@
                                e = e || window.event;
                                room_name = (e.target || e.srcElement).parentNode.parentNode.id;
                                
-                               
                                socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
                                
                             };
