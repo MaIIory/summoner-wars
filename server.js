@@ -64,10 +64,10 @@ io.sockets.on('connection', function (socket) {
        players.push(new_player);
 
        //update number of players in all connected sockets
-       //io.sockets.emit('update_players_list', { players: players });
+       io.sockets.emit('update_players_list', { players: players });
     
        //init room table for new player
-       socket.emit('update_room_table', { rooms: rooms });
+       //socket.emit('update_room_table', { rooms: rooms });
    });
    
   //listen for new room creation request
