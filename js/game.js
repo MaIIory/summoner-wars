@@ -7,7 +7,10 @@
 /*********************VARIABLES DECLARATION********************/
 //-----------------------------------------------------------//
 
-
+var width = 800;    //canvas width
+var height = 600;   //canvas height
+var canvas = null;
+var ctx = null;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
@@ -21,11 +24,9 @@
 
 var initNewGame = function () {
    //main settings and game data
-   var width = 800;    //canvas width
-   var height = 600;   //canvas height
-   var canvas = document.getElementById('canvas');
-   var ctx = canvas.getContext('2d');
 
+   canvas = document.getElementById('canvas');
+   ctx = canvas.getContext('2d');
    canvas.width = width;
    canvas.height = height;
 } 
