@@ -55,12 +55,10 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
-  socket.emit('connection_confirmation'/*, { id: socket.id }*/);
-  
-  });
+  socket.emit('connection_confirmation', { id: socket.id });
   
   //creating new player
-io.sockets.on('add_new_player', function(data) 
+  socket.on('add_new_player', function(data) 
     {
        var new_player = new Player(data.login)  
        players.push(new_player);
@@ -73,7 +71,7 @@ io.sockets.on('add_new_player', function(data)
    });
    
   //listen for new room creation request
-io.sockets.on('create_new_room',function(data)
+  socket.on('create_new_room',function(data)
      {
      
      //check if this room dont exist already
@@ -103,7 +101,7 @@ io.sockets.on('create_new_room',function(data)
      io.sockets.emit('update_room_table', { rooms: rooms } );
      });  
       
-io.sockets.on('assign_player_to_room', function(data)
+   socket.on('assign_player_to_room', function(data)
       {
           for(var i=0; i < rooms.length; i=i+1)
           {
@@ -188,7 +186,7 @@ io.sockets.on('assign_player_to_room', function(data)
           
       });
       
-io.sockets.on('join_to_game', function(data) 
+      socket.on('join_to_game', function(data) 
          {
          
             socket.join('room1');
@@ -224,3 +222,4 @@ io.sockets.on('join_to_game', function(data)
             }
          });
 
+});

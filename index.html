@@ -347,6 +347,7 @@
 	
            socket.on('update_players_list', function(data) 
                            {
+                           /*
                            var players_list = document.getElementById('players_list');
                            players_list.value = "";
                            
@@ -354,7 +355,8 @@
                               {
                               players_list.value += data.players[i].name;
                               players_list.value += "\n";
-                              }   
+                              }  
+                              */ 
                            });
 			   
            socket.on('update_room_table', function(data)
