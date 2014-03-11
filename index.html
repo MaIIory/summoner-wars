@@ -111,8 +111,8 @@
                              
                           removeLoginSection();
                           rebuildBriefingSection();
-                          sleep(1000);
                           socket.emit('add_new_player', { login: player_login });
+                          
                           
                           }, true);
                
