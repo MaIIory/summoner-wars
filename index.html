@@ -363,8 +363,13 @@
                          
            socket.on('start_game', function()
                            {
-                           $("#dialog-text").text("starting game");
-                           $('#dialog').dialog('open');
+                           var new_canvas = document.createElement('canvas');
+                           new_canvas.setAttribute('id', 'canvas');
+                           page_content.appendChild(new_canvas);
+                           
+                           initNewGame();
+                           GameLoop();  
+
                            });
 
 	   }
@@ -374,6 +379,7 @@
 
      </script>
 
+  <script src="/js/game.js"></script>
 	
   </body>
 
