@@ -3,7 +3,7 @@
 //degrees = radians * (180/pi)
 //radians = degrees * (pi/180)
 //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-
+//<script src="js/game.js"></script>
 /*********************VARIABLES DECLARATION********************/
 //-----------------------------------------------------------//
 
