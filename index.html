@@ -2,44 +2,11 @@
 <html>
   <head>
   <meta charset="utf-8">
-  
- <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.9.1.js"></script>
-<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
 <script src="/socket.io/socket.io.js"></script>
 
-<script>
- $(function() {
-$( "#dialog" ).dialog({
-autoOpen: false,
-show: {
-effect: "blind",
-duration: 1000
-},
-hide: {
-effect: "explode",
-duration: 1000
-}
-});
 
-//$( "#opener" ).click(function() {
-//$( "#dialog" ).dialog( "open" );
-//});
-
-
-
-});
-</script>
-	
 </head>
-
-  <body id='main_body'>
-  
-<div id="dialog" title="Basic dialog">
-<p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
-<button id="opener">Open Dialog</button>
 	
     <h1>Summoner Wars</h1>
 
@@ -49,12 +16,6 @@ duration: 1000
 
       <script type="text/javascript">
       
-        //GLOBAL TODO
-        //TODO wyciagnij skrypt i wyodrebij do osobnego pliku 
-
-        /**************************************************
-        ** NODE.JS REQUIREMENTS
-        **************************************************/
                  
         var socket = io.connect(window.location.hostname);
 
@@ -71,10 +32,6 @@ duration: 1000
         ** APPLICATION FUNCTIONS
         **************************************************/
 
-        var initActions = function()
-            {
-               rebuildStatusSection();
-            }
 
         var rebuildLoginSection = function() 
             {
@@ -138,198 +95,9 @@ duration: 1000
                   }
             } 
             
-        var rebuildStatusSection = function()
-            {
-               //first remove old status section
-               removeStatusSection();
-               
-               //then build new one
-               var new_status_section = document.createElement('div');
-               new_status_section.setAttribute('id', 'connection_status_section');
-               var p = document.createElement('p');
-               p.innerHTML = "Connection with server in progress... Please wait...";
-               new_status_section.appendChild(p);
-               page_content.appendChild(new_status_section);
-            }
-        
-        var removeStatusSection = function()
-            {
-               var old_section = document.getElementById('connection_status_section');
-               if(old_section != undefined)
-                  {
-                  page_content.removeChild(old_section);
-                  }  
-            }
+       
 
-        var rebuildBriefingSection = function()
-            {
-               //first remove old briefing section
-               removeBriefingSection();
-               
-               //then create new one
-               var new_section = document.createElement('div');
-               new_section.setAttribute('id', 'briefing_section');
-               //<p>Briefing section</p> 
-               var p = document.createElement('p');
-               p.innerHTML = "Briefing section";
-               new_section.appendChild(p);
-               
-               //<textarea id='players_list' cols="20" rows="2"></textarea>
-               var txtarea = document.createElement('textarea');
-               txtarea.setAttribute('id', 'players_list');
-               txtarea.setAttribute('cols', '20');
-               txtarea.setAttribute('rows', '2');
-               new_section.appendChild(txtarea);
-               
-               //<input id='txt_room_name' type='text' />
-               var txt_input = document.createElement('input');
-               txt_input.setAttribute('id', 'txt_room_name');
-               txt_input.setAttribute('type', 'text');
-               new_section.appendChild(txt_input);
-               
-               //<input id='btn_create_room' type='button' />
-               var btn_input = document.createElement('input');
-               btn_input.setAttribute('id', 'btn_create_room');
-               btn_input.setAttribute('type', 'button');
-               
-	           btn_input.addEventListener('click', function() 
-                          { 
-                          //event to create new room and join player to room automatically
-                          socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
-                          }, true);
-               
-               new_section.appendChild(btn_input);
-               
-               page_content.appendChild(new_section);  
-               
-               //reassign briefing section variable
-               briefing_section = new_section;
-            }
 
-        var removeBriefingSection = function()
-            {
-               var old_section = document.getElementById('briefing_section');
-               if(old_section != undefined)
-                  {
-                  page_content.removeChild(old_section);
-                  }
-            }
-            
-          
-        var rebuildRoomTable = function (rooms)
-            {
-               rooms_container = rooms;
-            
-               //firsly remove old room table 
-               var old_table = document.getElementById('room_table');
-               if(old_table != undefined)
-                  {
-                  briefing_section.removeChild(old_table);
-                  }
- 
-               //then create new one
-               var new_table = document.createElement('table');
-               new_table.border='1';
-               new_table.setAttribute('id', 'room_table');
-               
-               //create header row
-               var header_row = document.createElement('tr');
-               
-               addNewTh('Room name', header_row);
-               addNewTh('1st player', header_row);
-               addNewTh('2nd player', header_row);
-               addNewTh('Status', header_row);
-
-               new_table.appendChild(header_row);
-            
-               //generating rows for every room
-               for(var i=0; i<rooms.length; i=i+1)
-                  {
-                     var room_row = document.createElement('tr');
-                     room_row.setAttribute('id', rooms[i].name);
-                     
-                     addNewTd(rooms[i].name, room_row);
-                     addNewTd(rooms[i].first_player, room_row);
-                     addNewTd(rooms[i].second_player, room_row);
-                     
-                     //status handling
-                     if(rooms[i].status === 0) //status: waiting for players
-                        {
-                        addNewTd("Waiting for players", room_row);
-                        }
-                     else if(rooms[i].status === 1)
-                        {
-                        
-                        if(((rooms[i].first_player === player_login) && (rooms[i].first_player_ready)) || 
-                        ((rooms[i].second_player === player_login)&&(rooms[i].second_player_ready)))
-                           {
-                           addNewTd("Waiting for your opponent", room_row);
-                           }
-                        else if((rooms[i].first_player === player_login) || (rooms[i].second_player === player_login))
-                           {
-                           var td = document.createElement('td');
-                           room_row.appendChild(td);
-                           
-                            //<input type="button">
-                            var btn = document.createElement('input');
-                            btn.setAttribute('type', 'button');
-                            btn.onclick = function (e) 
-                            {
-                               e = e || window.event;
-                               room_name = (e.target || e.srcElement).parentNode.parentNode.id;
-                               
-                               
-                               socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
-                               
-                            };
-               	            td.appendChild(btn);
-                           }
-                        else
-                           {
-                           addNewTd("Ready to start", room_row);
-                           }
-                            
-                            
-                        }
-                     else //status: game in progress
-                        { 
-                        addNewTd("Game in progress", room_row);
-                        }
-                     
-                     
-                     room_row.onmousedown = function (e) 
-                       {
-                       e = e || window.event;
-                       var elementId = (e.target || e.srcElement).parentNode.id;
-                       //sent request to join player to room
-                       
-                       socket.emit('assign_player_to_room', { player_login: player_login, room_name: elementId });
-                       };
-                     
-                     //append new row to table
-                     new_table.appendChild(room_row);
-                  }
-
-               briefing_section.appendChild(new_table);
-            }
-
-        var addNewTh = function (inner_HTML_text, row)
-            {
-               var th = document.createElement('th');
-               th.innerHTML = inner_HTML_text;
-               row.appendChild(th);
-            }
-            
-        var addNewTd = function (inner_HTML_text, row)
-            {
-               var td = document.createElement('td');
-               td.innerHTML = inner_HTML_text;
-               row.appendChild(td);
-            }
-            
-        var myFunction = function() {
-            $( "#dialog" ).dialog( "open" );
-            }
         
         /**************************************************
         ** EVENTS HANDLING
@@ -340,46 +108,14 @@ duration: 1000
 		
            socket.on('connection_confirmation', function () 
                 {
-                            removeStatusSection();
+
                             rebuildLoginSection();
-                           
-	
-                socket.on('update_players_list', function(data) 
-                           {
-                           var players_list = document.getElementById('players_list');
-                           players_list.value = "";
-                           
-                           for(var i=0; i<data.players.length; i = i+1)
-                              {
-                              players_list.value += data.players[i].name;
-                              players_list.value += "\n";
-                              }   
-                           });
-			   
-                socket.on('update_room_table', function(data)
-                           {
-                           rebuildRoomTable(data.rooms);
-                           });
-                           
-                socket.on('error', function(data)
-                           {
-                           //$("#dialog-text").text(data.message);
-                           $('#dialog').dialog('open');
-                           });
-                    
-                         
-                socket.on('start_game', function()
-                           {
-                           //$("#dialog-text").text("starting game");
-                           $('#dialog').dialog('open');
-                           //myFunction();
-                           });
                            
            });
 
 	   }
 
-	initActions();
+
     setEventHandlers();
 
      </script>
