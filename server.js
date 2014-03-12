@@ -1,7 +1,7 @@
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
-/*
+
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
@@ -12,22 +12,7 @@ server.listen(port);
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
-*/
 
-var express = require('express')
-, sio = require('socket.io');
- var port = process.env.PORT || 5000;
-var app = express.createServer();
- 
-app.listen(port, function () {
-var addr = app.address();
-});
- 
-var io = sio.listen(app);
-
-express.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
-});
 
 /**************************************************
 ** GAME PLAYER CLASS
@@ -70,7 +55,7 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
-  socket.emit('connection_confirmation');
+  
   
   //creating new player
   socket.on('add_new_player', function() 
@@ -234,5 +219,7 @@ io.sockets.on('connection', function (socket) {
                
             }
          });
+         
+         socket.emit('connection_confirmation');
 
 });
