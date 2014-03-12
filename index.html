@@ -191,6 +191,7 @@ duration: 1000
                txt_input.setAttribute('type', 'text');
                new_section.appendChild(txt_input);
                
+               /*
                //<input id='btn_create_room' type='button' />
                var btn_input = document.createElement('input');
                btn_input.setAttribute('id', 'btn_create_room');
@@ -201,13 +202,10 @@ duration: 1000
                           //event to create new room and join player to room automatically
                           socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
                           }, true);
-                          
-                          
-               
                new_section.appendChild(btn_input);
                
                page_content.appendChild(new_section);  
-               
+               */
                //reassign briefing section variable
                briefing_section = new_section;
             }
