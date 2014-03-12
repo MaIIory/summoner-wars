@@ -108,6 +108,8 @@ duration: 1000
 	           btn.addEventListener('click', function() 
                           { 
                           
+                          rebuildBriefingSection();
+                          
                           player_login = document.getElementById('txt_login').value;
                           player_login = player_login.trim();
                           if(player_login === "") 
@@ -119,7 +121,7 @@ duration: 1000
                              
                           removeLoginSection();
                           socket.emit('add_new_player', { login: player_login });
-                          rebuildBriefingSection();
+                          //LUCN rebuildBriefingSection();
                           }, true);
                
                new_section.appendChild(btn);
