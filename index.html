@@ -27,9 +27,7 @@ duration: 1000
 //$( "#dialog" ).dialog( "open" );
 //});
 
-var myFunction = function() {
-$( "#dialog" ).dialog( "open" );
-}
+
 
 });
 </script>
@@ -325,6 +323,10 @@ $( "#dialog" ).dialog( "open" );
                var td = document.createElement('td');
                td.innerHTML = inner_HTML_text;
                row.appendChild(td);
+            }
+            
+        var myFunction = function() {
+            $( "#dialog" ).dialog( "open" );
             }
         
         /**************************************************
