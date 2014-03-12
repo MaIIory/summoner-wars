@@ -32,6 +32,8 @@ var Room = function(Name) {
         that.status = 0; // 0 - waiting for players
                          // 1 - ready to start
                          // 2 - battle in progress
+        that.first_player_ready = false;
+        that.second_player_ready = false;
 };
 
 /**************************************************
@@ -97,22 +99,7 @@ io.sockets.on('connection', function (socket) {
      
      //broadcast rooms to all clients
      io.sockets.emit('update_room_table', { rooms: rooms } );
-     
-     //TODO socket.emit update player room status
      });  
-
-   socket.on('join_to_room', function(data)
-      {
-      
-      for(var i=0; i<rooms.length; i=i+1)
-         {
-          if(rooms[i].name === data.room_name)
-          {
-          rooms[i].second_player = data.player_login;
-          io.sockets.emit('update_room_table', { rooms: rooms } );
-          }
-         }
-      });
       
    socket.on('assign_player_to_room', function(data)
       {
@@ -120,17 +107,35 @@ io.sockets.on('connection', function (socket) {
           {
             if(rooms[i].name === data.room_name)
             {
+            
+               //case 1: unassign first player
+               //and reset players status
                if(data.player_login === rooms[i].first_player)
                   {
                   rooms[i].first_player = "none";
+                  //TODO not shure if two below lines are necessary
+                  rooms[i].first_player_ready = false;
+                  rooms[i].second_player_ready = false;
                   if(rooms[i].second_player === "none")
+                     {
                      rooms.splice(i,1);
+                     break;
+                     }
+                     
                   }
+               //case 2: unassign second player
+               //and reset players status
                else if(data.player_login === rooms[i].second_player)
                   {
                   rooms[i].second_player = "none";
+                  //TODO not shure if two below lines are necessary
+                  rooms[i].first_player_ready = false;
+                  rooms[i].second_player_ready = false;
                   if(rooms[i].first_player === "none")
+                     {
                      rooms.splice(i,1);
+                     break;
+                     }
                   }
                else
                   {
@@ -160,11 +165,59 @@ io.sockets.on('connection', function (socket) {
                            }
                        }
                       }
+
                   }
-                  io.sockets.emit('update_room_table', { rooms: rooms } );
+                  
+                  
+                  //TODO check this room status
+                  if((rooms[i].first_player != "none") && (rooms[i].second_player != "none"))
+                     {
+                     rooms[i].status = 1; //ready to play
+                     }
+                  else
+                     {
+                     rooms[i].status = 0; //waiting for players
+                     }
             }
           }
+          
+          
+          io.sockets.emit('update_room_table', { rooms: rooms } );
+          
       });
+      
+      socket.on('join_to_game', function(data) 
+         {
+         
+            socket.join('room1');
+            
+            for(var i=0; i < rooms.length; i=i+1)
+            {
+               if(rooms[i].name === data.room_name)
+               {
+               
+                if(rooms[i].first_player === data.player_login)
+                    rooms[i].first_player_ready = true;
+                else if(rooms[i].second_player === data.player_login)
+                    rooms[i].second_player_ready = true;
+                else
+                    {
+                    socket.emit('error', { message: "Something went wrong!" }); 
+                    return;
+                    }
+                    
+                if(rooms[i].first_player_ready && rooms[i].second_player_ready)
+                   {
+                   rooms[i].status = 2;
+                   io.sockets.in('room1').emit('start_game');
+                   }
+               
+               io.sockets.emit('update_room_table', { rooms: rooms } );
+               return;   
+               }
+               
+               
+            }
+         });
 
 });
-

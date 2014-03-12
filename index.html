@@ -8,22 +8,21 @@
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="/socket.io/socket.io.js"></script>
+
+
+	
 </head>
 
-
   <body id='main_body'>
-  	<div id="dialog" title="Dialog">
-		<p>The bottom right corner of the dialog is aligned with the bottom right corner of the window.</p>
-	</div>
-
-  <button id="opener" onclick="check_domain_input()">Open Dialog</button>
   
+  <button onclick="myFunction()">Click me</button> 
+  
+  	<div id="dialog" title="Ops!">
+		<div id="dialog-text"></div>
+	</div>  
+	
   	<script type="text/javascript">
-		/*
-		 * jQuery UI Dialog: Change Dialog Position
-		 * http://salman-w.blogspot.com/2013/05/jquery-ui-dialog-examples.html
-		 */
-		$(function() {
+
 		      $("#dialog").dialog({
 		        autoOpen: false,
 		        modal: true,
@@ -33,22 +32,9 @@
 					of: window
 				}
 			});
-
-		});
 	</script>
 	
-	<script>
-    function check_domain_input()
-    {       
-        $('#dialog').dialog('open'); ;
-   
-        return false;
-    }
-</script>
-
-
     <h1>Summoner Wars</h1>
-
 
 	<div id='page_content'>
 	
@@ -71,6 +57,7 @@
         var page_content = document.getElementById('page_content');
         var briefing_section = document.getElementById('briefing_section');
         var player_login = ""; //store player login after typing
+        var room_name = "";    //room name that player joined
 
         /**************************************************
         ** APPLICATION FUNCTIONS
@@ -108,7 +95,7 @@
                //<input type="button">
                var btn = document.createElement('input');
                btn.setAttribute('type', 'button');
-               btn.setAttribute('id', 'btn_join_game');
+               //btn.setAttribute('id', 'btn_join_game');
 	           
 	           btn.addEventListener('click', function() 
                           { 
@@ -117,6 +104,7 @@
                           player_login = player_login.trim();
                           if(player_login === "") 
                              {
+                             //TODO change alert to dialog
                              alert("login is empty!" + player_login);
                              return;
                              }
@@ -253,7 +241,51 @@
                      addNewTd(rooms[i].name, room_row);
                      addNewTd(rooms[i].first_player, room_row);
                      addNewTd(rooms[i].second_player, room_row);
-                     addNewTd(rooms[i].status, room_row);
+                     
+                     //status handling
+                     if(rooms[i].status === 0) //status: waiting for players
+                        {
+                        addNewTd("Waiting for players", room_row);
+                        }
+                     else if(rooms[i].status === 1)
+                        {
+                        
+                        if(((rooms[i].first_player === player_login) && (rooms[i].first_player_ready)) || 
+                        ((rooms[i].second_player === player_login)&&(rooms[i].second_player_ready)))
+                           {
+                           addNewTd("Waiting for your opponent", room_row);
+                           }
+                        else if((rooms[i].first_player === player_login) || (rooms[i].second_player === player_login))
+                           {
+                           var td = document.createElement('td');
+                           room_row.appendChild(td);
+                           
+                            //<input type="button">
+                            var btn = document.createElement('input');
+                            btn.setAttribute('type', 'button');
+                            btn.onclick = function (e) 
+                            {
+                               e = e || window.event;
+                               room_name = (e.target || e.srcElement).parentNode.parentNode.id;
+                               
+                               
+                               socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
+                               
+                            };
+               	            td.appendChild(btn);
+                           }
+                        else
+                           {
+                           addNewTd("Ready to start", room_row);
+                           }
+                            
+                            
+                        }
+                     else //status: game in progress
+                        { 
+                        addNewTd("Game in progress", room_row);
+                        }
+                     
                      
                      room_row.onmousedown = function (e) 
                        {
@@ -285,7 +317,13 @@
                row.appendChild(td);
             }
             
-
+        var myFunction = function ()
+            {
+            $("#dialog-text").text("funkcja dziala");
+            $('#dialog').dialog('open');
+            io.sockets.in('room1').emit('start_game');
+            }
+        
         /**************************************************
         ** EVENTS HANDLING
         **************************************************/
@@ -318,8 +356,15 @@
                            
            socket.on('error', function(data)
                            {
-                           //alert(data.message);
-                           check_domain_input();
+                           $("#dialog-text").text(data.message);
+                           $('#dialog').dialog('open');
+                           });
+                    
+                         
+           socket.on('start_game', function()
+                           {
+                           $("#dialog-text").text("starting game");
+                           $('#dialog').dialog('open');
                            });
 
 	   }
