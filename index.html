@@ -9,7 +9,22 @@
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="/socket.io/socket.io.js"></script>
 
+<script>
+$(function() {
+$( "#dialog" ).dialog({
+autoOpen: false,
+show: {
+effect: "blind",
+duration: 1000
+},
+hide: {
+effect: "explode",
+duration: 1000
+}
+});
 
+});
+</script>
 	
 </head>
 
