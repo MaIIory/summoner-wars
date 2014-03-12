@@ -74,7 +74,7 @@ duration: 1000
         var initActions = function()
             {
                rebuildStatusSection();
-               rebuildBriefingSection();
+
             }
 
         var rebuildLoginSection = function() 
@@ -120,10 +120,12 @@ duration: 1000
                              return;
                              }
                             */ 
-                          //rebuildBriefingSection();
+                            
+
                           removeLoginSection();
                           socket.emit('add_new_player');
-                          //LUCN rebuildBriefingSection();
+                          
+                          rebuildBriefingSection(); //!!!!!!!!!
                           }, true);
                
                new_section.appendChild(btn);
