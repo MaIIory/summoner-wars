@@ -2,17 +2,16 @@
 ** NODE.JS REQUIREMENTS
 **************************************************/
 
-var express = require('express');
-var app = express.createServer(express.logger());
-var io = require('socket.io').listen(app);
+var io = require('socket.io');
 var port = process.env.PORT || 5000;
 
-app.listen(port);
+socket = io.listen(port);
 
+/*
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
-
+*/
 
 /**************************************************
 ** GAME PLAYER CLASS
@@ -53,25 +52,25 @@ var rooms = [];   // Array of rooms
 **************************************************/
 
 //connection procedure event
-io.sockets.on('connection', function (socket) {
+socket.sockets.on('connection', function (client) {
 
-  socket.emit('connection_confirmation');
+  client.emit('connection_confirmation');
   
   //creating new player
-  socket.on('add_new_player', function(data) 
+  client.on('add_new_player', function(data) 
     {
        var new_player = new Player(data.login)  
        players.push(new_player);
 
        //update number of players in all connected sockets
-       io.sockets.emit('update_players_list', { players: players });
+       socket.sockets.emit('update_players_list', { players: players });
     
        //init room table for new player
-       socket.emit('update_room_table', { rooms: rooms });
+       client.emit('update_room_table', { rooms: rooms });
    });
    
   //listen for new room creation request
-  socket.on('create_new_room',function(data)
+  client.on('create_new_room',function(data)
      {
      
      //check if this room dont exist already
@@ -79,7 +78,7 @@ io.sockets.on('connection', function (socket) {
         {
         if(rooms[i].name === data.room_name)
            {
-           socket.emit('error', { message: "Room already exist" });
+           client.emit('error', { message: "Room already exist" });
            return;
            }
         }
@@ -88,7 +87,7 @@ io.sockets.on('connection', function (socket) {
         {
         if((rooms[i].first_player === data.player_login) || (rooms[i].second_player === data.player_login))
            {
-           socket.emit('error', { message: "You have to leave any other rooms" });
+           client.emit('error', { message: "You have to leave any other rooms" });
            return;
            }
         }
@@ -98,10 +97,10 @@ io.sockets.on('connection', function (socket) {
      rooms.push(new_room);
      
      //broadcast rooms to all clients
-     io.sockets.emit('update_room_table', { rooms: rooms } );
+     socket.sockets.emit('update_room_table', { rooms: rooms } );
      });  
       
-   socket.on('assign_player_to_room', function(data)
+   client.on('assign_player_to_room', function(data)
       {
           for(var i=0; i < rooms.length; i=i+1)
           {
@@ -145,7 +144,7 @@ io.sockets.on('connection', function (socket) {
                       rooms[i].second_player = data.player_login;
                    else 
                       {
-                      socket.emit('error', { message: "No empty seat in the room" });
+                      client.emit('error', { message: "No empty seat in the room" });
                       return;
                       }
                    
@@ -182,11 +181,11 @@ io.sockets.on('connection', function (socket) {
           }
           
           
-          io.sockets.emit('update_room_table', { rooms: rooms } );
+          socket.sockets.emit('update_room_table', { rooms: rooms } );
           
       });
       
-      socket.on('join_to_game', function(data) 
+      client.on('join_to_game', function(data) 
          {
          
             socket.join('room1');
@@ -202,17 +201,17 @@ io.sockets.on('connection', function (socket) {
                     rooms[i].second_player_ready = true;
                 else
                     {
-                    socket.emit('error', { message: "Something went wrong!" }); 
+                    client.emit('error', { message: "Something went wrong!" }); 
                     return;
                     }
                     
                 if(rooms[i].first_player_ready && rooms[i].second_player_ready)
                    {
                    rooms[i].status = 2;
-                   io.sockets.in('room1').emit('start_game');
+                   socket.sockets.in('room1').emit('start_game');
                    }
                
-               io.sockets.emit('update_room_table', { rooms: rooms } );
+               socket.sockets.emit('update_room_table', { rooms: rooms } );
                return;   
                }
                
