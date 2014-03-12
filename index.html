@@ -22,9 +22,15 @@ effect: "explode",
 duration: 1000
 }
 });
-$( "#opener" ).click(function() {
+
+//$( "#opener" ).click(function() {
+//$( "#dialog" ).dialog( "open" );
+//});
+
+var myFunction = function() {
 $( "#dialog" ).dialog( "open" );
-});
+}
+
 });
 </script>
 	
@@ -362,6 +368,7 @@ $( "#dialog" ).dialog( "open" );
                            {
                            //$("#dialog-text").text("starting game");
                            //$('#dialog').dialog('open');
+                           myFunction();
                            });
 
 	   }
