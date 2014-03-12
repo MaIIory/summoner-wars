@@ -1,7 +1,7 @@
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
-
+/*
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
@@ -12,9 +12,23 @@ server.listen(port);
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
+*/
 
+var express = require('express')
+, sio = require('socket.io');
+ 
+var app = express.createServer();
+ 
+app.listen(5000, function () {
+var addr = app.address();
+console.log(' app listening on http://' + addr.address + ':' + addr.port);
+});
+ 
+var io = sio.listen(app);
 
-
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/index.html');
+});
 
 /**************************************************
 ** GAME PLAYER CLASS
