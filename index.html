@@ -11,7 +11,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script type="text/javascript">
-    $(function() 
+ /*   $(function() 
        {
 	   $("#dialog").dialog({
           autoOpen: false,
@@ -23,6 +23,27 @@
 				}
 			});
       });
+      */
+</script>
+
+ <script>
+$(function() {
+$( "#dialog" ).dialog({
+autoOpen: false,
+show: {
+effect: "blind",
+duration: 1000
+},
+hide: {
+effect: "explode",
+duration: 1000
+}
+});
+
+var open_dialog = function () {
+    $( "#dialog" ).dialog( "open" );
+    }
+});
 </script>
 	
 </head>
@@ -369,8 +390,9 @@
                            
            socket.on('error', function(data)
                            {
-                           $("#dialog-text").text(data.message);
-                           $('#dialog').dialog('open');
+                           //$("#dialog-text").text(data.message);
+                           //$('#dialog').dialog('open');
+                           open_dialog();
                            });
                     
                          
