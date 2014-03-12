@@ -21,12 +21,11 @@ var app = express.createServer();
  
 app.listen(port, function () {
 var addr = app.address();
-console.log(' app listening on http://' + addr.address + ':' + addr.port);
 });
  
 var io = sio.listen(app);
 
-app.get('/', function (req, res) {
+express.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
