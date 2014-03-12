@@ -1,17 +1,18 @@
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
-
+var app = require('express')();
+var server = require('http').createServer(app);
 var io = require('socket.io');
 var port = process.env.PORT || 5000;
 
 socket = io.listen(port);
 
-/*
+
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
-*/
+
 
 /**************************************************
 ** GAME PLAYER CLASS
