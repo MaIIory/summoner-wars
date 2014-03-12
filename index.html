@@ -121,11 +121,11 @@ duration: 1000
                              }
                             */ 
                             
-
+                          rebuildBriefingSection();
                           removeLoginSection();
                           socket.emit('add_new_player');
                           
-                          rebuildBriefingSection(); //!!!!!!!!!
+                          
                           }, true);
                
                new_section.appendChild(btn);
@@ -171,11 +171,12 @@ duration: 1000
                //removeBriefingSection();
                //then create new one
                var new_section = document.createElement('div');
-               new_section.setAttribute('id', 'briefing_section');
+               //new_section.setAttribute('id', 'briefing_section');
                //<p>Briefing section</p> 
                var p = document.createElement('p');
-               p.innerHTML = "Briefing section";
+               //p.innerHTML = "Briefing section";
                new_section.appendChild(p);
+               
                
                //<textarea id='players_list' cols="20" rows="2"></textarea>
                var txtarea = document.createElement('textarea');
@@ -184,12 +185,13 @@ duration: 1000
                txtarea.setAttribute('rows', '2');
                new_section.appendChild(txtarea);
                
+               /*
                //<input id='txt_room_name' type='text' />
                var txt_input = document.createElement('input');
                txt_input.setAttribute('id', 'txt_room_name');
                txt_input.setAttribute('type', 'text');
                new_section.appendChild(txt_input);
-               
+               */
                /*
                //<input id='btn_create_room' type='button' />
                var btn_input = document.createElement('input');
@@ -206,7 +208,7 @@ duration: 1000
                page_content.appendChild(new_section);  
                
                //reassign briefing section variable
-               briefing_section = new_section;
+               //briefing_section = new_section;
             }
 
         var removeBriefingSection = function()
