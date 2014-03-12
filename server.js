@@ -55,7 +55,7 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
-  socket.emit('connection_confirmation', { id: socket.id });
+  socket.emit('connection_confirmation');
   
   //creating new player
   socket.on('add_new_player', function(data) 
