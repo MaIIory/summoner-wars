@@ -58,7 +58,7 @@ io.sockets.on('connection', function (socket) {
   socket.emit('connection_confirmation');
   
   //creating new player
-  socket.on('add_new_player', function(data) 
+  socket.on('add_new_player', function() 
     {
        var new_player = new Player("nowy");  
        players.push(new_player);
