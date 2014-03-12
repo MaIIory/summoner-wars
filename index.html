@@ -340,9 +340,9 @@ duration: 1000
                            {
                             removeStatusSection();
                             rebuildLoginSection();
-                           });
+                           
 	
-           socket.on('update_players_list', function(data) 
+                socket.on('update_players_list', function(data) 
                            {
                            var players_list = document.getElementById('players_list');
                            players_list.value = "";
@@ -354,24 +354,26 @@ duration: 1000
                               }   
                            });
 			   
-           socket.on('update_room_table', function(data)
+                socket.on('update_room_table', function(data)
                            {
                            rebuildRoomTable(data.rooms);
                            });
                            
-           socket.on('error', function(data)
+                socket.on('error', function(data)
                            {
                            //$("#dialog-text").text(data.message);
                            $('#dialog').dialog('open');
                            });
                     
                          
-           socket.on('start_game', function()
+                socket.on('start_game', function()
                            {
                            //$("#dialog-text").text("starting game");
                            $('#dialog').dialog('open');
                            //myFunction();
                            });
+                           
+           });
 
 	   }
 
