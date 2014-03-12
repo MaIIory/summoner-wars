@@ -73,9 +73,18 @@ duration: 1000
 
         var initActions = function()
             {
+              
                rebuildStatusSection();
+               rebuildLoginSection();
+               rebuildBriefingSection();
 
             }
+            
+        var unInitActions = function()
+        {
+        removeLoginSection();
+        removeBriefingSection();
+        }
 
         var rebuildLoginSection = function() 
             {
@@ -168,13 +177,13 @@ duration: 1000
         var rebuildBriefingSection = function()
             {
                //first remove old briefing section
-               //removeBriefingSection();
+               removeBriefingSection();
                //then create new one
                var new_section = document.createElement('div');
                //new_section.setAttribute('id', 'briefing_section');
-               //<p>Briefing section</p> 
+               <p>Briefing section</p> 
                var p = document.createElement('p');
-               //p.innerHTML = "Briefing section";
+               p.innerHTML = "Briefing section";
                new_section.appendChild(p);
                
                
@@ -185,14 +194,14 @@ duration: 1000
                txtarea.setAttribute('rows', '2');
                new_section.appendChild(txtarea);
                
-               /*
+               
                //<input id='txt_room_name' type='text' />
                var txt_input = document.createElement('input');
                txt_input.setAttribute('id', 'txt_room_name');
                txt_input.setAttribute('type', 'text');
                new_section.appendChild(txt_input);
-               */
-               /*
+               
+               
                //<input id='btn_create_room' type='button' />
                var btn_input = document.createElement('input');
                btn_input.setAttribute('id', 'btn_create_room');
@@ -204,11 +213,11 @@ duration: 1000
                           socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
                           }, true);
                new_section.appendChild(btn_input);
-               */
+               
                page_content.appendChild(new_section);  
                
                //reassign briefing section variable
-               //briefing_section = new_section;
+               briefing_section = new_section;
             }
 
         var removeBriefingSection = function()
@@ -386,6 +395,7 @@ duration: 1000
 
 	initActions();
     setEventHandlers();
+    unInitActions();
 
      </script>
 
