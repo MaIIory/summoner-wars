@@ -16,10 +16,10 @@ app.get('/', function (req, res) {
 
 var express = require('express')
 , sio = require('socket.io');
- 
+ var port = process.env.PORT || 5000;
 var app = express.createServer();
  
-app.listen(5000, function () {
+app.listen(port, function () {
 var addr = app.address();
 console.log(' app listening on http://' + addr.address + ':' + addr.port);
 });
