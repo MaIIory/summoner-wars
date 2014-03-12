@@ -10,32 +10,28 @@
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="/socket.io/socket.io.js"></script>
 
-
+<script type="text/javascript">
+    $(function() 
+       {
+	   $("#dialog").dialog({
+          autoOpen: false,
+		  modal: true,
+		  position: {
+             my: "center",
+			 at: "center",
+			 of: window
+				}
+			});
+      });
+</script>
 	
 </head>
 
   <body id='main_body'>
-
 	
-        	<script type="text/javascript">
-$(function() {
-		      $("#dialog").dialog({
-		        autoOpen: false,
-		        modal: true,
-				position: {
-					my: "center",
-					at: "center",
-					of: window
-				}
-			});
-});
-			
-			     	<div id="dialog" title="Ops!">
+  	<div id="dialog" title="Ops!">
 		<div id="dialog-text"></div>
 	</div>  
-
-
-	</script>
 
 	</script>
 	
