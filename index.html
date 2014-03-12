@@ -168,8 +168,7 @@ duration: 1000
         var rebuildBriefingSection = function()
             {
                //first remove old briefing section
-               removeBriefingSection();
-               
+               //removeBriefingSection();
                //then create new one
                var new_section = document.createElement('div');
                new_section.setAttribute('id', 'briefing_section');
@@ -203,9 +202,9 @@ duration: 1000
                           socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
                           }, true);
                new_section.appendChild(btn_input);
-               
-               page_content.appendChild(new_section);  
                */
+               page_content.appendChild(new_section);  
+               
                //reassign briefing section variable
                briefing_section = new_section;
             }
