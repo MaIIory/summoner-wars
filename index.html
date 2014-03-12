@@ -2,15 +2,15 @@
 <html>
   <head>
   <meta charset="utf-8">
-  <script src="jquery.ui.position.js"></script>
+  
  <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<link rel="stylesheet" href="/resources/demos/style.css">
+
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-$(function() {
+ $(function() {
 $( "#dialog" ).dialog({
 autoOpen: false,
 show: {
@@ -22,7 +22,9 @@ effect: "explode",
 duration: 1000
 }
 });
-
+$( "#opener" ).click(function() {
+$( "#dialog" ).dialog( "open" );
+});
 });
 </script>
 	
@@ -30,10 +32,10 @@ duration: 1000
 
   <body id='main_body'>
   
-  
-  	<div id="dialog" title="Ops!">
-		<div id="dialog-text"></div>
-	</div>  
+<div id="dialog" title="Basic dialog">
+<p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+<button id="opener">Open Dialog</button>
 	
   	<script type="text/javascript">
 
