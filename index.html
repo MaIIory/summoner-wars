@@ -74,7 +74,6 @@ duration: 1000
         var initActions = function()
             {
                rebuildStatusSection();
-               rebuildLoginSection();
                rebuildBriefingSection();
             }
 
@@ -346,7 +345,7 @@ duration: 1000
            socket.on('connection_confirmation', function () 
                 {
                         removeStatusSection();
-                           // rebuildLoginSection();
+                        rebuildLoginSection();
                            
 	
                 socket.on('update_players_list', function(data) 
