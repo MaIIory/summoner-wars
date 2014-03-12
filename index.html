@@ -363,8 +363,8 @@ var open_dialog = function () {
 		
            socket.on('connection_confirmation', function (data) 
                            {
-                           $("#dialog-text").text("i co?");
-                           $('#dialog').dialog('open');
+                           //$("#dialog-text").text("i co?");
+                           //$('#dialog').dialog('open');
                             removeStatusSection();
                             rebuildLoginSection();
                            });
@@ -390,9 +390,9 @@ var open_dialog = function () {
                            
            socket.on('error', function(data)
                            {
-                           //$("#dialog-text").text(data.message);
-                           //$('#dialog').dialog('open');
-                           open_dialog();
+                           $("#dialog-text").text(data.message);
+                           $('#dialog').dialog('open');
+                           //open_dialog();
                            });
                     
                          
