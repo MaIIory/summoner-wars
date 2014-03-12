@@ -2,16 +2,16 @@
 ** NODE.JS REQUIREMENTS
 **************************************************/
 
-var app = require('express')();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-var port = process.env.PORT || 8000;
-
-server.listen(port);
-
+var express = require('express');
+var app = express();
+var io = require('socket.io').listen(app);
+var port = Number(process.env.PORT || 5000);
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
+app.listen(port);
+
+
 
 
 /**************************************************
