@@ -119,8 +119,9 @@ duration: 1000
                              return;
                              }
                              
-                          removeLoginSection();
+                          
                           socket.emit('add_new_player', { login: player_login });
+                          removeLoginSection();
                           //LUCN rebuildBriefingSection();
                           }, true);
                
