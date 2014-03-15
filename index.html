@@ -56,7 +56,7 @@ duration: 1000
         ** NODE.JS REQUIREMENTS
         **************************************************/
                  
-        var socket = io.connect(window.location.hostname, {'force new connection': true});
+        var socket = io.connect(window.location.hostname);
 
         /**************************************************
         ** APPLICATION VARIABLES
@@ -73,18 +73,8 @@ duration: 1000
 
         var initActions = function()
             {
-              
                rebuildStatusSection();
-               rebuildLoginSection();
-               rebuildBriefingSection();
-
             }
-            
-        var unInitActions = function()
-        {
-        removeLoginSection();
-        removeBriefingSection();
-        }
 
         var rebuildLoginSection = function() 
             {
@@ -118,8 +108,8 @@ duration: 1000
 	           btn.addEventListener('click', function() 
                           { 
                           
+                          rebuildBriefingSection();
                           
-                          /*
                           player_login = document.getElementById('txt_login').value;
                           player_login = player_login.trim();
                           if(player_login === "") 
@@ -128,13 +118,10 @@ duration: 1000
                              alert("login is empty!" + player_login);
                              return;
                              }
-                            */ 
-                            
-                          rebuildBriefingSection();
+                             
                           removeLoginSection();
-                          socket.emit('add_new_player');
-                          
-                          
+                          socket.emit('add_new_player', { login: player_login });
+                          //LUCN rebuildBriefingSection();
                           }, true);
                
                new_section.appendChild(btn);
@@ -178,14 +165,14 @@ duration: 1000
             {
                //first remove old briefing section
                removeBriefingSection();
+               
                //then create new one
                var new_section = document.createElement('div');
                new_section.setAttribute('id', 'briefing_section');
-               <p>Briefing section</p> 
+               //<p>Briefing section</p> 
                var p = document.createElement('p');
                p.innerHTML = "Briefing section";
                new_section.appendChild(p);
-               
                
                //<textarea id='players_list' cols="20" rows="2"></textarea>
                var txtarea = document.createElement('textarea');
@@ -194,13 +181,11 @@ duration: 1000
                txtarea.setAttribute('rows', '2');
                new_section.appendChild(txtarea);
                
-               
                //<input id='txt_room_name' type='text' />
                var txt_input = document.createElement('input');
                txt_input.setAttribute('id', 'txt_room_name');
                txt_input.setAttribute('type', 'text');
                new_section.appendChild(txt_input);
-               
                
                //<input id='btn_create_room' type='button' />
                var btn_input = document.createElement('input');
@@ -212,6 +197,7 @@ duration: 1000
                           //event to create new room and join player to room automatically
                           socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
                           }, true);
+               
                new_section.appendChild(btn_input);
                
                page_content.appendChild(new_section);  
@@ -354,8 +340,8 @@ duration: 1000
 		
            socket.on('connection_confirmation', function () 
                 {
-                        removeStatusSection();
-                        rebuildLoginSection();
+                            removeStatusSection();
+                            rebuildLoginSection();
                            
 	
                 socket.on('update_players_list', function(data) 
@@ -395,7 +381,6 @@ duration: 1000
 
 	initActions();
     setEventHandlers();
-    unInitActions();
 
      </script>
 

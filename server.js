@@ -5,7 +5,7 @@
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 8000;
 
 server.listen(port);
 
@@ -55,12 +55,12 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
-  
+  socket.emit('connection_confirmation');
   
   //creating new player
-  socket.on('add_new_player', function() 
+  socket.on('add_new_player', function(data) 
     {
-       var new_player = new Player("nowy");  
+       var new_player = new Player(data.login)  
        players.push(new_player);
 
        //update number of players in all connected sockets
@@ -219,7 +219,5 @@ io.sockets.on('connection', function (socket) {
                
             }
          });
-         
-         socket.emit('connection_confirmation');
 
 });
