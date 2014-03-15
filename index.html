@@ -74,6 +74,7 @@ duration: 1000
         var initActions = function()
             {
                rebuildStatusSection();
+               
             }
 
         var rebuildLoginSection = function() 
@@ -108,7 +109,7 @@ duration: 1000
 	           btn.addEventListener('click', function() 
                           { 
                           
-                          rebuildBriefingSection();
+                          //rebuildBriefingSection();
                           
                           player_login = document.getElementById('txt_login').value;
                           player_login = player_login.trim();
@@ -343,6 +344,7 @@ duration: 1000
                 {
                             removeStatusSection();
                             rebuildLoginSection();
+                            rebuildBriefingSection();
                            
 	
                 socket.on('update_players_list', function(data) 
