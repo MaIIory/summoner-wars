@@ -94,10 +94,10 @@ duration: 1000
                var br = document.createElement('br');
                new_section.appendChild(br);
                //<input type="text">
-               var btn = document.createElement('input');
-               btn.setAttribute('type', 'text');
-               btn.setAttribute('id', 'txt_login');
-               new_section.appendChild(btn);
+               var txt_login = document.createElement('input');
+               txt_login.setAttribute('type', 'text');
+               txt_login.setAttribute('id', 'txt_login');
+               new_section.appendChild(txt_login);
                //<br>
                var br = document.createElement('br');
                new_section.appendChild(br);
@@ -108,7 +108,7 @@ duration: 1000
 	           
 	           btn.onclick = function (e) 
                             {
-                               e = e || window.event;
+                          e = e || window.event;
                                
                           rebuildBriefingSection();
                           
