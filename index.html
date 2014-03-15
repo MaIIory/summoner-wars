@@ -76,6 +76,60 @@ duration: 1000
                rebuildStatusSection();
                
             }
+            
+        var rebuildBriefingSection = function()
+            {
+               //first remove old briefing section
+               removeBriefingSection();
+               
+               //then create new one
+               var new_section = document.createElement('div');
+               new_section.setAttribute('id', 'briefing_section');
+               //<p>Briefing section</p> 
+               var p = document.createElement('p');
+               p.innerHTML = "Briefing section";
+               new_section.appendChild(p);
+               
+               //<textarea id='players_list' cols="20" rows="2"></textarea>
+               var txtarea = document.createElement('textarea');
+               txtarea.setAttribute('id', 'players_list');
+               txtarea.setAttribute('cols', '20');
+               txtarea.setAttribute('rows', '2');
+               new_section.appendChild(txtarea);
+               
+               //<input id='txt_room_name' type='text' />
+               var txt_input = document.createElement('input');
+               txt_input.setAttribute('id', 'txt_room_name');
+               txt_input.setAttribute('type', 'text');
+               new_section.appendChild(txt_input);
+               
+               //<input id='btn_create_room' type='button' />
+               var btn_input = document.createElement('input');
+               btn_input.setAttribute('id', 'btn_create_room');
+               btn_input.setAttribute('type', 'button');
+               
+	           btn_input.addEventListener('click', function() 
+                          { 
+                          //event to create new room and join player to room automatically
+                          socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
+                          }, true);
+               
+               new_section.appendChild(btn_input);
+               
+               page_content.appendChild(new_section);  
+               
+               //reassign briefing section variable
+               briefing_section = new_section;
+            }
+
+        var removeBriefingSection = function()
+            {
+               var old_section = document.getElementById('briefing_section');
+               if(old_section != undefined)
+                  {
+                  page_content.removeChild(old_section);
+                  }
+            }
 
         var rebuildLoginSection = function() 
             {
@@ -183,59 +237,7 @@ duration: 1000
                   }  
             }
 
-        var rebuildBriefingSection = function()
-            {
-               //first remove old briefing section
-               //removeBriefingSection();
-               
-               //then create new one
-               var new_section = document.createElement('div');
-               new_section.setAttribute('id', 'briefing_section');
-               //<p>Briefing section</p> 
-               var p = document.createElement('p');
-               p.innerHTML = "Briefing section";
-               new_section.appendChild(p);
-               
-               //<textarea id='players_list' cols="20" rows="2"></textarea>
-               var txtarea = document.createElement('textarea');
-               txtarea.setAttribute('id', 'players_list');
-               txtarea.setAttribute('cols', '20');
-               txtarea.setAttribute('rows', '2');
-               new_section.appendChild(txtarea);
-               
-               //<input id='txt_room_name' type='text' />
-               var txt_input = document.createElement('input');
-               txt_input.setAttribute('id', 'txt_room_name');
-               txt_input.setAttribute('type', 'text');
-               new_section.appendChild(txt_input);
-               
-               //<input id='btn_create_room' type='button' />
-               var btn_input = document.createElement('input');
-               btn_input.setAttribute('id', 'btn_create_room');
-               btn_input.setAttribute('type', 'button');
-               
-	           btn_input.addEventListener('click', function() 
-                          { 
-                          //event to create new room and join player to room automatically
-                          socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
-                          }, true);
-               
-               new_section.appendChild(btn_input);
-               
-               page_content.appendChild(new_section);  
-               
-               //reassign briefing section variable
-               briefing_section = new_section;
-            }
 
-        var removeBriefingSection = function()
-            {
-               var old_section = document.getElementById('briefing_section');
-               if(old_section != undefined)
-                  {
-                  page_content.removeChild(old_section);
-                  }
-            }
             
           
         var rebuildRoomTable = function (rooms)
