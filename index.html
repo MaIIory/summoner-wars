@@ -106,6 +106,26 @@ duration: 1000
                btn.setAttribute('type', 'button');
                //btn.setAttribute('id', 'btn_join_game');
 	           
+	           btn.onclick = function (e) 
+                            {
+                               e = e || window.event;
+                               
+                          rebuildBriefingSection();
+                          
+                          player_login = document.getElementById('txt_login').value;
+                          player_login = player_login.trim();
+                          if(player_login === "") 
+                             {
+                             //TODO change alert to dialog
+                             alert("login is empty!" + player_login);
+                             return;
+                             }
+                             
+                          
+                          socket.emit('add_new_player', { login: player_login });
+                          removeLoginSection();
+                            };
+	           /*
 	           btn.addEventListener('click', function() 
                           { 
                           
@@ -125,6 +145,7 @@ duration: 1000
                           removeLoginSection();
                           //LUCN rebuildBriefingSection();
                           }, true);
+              */
                
                new_section.appendChild(btn);
                //add to page content
