@@ -372,6 +372,12 @@ duration: 1000
                 socket.on('update_players_list', function(data) 
                            {
                            var players_list = document.getElementById('players_list');
+                           
+                           if(players_list === undefined)
+                            {
+                                alert("ZONK");
+                            }
+                           
                            players_list.value = "";
                            
                            for(var i=0; i<data.players.length; i = i+1)
