@@ -63,13 +63,11 @@ io.sockets.on('connection', function (socket) {
        var new_player = new Player(data.login)  
        players.push(new_player);
 
-
-       socket.emit('update_room_table', { rooms: rooms });
        //update number of players in all connected sockets
        io.sockets.emit('update_players_list', { players: players });
     
        //init room table for new player
-       
+       socket.emit('update_room_table', { rooms: rooms });
    });
    
   //listen for new room creation request
