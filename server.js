@@ -56,10 +56,12 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
+
+  
   socket.on('disconnect', function()
      {
 
-           players.splice(0,1);
+           players = players.splice(0,1);
            io.sockets.emit('update_players_list', { players: players });
            return;
 
