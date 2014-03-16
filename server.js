@@ -58,15 +58,11 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('disconnect', function()
      {
-     for(var i=0;i<players.length;i=i+1)
-        {
-        if(players[i].socket_id === socket.id)
-           {
-           players.splice(i,1);
+
+           players.splice(0,1);
            io.sockets.emit('update_players_list', { players: players });
            return;
-           }
-        } 
+
      });
 
 
