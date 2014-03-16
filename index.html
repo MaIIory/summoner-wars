@@ -71,6 +71,14 @@ duration: 1000
         ** APPLICATION FUNCTIONS
         **************************************************/
 
+        
+        
+        function WindowCloseHanlder()
+        {
+        socket.disconnect();
+        }
+
+
         var initActions = function()
             {
                rebuildStatusSection();
@@ -389,12 +397,10 @@ duration: 1000
 		
            socket.on('connection_confirmation', function () 
                 {
+                            window.onbeforeunload = WindowCloseHanlder;
                             removeStatusSection();
                             rebuildLoginSection();
-                            //rebuildBriefingSection();
                            
-	
-
                            
                 socket.on('error', function(data)
                            {
