@@ -75,8 +75,8 @@ io.sockets.on('connection', function (socket) {
   //creating new player
   socket.on('add_new_player', function(data) 
     {
-       var new_player = new Player(data.login)  
-       players.push(new_player, socket);
+       var new_player = new Player(data.login, socket)  
+       players.push(new_player);
 
        //update number of players in all connected sockets
        io.sockets.emit('update_players_list', { players: players });
