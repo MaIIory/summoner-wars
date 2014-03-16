@@ -18,10 +18,9 @@ app.get('/', function (req, res) {
 ** GAME PLAYER CLASS
 **************************************************/
 
-var Player = function(login, Socket) {
+var Player = function(login) {
 	var that = this;
         that.name = login;
-        that.socket = Socket;
 };
 
 
@@ -56,28 +55,12 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
-  socket.on('disconnect', function() 
-     {
-     for(var i=0;i<players.length;i=i+1)
-       {
-       if(players[i].socket === socket)
-          {
-          players.splice(i,1);
-          io.sockets.emit('update_players_list', { players: players });
-          return;
-          }
-       }
-  
-     });
-     
-     
-
   socket.emit('connection_confirmation');
   
   //creating new player
   socket.on('add_new_player', function(data) 
     {
-       var new_player = new Player(data.login, socket)  
+       var new_player = new Player(data.login)  
        players.push(new_player);
 
        //update number of players in all connected sockets
