@@ -18,9 +18,10 @@ app.get('/', function (req, res) {
 ** GAME PLAYER CLASS
 **************************************************/
 
-var Player = function(login) {
+var Player = function(login, Socket) {
 	var that = this;
         that.name = login;
+        that.socket = Socket;
 };
 
 
@@ -55,13 +56,27 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
+  socket.on('disconnect', function() 
+     {
+     for(var i=0;i<players.length;i=i+1)
+       {
+       if(players[i].socket === socket)
+          {
+          players.splice(i,1);
+          io.sockets.emit('update_players_list', { players: players });
+          return;
+          }
+       }
+  
+     });
+
   socket.emit('connection_confirmation');
   
   //creating new player
   socket.on('add_new_player', function(data) 
     {
        var new_player = new Player(data.login)  
-       players.push(new_player);
+       players.push(new_player, socket);
 
        //update number of players in all connected sockets
        io.sockets.emit('update_players_list', { players: players });
@@ -69,20 +84,6 @@ io.sockets.on('connection', function (socket) {
        //init room table for new player
        socket.emit('update_room_table', { rooms: rooms });
    });
-   
-  //remove player after disconnection 
-  socket.on('remove_player', function(data)
-     { 
-      for(var i=0;i<players.length;i=i+1)
-         {
-         if(players[i].name === data.login)
-            {
-            players.splice(i,1);
-            io.sockets.emit('update_players_list', { players: players });
-            return;
-            }
-         }
-     });
    
   //listen for new room creation request
   socket.on('create_new_room',function(data)
