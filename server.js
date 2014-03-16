@@ -60,7 +60,7 @@ io.sockets.on('connection', function (socket) {
      {
      for(var i=0;i<players.length;i=i+1)
         {
-        if(players.socket_id === socket.id)
+        if(players[i].socket_id === socket.id)
            {
            players.splice(i,1);
            io.sockets.emit('update_players_list', { players: players });
@@ -68,6 +68,7 @@ io.sockets.on('connection', function (socket) {
            }
         } 
      });
+
 
   socket.emit('connection_confirmation');
   
