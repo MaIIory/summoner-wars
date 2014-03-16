@@ -70,6 +70,20 @@ io.sockets.on('connection', function (socket) {
        socket.emit('update_room_table', { rooms: rooms });
    });
    
+  //remove player after disconnection 
+  socket.emit('remove_player', function(data)
+     { 
+      for(var i=0;i<players.length;i=i+1)
+         {
+         if(players[i].name === data.login)
+            {
+            players.splice(i,1);
+            io.sockets.emit('update_players_list', { players: players });
+            return;
+            }
+         }
+     });
+   
   //listen for new room creation request
   socket.on('create_new_room',function(data)
      {
