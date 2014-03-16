@@ -71,7 +71,7 @@ io.sockets.on('connection', function (socket) {
    });
    
   //remove player after disconnection 
-  socket.emit('remove_player', function(data)
+  socket.on('remove_player', function(data)
      { 
       for(var i=0;i<players.length;i=i+1)
          {

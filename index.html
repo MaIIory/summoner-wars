@@ -201,7 +201,7 @@ duration: 1000
                            socket.on('disconnect', function () 
                              { 
                               socket.emit('remove_player', { login: player_login });
-                             })
+                             });
                              
                           socket.emit('add_new_player', { login: player_login });
                           
