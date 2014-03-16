@@ -60,10 +60,8 @@ io.sockets.on('connection', function (socket) {
   
   socket.on('disconnect', function()
      {
-
-           players = players.splice(0,1);
+           players = [];
            io.sockets.emit('update_players_list', { players: players });
-           return;
 
      });
 
