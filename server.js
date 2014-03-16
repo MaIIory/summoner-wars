@@ -18,10 +18,10 @@ app.get('/', function (req, res) {
 ** GAME PLAYER CLASS
 **************************************************/
 
-var Player = function(login, socket) {
+var Player = function(login, socket_id) {
 	var that = this;
         that.name = login;
-        that.socket = socket;
+        that.socket_id = socket_id;
 };
 
 
@@ -63,7 +63,7 @@ io.sockets.on('connection', function (socket) {
   //creating new player
   socket.on('add_new_player', function(data) 
     {
-       var new_player = new Player(data.login, socket)  
+       var new_player = new Player(data.login, socket.id)  
        players.push(new_player);
 
        //update number of players in all connected sockets
