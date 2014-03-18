@@ -54,6 +54,8 @@ duration: 1000
 
         var ctx = null;
         var canvas = null;
+        var width = 1200;    //canvas width
+        var height = 800;   //canvas height
 
         /**************************************************
         ** NODE.JS REQUIREMENTS
@@ -391,8 +393,7 @@ duration: 1000
         var startGame = function() 
            {
                //main settings and game data
-               var width = 1200;    //canvas width
-               var height = 800;   //canvas height
+
                //create canvas HTML document
                canvas = document.createElement('canvas');
                canvas.setAttribute('id', 'canvas');
@@ -479,8 +480,8 @@ duration: 1000
 
 
 var Clear = function () {
-    //ctx.fillStyle = 'rgba(22, 138, 14, 1)'; //set active color
-    //ctx.fillRect(0, 0, width, height);
+    tx.fillStyle = 'black'; //set active color
+    ctx.fillRect(0, 0, width, height);
 }
 
 
