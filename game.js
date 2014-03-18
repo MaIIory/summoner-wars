@@ -30,11 +30,11 @@ var initGame = function ()
 
    canvas.width = width;
    canvas.height = height;
-   }
-
-// requestAnim
-window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame ||
+   
+   
+   // requestAnim
+    window.requestAnimFrame = (function () {
+        return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             window.oRequestAnimationFrame ||
@@ -42,7 +42,11 @@ window.requestAnimFrame = (function () {
             function (/* function */ callback, /* DOMElement */ element) {
                 window.setTimeout(callback, 1000 / 50);
             };
-})();
+    })();
+   
+   }
+
+
 
 
 

@@ -31,7 +31,7 @@ duration: 1000
 
 });
 </script>
-<script src="game.js"></script>
+
 </head>
 
   <body id='main_body'>
@@ -46,7 +46,8 @@ duration: 1000
 	<div id='page_content'>
 	
 	</div>
-
+ 
+      <script src="game.js"></script>
       <script type="text/javascript">
       
         //GLOBAL TODO
@@ -391,6 +392,10 @@ duration: 1000
                var canvas = document.createElement('canvas');
                canvas.setAttribute('id', 'canvas');
                page_content.appendChild(canvas)
+               
+               
+               
+               
                
                //call of the game loop
                initGame(); // !! EXTERNAL FUNCTION
