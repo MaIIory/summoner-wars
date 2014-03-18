@@ -407,7 +407,7 @@ duration: 1000
                
                
                //call of the game loop
-               //gameLoop(); // !! EXTERNAL FUNCTION
+               gameLoop(); // !! EXTERNAL FUNCTION
            }
         
         /**************************************************
@@ -441,8 +441,7 @@ duration: 1000
 
 	   }
 
-	initActions();
-    setEventHandlers();
+
     
     
 
@@ -491,10 +490,10 @@ var gameLoop = function () {
     //ctx.translate(0, 0);
     Clear();
 
-    ctx.fillStyle = 'Black';
+    //ctx.fillStyle = 'Black';
     //ctx.unfont = '20pt Verdana';
-    ctx.textAlign = "center";
-    ctx.fillText("Game start", width / 2, 200);
+    //ctx.textAlign = "center";
+    //ctx.fillText("Game start", width / 2, 200);
     //ctx.fillText("mouse Y = " + ~~mouse_y, width / 2, 230);
     //ctx.fillText(Math.atan2(mouse_y - height / 2, mouse_x - width / 2), width / 2, 270);
     //ctx.fillText(bullets.length, width / 2, 300);
@@ -511,7 +510,8 @@ var gameLoop = function () {
 //GameLoop();
 
 
-
+	initActions();
+    setEventHandlers();
 
 
      </script>
