@@ -52,6 +52,9 @@ duration: 1000
         //GLOBAL TODO
         //TODO wyciagnij skrypt i wyodrebij do osobnego pliku 
 
+        var ctx = null;
+        var canvas = null;
+
         /**************************************************
         ** NODE.JS REQUIREMENTS
         **************************************************/
@@ -387,12 +390,17 @@ duration: 1000
             
         var startGame = function() 
            {
+               //main settings and game data
+               var width = 1200;    //canvas width
+               var height = 800;   //canvas height
                //create canvas HTML document
-               var canvas = document.createElement('canvas');
+               canvas = document.createElement('canvas');
                canvas.setAttribute('id', 'canvas');
+               canvas.width = width;
+               canvas.height = height;
                page_content.appendChild(canvas)
-               
-               
+               ctx = canvas.getContext('2d');
+
                //require('./game').initGame(); // do not include the dot js
 
                //Mod.initGame(); // you then call it like this
@@ -400,7 +408,7 @@ duration: 1000
                
                //call of the game loop
                initGame(); // !! EXTERNAL FUNCTION
-               //gameLoop(); // !! EXTERNAL FUNCTION
+               gameLoop(); // !! EXTERNAL FUNCTION
            }
         
         /**************************************************
@@ -446,8 +454,6 @@ duration: 1000
 /*********************VARIABLES DECLARATION********************/
 //-----------------------------------------------------------//
 
-var ctx = null;
-
 
 
 /*************************DEFINE EVENTS*************************/
@@ -459,27 +465,7 @@ var ctx = null;
 
 
 /***************************FUNCTIONS**************************/
-//-----------------------------------------------------------//
-
-var initGame = function ()
-   {
-   
-   
-   //main settings and game data
-   var width = 1200;    //canvas width
-   var height = 800;   //canvas height
-   var canvas = document.getElementById('canvas');
-   ctx = canvas.getContext('2d');
-
-   canvas.width = width;
-   canvas.height = height;
-   
-   
-
-    
-   gameLoop();
-   }
-
+//-----------------------------------------------------------/
 
     //requestAnim
     window.requestAnimFrame = (function () {
