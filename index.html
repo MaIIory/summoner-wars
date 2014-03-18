@@ -56,6 +56,7 @@ duration: 1000
         var canvas = null;
         var width = 1200;    //canvas width
         var height = 800;   //canvas height
+        var background = null;
 
         /**************************************************
         ** NODE.JS REQUIREMENTS
@@ -401,23 +402,7 @@ duration: 1000
                canvas.height = height;
                page_content.appendChild(canvas)
                ctx = canvas.getContext('2d');
-
-            var background = new (function () {
-    
-            //Set context
-            var that = this;
-
-            that.image = new Image();
-            that.image.src = "/img/background.jpg";
-    
-            that.draw = function () {
-            //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-            ctx.drawImage(that.image, 0, 0, 1024, 768, 0, 0, 1024, 768);
-                }
-    
-
-            })()
-               
+               background = new Background();
                
                //call of the game loop
                gameLoop(); // !! EXTERNAL FUNCTION
@@ -474,7 +459,19 @@ duration: 1000
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
+var Background = function () {
 
+            //Set context
+            var that = this;
+
+            that.image = new Image();
+            that.image.src = "/img/background.jpg";
+    
+            that.draw = function () {
+            //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+            ctx.drawImage(that.image, 0, 0, 1024, 768, 0, 0, 1024, 768);
+                }
+}
 
 
 
@@ -505,6 +502,7 @@ var Clear = function () {
 //-----------------------------------------------------------//
 var gameLoop = function () {
     //ctx.translate(0, 0);
+    
     Clear();
 
     //ctx.fillStyle = 'Black';
