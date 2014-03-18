@@ -462,6 +462,23 @@ duration: 1000
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
+var background = new (function () {
+    
+    //Set context
+    var that = this;
+
+    that.image = new Image();
+    that.image.src = "/img/background.jpg";
+    
+    that.draw = function () {
+    //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+    ctx.drawImage(that.image, 0, 0, 1024, 768, 0, 0, 1024, 768);
+    }
+    
+
+})()
+
+
 
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
@@ -480,8 +497,9 @@ duration: 1000
 
 
 var Clear = function () {
-    ctx.fillStyle = 'black'; //set active color
-    ctx.fillRect(0, 0, width, height);
+    //ctx.fillStyle = 'black'; //set active color
+    //ctx.fillRect(0, 0, width, height);
+    background.draw();
 }
 
 
