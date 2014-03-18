@@ -46,7 +46,7 @@ duration: 1000
 	<div id='page_content'>
 	
 	</div>
- 
+ <script language="javascript" src="./game.js"></script>
       <script type="text/javascript">
       
         //GLOBAL TODO
@@ -393,13 +393,13 @@ duration: 1000
                page_content.appendChild(canvas)
                
                
-               require('./game').initGame(); // do not include the dot js
+               //require('./game').initGame(); // do not include the dot js
 
                //Mod.initGame(); // you then call it like this
                
                
                //call of the game loop
-               //initGame(); // !! EXTERNAL FUNCTION
+               initGame(); // !! EXTERNAL FUNCTION
                //gameLoop(); // !! EXTERNAL FUNCTION
            }
         
