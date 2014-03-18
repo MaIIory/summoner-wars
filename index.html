@@ -56,8 +56,7 @@ duration: 1000
         var canvas = null;
         var width = 1200;    //canvas width
         var height = 800;   //canvas height
-        var background_image = new Image();
-        background_image.src = "./img/button1.png";
+
 
         /**************************************************
         ** NODE.JS REQUIREMENTS
@@ -476,6 +475,9 @@ duration: 1000
     })();
 
 var cnt = 0;
+var background_image = new Image();
+background_image.src = "/img/button1.png";
+
 
 var Clear = function () {
     ctx.fillStyle = 'black'; //set active color
