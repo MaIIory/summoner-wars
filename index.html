@@ -57,6 +57,8 @@ duration: 1000
         var width = 1200;    //canvas width
         var height = 800;   //canvas height
         var background = null;
+        var background_image = new Image();
+        background_image.src = "/img/background.jpg";
 
         /**************************************************
         ** NODE.JS REQUIREMENTS
@@ -464,12 +466,11 @@ var Background = function () {
             //Set context
             var that = this;
 
-            that.image = new Image();
-            that.image.src = "/img/background.jpg";
+
     
             that.draw = function () {
             //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-            ctx.drawImage(that.image, 0, 0, 1024, 768, 0, 0, 1024, 768);
+            
                 }
 }
 
@@ -494,11 +495,12 @@ var cnt = 0;
 
 var Clear = function () {
     ctx.fillStyle = 'black'; //set active color
+    ctx.drawImage(background_image, 0, 0, 1024, 768, 0, 0, 1024, 768);
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color
     ctx.fillText(cnt, width / 2, 200);
     cnt = cnt + 1;
-    //background.draw();
+    
 }
 
 
@@ -508,8 +510,6 @@ var gameLoop = function () {
     //ctx.translate(0, 0);
     
     Clear();
-    var back = new Background();
-    back.draw();
     //ctx.fillStyle = 'Black';
     //ctx.unfont = '20pt Verdana';
     //ctx.textAlign = "center";
