@@ -402,9 +402,21 @@ duration: 1000
                page_content.appendChild(canvas)
                ctx = canvas.getContext('2d');
 
-               //require('./game').initGame(); // do not include the dot js
+            var background = new (function () {
+    
+            //Set context
+            var that = this;
 
-               //Mod.initGame(); // you then call it like this
+            that.image = new Image();
+            that.image.src = "/img/background.jpg";
+    
+            that.draw = function () {
+            //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+            ctx.drawImage(that.image, 0, 0, 1024, 768, 0, 0, 1024, 768);
+                }
+    
+
+            })()
                
                
                //call of the game loop
@@ -462,21 +474,7 @@ duration: 1000
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
-var background = new (function () {
-    
-    //Set context
-    var that = this;
 
-    that.image = new Image();
-    that.image.src = "/img/background.jpg";
-    
-    that.draw = function () {
-    //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-    //ctx.drawImage(that.image, 0, 0, 1024, 768, 0, 0, 1024, 768);
-    }
-    
-
-})()
 
 
 
