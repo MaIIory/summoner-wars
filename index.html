@@ -31,7 +31,7 @@ duration: 1000
 
 });
 </script>
-	
+<script src="game.js"></script>
 </head>
 
   <body id='main_body'>
@@ -71,18 +71,15 @@ duration: 1000
         ** APPLICATION FUNCTIONS
         **************************************************/
 
-        
-        
-        function WindowCloseHanlder()
-        {
-        socket.disconnect();
-        }
-
 
         var initActions = function()
             {
                rebuildStatusSection();
-               
+            }
+            
+        function WindowCloseHanlder()
+            {
+               socket.disconnect();
             }
             
         var rebuildBriefingSection = function()
@@ -387,6 +384,18 @@ duration: 1000
         var myFunction = function() {
             $( "#dialog" ).dialog( "open" );
             }
+            
+        var startGame = function() 
+           {
+               //create canvas HTML document
+               var canvas = document.createElement('canvas');
+               canvas.setAttribute('id', 'canvas');
+               page_content.appendChild(canvas)
+               
+               //call of the game loop
+               initGame(); // !! EXTERNAL FUNCTION
+               gameLoop(); // !! EXTERNAL FUNCTION
+           }
         
         /**************************************************
         ** EVENTS HANDLING
@@ -411,9 +420,8 @@ duration: 1000
                          
                 socket.on('start_game', function()
                            {
-                           //$("#dialog-text").text("starting game");
-                           $('#dialog').dialog('open');
-                           //myFunction();
+                           //Nie kasuj tego bo dziala $('#dialog').dialog('open');
+                           startGame();
                            });
                            
            });

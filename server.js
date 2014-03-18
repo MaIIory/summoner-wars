@@ -58,6 +58,8 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('disconnect', function()
      {
+     
+     //TODO remove from rooms
      for(var i=0;i<players.length;i=i+1)
         {
         if(players[i].socket_id === socket.id)
