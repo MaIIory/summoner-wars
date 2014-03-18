@@ -476,13 +476,13 @@ duration: 1000
 
 var cnt = 0;
 
-
+    var background_image = new Image();
+    background_image.src = "/img/button1.png";
 
 var Clear = function () {
     ctx.fillStyle = 'black'; //set active color
-    var background_image = new Image();
-    background_image.src = "/img/button1.png";
-    ctx.drawImage(background_image, 0, 0, 300, 200, 200, 200, 300, 200);
+
+    
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color
     ctx.fillText(cnt, width / 2, 200);
@@ -506,7 +506,7 @@ var gameLoop = function () {
     //ctx.fillText(bullets.length, width / 2, 300);
     //ctx.fillText(RadToDegree(Math.atan2(mouse_y - height / 2, mouse_x - width / 2)), width / 2, 330);
     //ctx.fillText(~~distance, width / 2, 200);
-
+    ctx.drawImage(background_image, 0, 0, 300, 200, 200, 200, 300, 200);
 
     requestAnimFrame(gameLoop);
 }
