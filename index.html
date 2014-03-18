@@ -490,11 +490,14 @@ var Background = function () {
             };
     })();
 
+var cnt = 0;
 
 var Clear = function () {
-    //ctx.fillStyle = 'black'; //set active color
-    //ctx.fillRect(0, 0, width, height);
-    background.draw();
+    ctx.fillStyle = 'black'; //set active color
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = 'white'; //set active color
+    ctx.fillText(cnt, width / 2, 200);
+    //background.draw();
 }
 
 
@@ -503,7 +506,7 @@ var Clear = function () {
 var gameLoop = function () {
     //ctx.translate(0, 0);
     
-    //Clear();
+    Clear();
     var back = new Background();
     back.draw();
     //ctx.fillStyle = 'Black';
