@@ -69,7 +69,7 @@ var gameLoop = function () {
     //ctx.fillText(~~distance, width / 2, 200);
 
 
-    requestAnimFrame(GameLoop);
+    requestAnimFrame(gameLoop);
 }
 
 //CALL OF GAME LOOP
