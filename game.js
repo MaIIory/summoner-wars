@@ -22,6 +22,8 @@ var ctx = null;
 
 var initGame = function ()
    {
+   /*
+   
    //main settings and game data
    var width = 1200;    //canvas width
    var height = 800;   //canvas height
@@ -38,11 +40,11 @@ var initGame = function ()
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (/* function */ callback, /* DOMElement */ element) {
-                window.setTimeout(callback, 1000 / 50);
-            };
-    })();
+            window.msRequestAnimationFrame ||                                */
+   //         function (/* function */ callback, /* DOMElement */ element) {
+   //             window.setTimeout(callback, 1000 / 50);
+   //         };
+   // })();
    
    }
 
