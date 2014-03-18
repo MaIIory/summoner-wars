@@ -475,12 +475,13 @@ duration: 1000
     })();
 
 var cnt = 0;
-var background_image = new Image();
-background_image.src = "/img/button1.png";
+
 
 
 var Clear = function () {
     ctx.fillStyle = 'black'; //set active color
+    var background_image = new Image();
+    background_image.src = "/img/button1.png";
     ctx.drawImage(background_image, 0, 0, 300, 200, 200, 200, 300, 200);
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color
