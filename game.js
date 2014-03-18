@@ -45,7 +45,7 @@ var initGame = function ()
    //             window.setTimeout(callback, 1000 / 50);
    //         };
    // })();
-   
+   gameLoop();
    }
 
 
@@ -82,3 +82,5 @@ var gameLoop = function () {
 //---------------//
 
 //GameLoop();
+
+exports.initGame = initGame; //public function

@@ -394,11 +394,12 @@ duration: 1000
                page_content.appendChild(canvas)
                
                
-               
+               var Mod = require('/game') // do not include the dot js
+               Mod.initGame(); // you then call it like this
                
                
                //call of the game loop
-               initGame(); // !! EXTERNAL FUNCTION
+               //initGame(); // !! EXTERNAL FUNCTION
                //gameLoop(); // !! EXTERNAL FUNCTION
            }
         
