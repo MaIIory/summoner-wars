@@ -1,15 +1,20 @@
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
+//var fs = require('fs') ,express = require('express'),
+//app = express.createServer();
 
-var app = require('express')();
+//app.use(express.static(__dirname + "/public"));
+
+var express = require('express');
+var app = express.createServer();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var port = process.env.PORT || 8000;
 
 server.listen(port);
 
-app.use(server.static(__dirname + "/"));
+app.use(express.static(__dirname + "/"));
 
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
