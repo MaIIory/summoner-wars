@@ -405,9 +405,9 @@ duration: 1000
                
                var fileref=document.createElement('script')
                 fileref.setAttribute("type","text/javascript")
-                fileref.setAttribute("src", "/game.js")
+                fileref.setAttribute("src", "game.js")
                 //document.getElementById('page_content').appendChild(fileref)
-                document.getElementsByTagName('head')[0].appendChild(script);
+                document.getElementsByTagName('head')[0].appendChild(fileref);
                //call of the game loop
                gameLoop(); // !! EXTERNAL FUNCTION
            }
@@ -492,7 +492,7 @@ var cnt = 0;
 var gameLoop = function () {
     //ctx.translate(0, 0);
     
-    Clear();
+    //Clear();
     //ctx.fillStyle = 'Black';
     //ctx.unfont = '20pt Verdana';
     //ctx.textAlign = "center";
