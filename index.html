@@ -52,10 +52,7 @@ duration: 1000
         //GLOBAL TODO
         //TODO wyciagnij skrypt i wyodrebij do osobnego pliku 
 
-        var ctx = null;
-        var canvas = null;
-        var width = 1200;    //canvas width
-        var height = 800;   //canvas height
+
 
 
         /**************************************************
@@ -394,7 +391,10 @@ duration: 1000
         var startGame = function() 
            {
                //main settings and game data
-
+                var ctx = null;
+                var canvas = null;
+                var width = 1200;    //canvas width
+                var height = 800;   //canvas height
                //create canvas HTML document
                canvas = document.createElement('canvas');
                canvas.setAttribute('id', 'canvas');
