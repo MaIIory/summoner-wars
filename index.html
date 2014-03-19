@@ -405,8 +405,8 @@ duration: 1000
                
                var fileref=document.createElement('script')
                 fileref.setAttribute("type","text/javascript")
-                fileref.setAttribute("src", "game.js")
-                document.getElementsByTagName("page_content").appendChild(fileref)
+                fileref.setAttribute("src", "/game.js")
+                document.getElementById('page_content').appendChild(fileref)
                
                //call of the game loop
                gameLoop(); // !! EXTERNAL FUNCTION
