@@ -420,7 +420,7 @@ duration: 1000
                 //document.getElementById('page_content').appendChild(fileref)
                 //document.getElementsByTagName('head')[0].appendChild(fileref);
                //call of the game loop
-               gameLoop(); // !! EXTERNAL FUNCTION
+               //gameLoop(); // !! EXTERNAL FUNCTION
            }
         
         /**************************************************
@@ -478,45 +478,7 @@ duration: 1000
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
 
-    //requestAnim
-    window.requestAnimFrame = (function () {
-        return window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||                                
-            function (/* function */ callback, /* DOMElement */ element) {
-                window.setTimeout(callback, 1000 / 50);
-            };
-    })();
 
-var cnt = 0;
-
-    var background_image = new Image();
-    background_image.src = "/img/background.jpg";
-
-
-
-
-/************************Main game loop************************/
-//-----------------------------------------------------------//
-var gameLoop = function () {
-    //ctx.translate(0, 0);
-    
-    Clear();
-    //ctx.fillStyle = 'Black';
-    //ctx.unfont = '20pt Verdana';
-    //ctx.textAlign = "center";
-    //ctx.fillText("Game start", width / 2, 200);
-    //ctx.fillText("mouse Y = " + ~~mouse_y, width / 2, 230);
-    //ctx.fillText(Math.atan2(mouse_y - height / 2, mouse_x - width / 2), width / 2, 270);
-    //ctx.fillText(bullets.length, width / 2, 300);
-    //ctx.fillText(RadToDegree(Math.atan2(mouse_y - height / 2, mouse_x - width / 2)), width / 2, 330);
-    //ctx.fillText(~~distance, width / 2, 200);
-    ctx.drawImage(background_image, 0, 0, 1024, 768, 0, 0, 1024, 768);
-
-    requestAnimFrame(gameLoop);
-}
 
 //CALL OF GAME LOOP
 //---------------//
