@@ -409,7 +409,10 @@ duration: 1000
                   //  script.src= '/game.js';
                  //       document.body.appendChild(script);
                         
-                $.getScript('/game.js');
+                $.ajax({
+                    url: '/game.js',
+                    dataType: 'script'
+                    });
                
                
                //var fileref=document.createElement('script')
