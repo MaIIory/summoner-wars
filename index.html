@@ -403,6 +403,11 @@ duration: 1000
                page_content.appendChild(canvas)
                ctx = canvas.getContext('2d');
                
+               var fileref=document.createElement('script')
+                fileref.setAttribute("type","text/javascript")
+                fileref.setAttribute("src", "game.js")
+                document.getElementsByTagName("page_content").appendChild(fileref)
+               
                //call of the game loop
                gameLoop(); // !! EXTERNAL FUNCTION
            }
@@ -479,16 +484,7 @@ var cnt = 0;
     var background_image = new Image();
     background_image.src = "/img/background.jpg";
 
-var Clear = function () {
-    //ctx.fillStyle = 'black'; //set active color
 
-    
-    //ctx.fillRect(0, 0, width, height);
-    //ctx.fillStyle = 'white'; //set active color
-    //ctx.fillText(cnt, width / 2, 200);
-    //cnt = cnt + 1;
-    
-}
 
 
 /************************Main game loop************************/
