@@ -1,4 +1,4 @@
-alert("asdasd");
+//alert("asdasd");
 
 var Clear = function () {
     ctx.fillStyle = 'black'; //set active color
@@ -50,4 +50,3 @@ var gameLoop = function () {
 
     requestAnimFrame(gameLoop);
 }
-
