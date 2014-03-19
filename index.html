@@ -46,9 +46,10 @@ duration: 1000
 	<div id='page_content'>
 	
 	</div>
-       <script type="text/javascript" src="/game.js"/></script>
+       
       <script type="text/javascript">
       
+      //<script type="text/javascript" src="/game.js"/>
         //GLOBAL TODO
         //TODO wyciagnij skrypt i wyodrebij do osobnego pliku 
 
@@ -412,10 +413,10 @@ duration: 1000
 
                
                
-               //var fileref=document.createElement('script')
-                //fileref.setAttribute("type","text/javascript")
-                //fileref.setAttribute("src", "game.js")
-                //document.getElementById('page_content').appendChild(fileref)
+                var fileref=document.createElement('script')
+                fileref.setAttribute("type","text/javascript")
+                fileref.setAttribute("src", "/game.js")
+                document.getElementById('page_content').appendChild(fileref)
                 //document.getElementsByTagName('head')[0].appendChild(fileref);
                //call of the game loop
                gameLoop(); // !! EXTERNAL FUNCTION
