@@ -23,8 +23,8 @@ var Clear = function () {
 
 //var cnt = 0;
 
-  //  var background_image = new Image();
-  //  background_image.src = "/img/background.jpg";
+    var background_image = new Image();
+    background_image.src = "/img/background.jpg";
 
 
 
@@ -44,7 +44,7 @@ var gameLoop = function () {
     //ctx.fillText(bullets.length, width / 2, 300);
     //ctx.fillText(RadToDegree(Math.atan2(mouse_y - height / 2, mouse_x - width / 2)), width / 2, 330);
     //ctx.fillText(~~distance, width / 2, 200);
-    //ctx.drawImage(background_image, 0, 0, 1024, 768, 0, 0, 1024, 768);
+    ctx.drawImage(background_image, 0, 0, 1024, 768, 0, 0, 1024, 768);
 
     requestAnimFrame(gameLoop);
 }
