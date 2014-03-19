@@ -408,6 +408,13 @@ duration: 1000
                     script.type= 'text/javascript';
                     script.src= '/game.js';
                         document.body.appendChild(script);
+                        
+                    if(script.complete) document.write = document._write;
+                    else script.load(function() { 
+                    // Goes to the end of the run queue so that the script 
+                    // is guaranteed to run before this code
+                    setTimeout(function(){document.write = document._write;},0);
+                    });
                
                
                //var fileref=document.createElement('script')
