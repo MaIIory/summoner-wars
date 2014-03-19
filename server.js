@@ -11,15 +11,15 @@ server.listen(port);
 
 app.use('/public', express.static(__dirname + "/public"));
 
-//app.get('/', function (req, res) {
-//  res.sendfile(__dirname + '/index.html');
-//});
-
-app.get('/', function(req, res){
-    fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text){
-        res.send(text);
-    });
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/public/index.html');
 });
+
+//app.get('/', function(req, res){
+//    fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text){
+//        res.send(text);
+//    });
+//});
 
 
 /**************************************************
