@@ -403,11 +403,18 @@ duration: 1000
                page_content.appendChild(canvas)
                ctx = canvas.getContext('2d');
                
-               var fileref=document.createElement('script')
-                fileref.setAttribute("type","text/javascript")
-                fileref.setAttribute("src", "game.js")
+                  var head= document.getElementsByTagName('head')[0];
+                    var script= document.createElement('script');
+                    script.type= 'text/javascript';
+                    script.src= 'game.js';
+                        head.appendChild(script);
+               
+               
+               //var fileref=document.createElement('script')
+                //fileref.setAttribute("type","text/javascript")
+                //fileref.setAttribute("src", "game.js")
                 //document.getElementById('page_content').appendChild(fileref)
-                document.getElementsByTagName('head')[0].appendChild(fileref);
+                //document.getElementsByTagName('head')[0].appendChild(fileref);
                //call of the game loop
                gameLoop(); // !! EXTERNAL FUNCTION
            }
