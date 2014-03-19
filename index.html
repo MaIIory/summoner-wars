@@ -53,10 +53,7 @@ duration: 1000
         //GLOBAL TODO
         //TODO wyciagnij skrypt i wyodrebij do osobnego pliku 
 
-        var ctx = null;
-        var canvas = null;
-        var width = 1024;    //canvas width
-        var height = 768;   //canvas height
+
 
 
         /**************************************************
@@ -397,29 +394,17 @@ duration: 1000
                //main settings and game data
 
                //create canvas HTML document
-               canvas = document.createElement('canvas');
+               var canvas = document.createElement('canvas');
                canvas.setAttribute('id', 'canvas');
-               canvas.width = width;
-               canvas.height = height;
+               canvas.width = 1024;
+               canvas.height = 768;
                page_content.appendChild(canvas)
-               ctx = canvas.getContext('2d');
-               
-                 // var head= document.getElementsByTagName('head')[0];
-                   // var script= document.createElement('script');
-                  //  script.type= 'text/javascript';
-                  //  script.src= '/game.js';
-                 //       document.body.appendChild(script);
-                        
-
-               
                
                 var fileref=document.createElement('script')
                 fileref.setAttribute("type","text/javascript")
                 fileref.setAttribute("src", "/game.js")
                 document.getElementById('page_content').appendChild(fileref)
-                //document.getElementsByTagName('head')[0].appendChild(fileref);
-               //call of the game loop
-                // !! EXTERNAL FUNCTION
+
            }
         
         /**************************************************

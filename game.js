@@ -1,13 +1,17 @@
 //alert("asdasd");
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+var width = 1024;    //canvas width
+var height = 768;   //canvas height
 
-var Clear = function () {
+var Clear = function () 
+   {
     ctx.fillStyle = 'black'; //set active color 
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color
     //ctx.fillText(cnt, width / 2, 200);
-    //cnt = cnt + 1;
-    
-}
+    //cnt = cnt + 1; 
+   }
 
     //requestAnim
     window.requestAnimFrame = (function () {
@@ -49,5 +53,5 @@ var gameLoop = function () {
     requestAnimFrame(gameLoop);
 }
 
-
+initGame();
 gameLoop();
