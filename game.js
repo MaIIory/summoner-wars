@@ -54,8 +54,8 @@ var menu = new (function () {
 
     //logo settings
     that.logo_src_y = 240; //logo source y coordinate (x = 0)
-    that.logo_width = 238; //logo width
-    that.logo_height = 500; //logo height
+    that.logo_width = 600; //logo width
+    that.logo_height = 238; //logo height
 
     that.b_width = 300; //button width
     that.b_height = 60;  //button height
@@ -100,17 +100,8 @@ var menu = new (function () {
         }
 
         //draw logo
-        for (var i = 0; i < that.buttons.length; i++) {
-            ctx.drawImage(that.image,
-                0,
-                that.logo_src_y,
-                that.logo_width,
-                that.logo_height,
-                (width / 2) - (that.logo_width / 2),
-                50,
-                that.logo_width,
-                that.logo_height);
-        }
+        ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
+
     }
 
 })()
