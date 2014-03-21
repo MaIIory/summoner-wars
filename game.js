@@ -15,9 +15,10 @@ var state = 0; /* 0 - menu
                   1 - briefing (faction selection)
                   2 - game in progress */
 
-//mouse coordinates
+//mouse settings
 var mouse_x = 0;
 var mouse_y = 0;
+var mouse_button_down = false;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
@@ -40,6 +41,14 @@ canvas.addEventListener('mousemove', function (evt) {
     mouse_y = evt.clientY - rect.top
 }, false);
 
+canvas.addEventListener('mousedown', function (evt) {
+    mouse_button_down = true;
+}, false);
+
+canvas.addEventListener('mouseup', function (evt) {
+    mouse_button_down = false;
+}, false);
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -57,6 +66,7 @@ var menu = new (function () {
     that.logo_width = 600; //logo width
     that.logo_height = 250; //logo height
 
+    //button settings
     that.b_width = 300; //button width
     that.b_height = 60;  //button height
 
@@ -80,8 +90,6 @@ var menu = new (function () {
         }
     }
 
-
-
     that.draw = function () {
 
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
@@ -103,6 +111,22 @@ var menu = new (function () {
         ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
 
     }
+
+    that.checkAction = function () {
+        
+        if (buttons[0] && mouse_button_down)
+            state = 1;
+        else if (buttons[1] && mouse_button_down)
+            null; //TODO draw options
+        else if (buttons[2] && mouse_button_down)
+            null; //TODO draw credits
+        else if (buttons[3] && mouse_button_down)
+            null; //TODO exit game
+
+    }
+
+    //TODO draw options
+    //TODO draw credits
 
 })()
 
@@ -131,6 +155,9 @@ var Clear = function () {
     //ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color    
     ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
+    ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
+    ctx.fillText('Game state: ' + state, 50, 70);
+
 }
 
 /************************Main game loop************************/
@@ -139,8 +166,17 @@ var gameLoop = function () {
 
 
     Clear();
-    menu.checkHover();
-    menu.draw();
+
+    //main menu
+    if (state === 0) {
+        menu.checkHover();
+        menu.draw();
+    }
+        //briefing (faction selection)
+    else if (state === 1) {
+
+    }
+
 
     requestAnimFrame(gameLoop);
 }
