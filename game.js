@@ -112,7 +112,7 @@ var gameLoop = function () {
 
     Clear();
 
-
+    menu.draw();
 
     requestAnimFrame(gameLoop);
 }
