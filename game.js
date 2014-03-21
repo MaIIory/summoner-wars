@@ -113,7 +113,7 @@ var menu = new (function () {
     }
 
     that.checkAction = function () {
-        
+
         if (buttons[0] && mouse_button_down)
             state = 1;
         else if (buttons[1] && mouse_button_down)
@@ -167,14 +167,16 @@ var gameLoop = function () {
 
     Clear();
 
-    //main menu
+
     if (state === 0) {
+        /* main menu */
         menu.checkHover();
         menu.draw();
+        menu.checkAction();
     }
-        //briefing (faction selection)
-    else if (state === 1) {
 
+    else if (state === 1) {
+        /* briefing (faction selection) */
     }
 
 
