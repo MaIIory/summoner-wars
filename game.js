@@ -52,8 +52,10 @@ var menu = new (function () {
     that.image = new Image(); //background image
     that.image.src = "/img/main_menu.png";
 
-    that.logo_src_x = 0; //logo source x coordinate
-    that.logo_src_y = 0; //logo source y coordinate
+    //logo settings
+    that.logo_src_y = 240; //logo source y coordinate (x = 0)
+    that.logo_width = 238; //logo width
+    that.logo_height = 500; //logo height
 
     that.b_width = 300; //button width
     that.b_height = 60;  //button height
@@ -70,10 +72,10 @@ var menu = new (function () {
                 (mouse_y < (height / 2) + ((i * (that.b_height + 20)) + that.b_height)) &&
                 (mouse_x > (width / 2) - (that.b_width / 2)) &&
                 (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
-                that.buttons[i] = 1;
+                that.buttons[i] = 1; //mouse over 
             }
             else {
-                that.buttons[i] = 0;
+                that.buttons[i] = 0; //mouse out 
             }
         }
     }
@@ -82,7 +84,6 @@ var menu = new (function () {
 
     that.draw = function () {
 
-        //draw background
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
 
         //draw buttons
@@ -96,6 +97,19 @@ var menu = new (function () {
                 (height / 2) + (i * (that.b_height + 20)),
                 that.b_width,
                 that.b_height);
+        }
+
+        //draw logo
+        for (var i = 0; i < that.buttons.length; i++) {
+            ctx.drawImage(that.image,
+                0,
+                that.logo_src_y,
+                that.logo_width,
+                that.logo_height,
+                (width / 2) - (that.logo_width / 2),
+                50,
+                that.logo_width,
+                that.logo_height);
         }
     }
 
