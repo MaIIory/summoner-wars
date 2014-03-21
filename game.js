@@ -64,22 +64,21 @@ var menu = new (function () {
                                    1 - mouse over */
 
     that.checkHover = function () {
-        //TODO set true if mouse is on button
-        /*
+
         for (var i = 0; i < that.buttons.length; i++) {
-            if ((that.buttons[i][0] + that.b_width > mouse_x) &&
-                (that.buttons[i][0] < mouse_x) &&
-                (that.buttons[i][1] + that.b_height > mouse_y) &&
-                (that.buttons[i][1] < mouse_y)) {
-                that.buttons[i][2] = 1;
-                if (mouse_button_down)
-                    that.user_choice = i + 1; //adding one is necessary because 0 means no choice
+            if ((mouse_y > (height / 2) + (i * (that.b_height + 20))) &&
+                (mouse_y < (height / 2) + (i * (that.b_height + 20 + that.b_height))) &&
+                (mouse_x > (width / 2) - (that.b_width / 2)) &&
+                (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
+                that.buttons[i] = 1;
             }
-            else
-                that.buttons[i][2] = 0;
+            else {
+                that.buttons[i] = 0;
+            }
         }
-        */
     }
+
+
 
     that.draw = function () {
 
@@ -101,9 +100,22 @@ var menu = new (function () {
     }
 
 })()
+
+//TODO moze zamiast globalnie tworzyc menu,
+//stworzyc instancje tej klasy wtedy nie bedzie przechowywana caly czas
+
+//hmmm a moze jedna klasa a tylko dwie instancje? kuszace:)
+// ktorym jest graczem player mozna zapisac do zmiennej po prostu
+
 //Player
+//state
+//
 
 //Opponent
+//  state
+//  faction
+//  img
+
 
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
@@ -113,7 +125,7 @@ var Clear = function () {
     //ctx.fillStyle = 'black'; //set active color 
     //ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color    
-    ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' +mouse_y , 50, 50);
+    ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
 }
 
 /************************Main game loop************************/
@@ -122,7 +134,7 @@ var gameLoop = function () {
 
 
     Clear();
-
+    menu.checkHover();
     menu.draw();
 
     requestAnimFrame(gameLoop);
