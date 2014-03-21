@@ -67,7 +67,7 @@ var menu = new (function () {
 
         for (var i = 0; i < that.buttons.length; i++) {
             if ((mouse_y > (height / 2) + (i * (that.b_height + 20))) &&
-                (mouse_y < (height / 2) + (i * (that.b_height + 20 + that.b_height))) &&
+                (mouse_y < (height / 2) + ((i * (that.b_height + 20)) + that.b_height)) &&
                 (mouse_x > (width / 2) - (that.b_width / 2)) &&
                 (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
                 that.buttons[i] = 1;
