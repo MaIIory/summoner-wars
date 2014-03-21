@@ -55,7 +55,7 @@ var menu = new (function () {
     //logo settings
     that.logo_src_y = 240; //logo source y coordinate (x = 0)
     that.logo_width = 600; //logo width
-    that.logo_height = 238; //logo height
+    that.logo_height = 250; //logo height
 
     that.b_width = 300; //button width
     that.b_height = 60;  //button height
