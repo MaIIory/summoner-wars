@@ -114,13 +114,13 @@ var menu = new (function () {
 
     that.checkAction = function () {
 
-        if (buttons[0] && mouse_button_down)
+        if (that.buttons[0] && mouse_button_down)
             state = 1;
-        else if (buttons[1] && mouse_button_down)
+        else if (that.buttons[1] && mouse_button_down)
             null; //TODO draw options
-        else if (buttons[2] && mouse_button_down)
+        else if (that.buttons[2] && mouse_button_down)
             null; //TODO draw credits
-        else if (buttons[3] && mouse_button_down)
+        else if (that.buttons[3] && mouse_button_down)
             null; //TODO exit game
 
     }
@@ -183,5 +183,5 @@ var gameLoop = function () {
     requestAnimFrame(gameLoop);
 }
 
-//initGame();
+//TODO initGame(); - inicjalizacja backgrounda, main menu oraz briefing
 gameLoop();
