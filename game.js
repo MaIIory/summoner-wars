@@ -53,5 +53,5 @@ var gameLoop = function () {
     requestAnimFrame(gameLoop);
 }
 
-initGame();
+//initGame();
 gameLoop();
