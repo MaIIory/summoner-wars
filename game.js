@@ -10,9 +10,14 @@ var height = 768;   //canvas height and background image
 var background_image = new Image();
 background_image.src = "/img/background.jpg";
 
+//game state
 var state = 0; /* 0 - menu
                   1 - briefing (faction selection)
                   2 - game in progress */
+
+//mouse coordinates
+var mouse_x = 0;
+var mouse_y = 0;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
@@ -28,6 +33,12 @@ window.requestAnimFrame = (function () {
             window.setTimeout(callback, 1000 / 50);
         };
 })();
+
+canvas.addEventListener('mousemove', function (evt) {
+    var rect = canvas.getBoundingClientRect();
+    mouse_x = evt.clientX - rect.left,
+    mouse_y = evt.clientY - rect.top
+}, false);
 
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
@@ -101,8 +112,8 @@ var Clear = function () {
     ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
     //ctx.fillStyle = 'black'; //set active color 
     //ctx.fillRect(0, 0, width, height);
-    //ctx.fillStyle = 'white'; //set active color    
-    //ctx.fillText(cnt, width / 2, 200);
+    ctx.fillStyle = 'white'; //set active color    
+    ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' +mouse_y , 50, 50);
 }
 
 /************************Main game loop************************/
