@@ -266,8 +266,14 @@ var BriefingMenu = function () {
 
     that.checkAction = function () {
 
+        if (that.btn_begin_hoover === 1 && mouse_button_down)
+            return 1;
+        if (that.buttons[0] === 1 && mouse_button_down)
+            return 2;
+        if (that.buttons[1] === 1 && mouse_button_down)
+            return 3;
 
-
+        return 0;
     }
 
 
@@ -322,8 +328,10 @@ var gameLoop = function () {
         page_handler.checkHover();
         page_handler.draw();
 
-        //start game
-        if (page_handler.checkAction() === 1) {
+        var result = page_handler.checkAction();
+
+        //start briefing
+        if (result === 1) {
 
             //change page handler to briefing menu
             page_handler = new BriefingMenu();
@@ -338,6 +346,28 @@ var gameLoop = function () {
         page_handler.checkHover();
         page_handler.draw(player);
 
+        var result = page_handler.checkAction();
+
+        //start game
+        if (result === 1) {
+
+            //TODO change game state and page_handler
+
+        } else if (result === 2) {
+
+            //TODO AAAA TO STRASZNE !
+            if (player.selected_faction === 0)
+                player.selected_faction = 1;
+            else
+                player.selected_faction--;
+
+        } else if (result === 3) {
+
+            if (player.selected_faction === 1)
+                player.selected_faction = 0;
+            else
+                player.selected_faction++;
+        }
 
     }
 
