@@ -167,6 +167,10 @@ var BriefingMenu = function () {
     that.faction_frame_w = 320;
     that.faction_frame_h = 490;
 
+    //faction image
+    that.faction_image_w = 320;
+    that.faction_image_h = 500;
+
     //button settings
     that.btn_begin_width = 300; // "Begin" button width
     that.btn_begin_height = 60; // "Begin" button height
@@ -197,6 +201,10 @@ var BriefingMenu = function () {
         //draw faction frame
         ctx.drawImage(that.image, 0, that.faction_frame_src_y, that.faction_frame_w, that.faction_frame_h,
             (width / 2) + 50, 150, that.faction_frame_w, that.faction_frame_h);
+
+        //draw faction image
+        ctx.drawImage(that.image, player.selected_faction * that.faction_image_w, 0, that.faction_image_w, that.faction_image_h,
+            (width / 2) + 50, 150, that.faction_image_w, that.faction_image_h);
 
     }
 
