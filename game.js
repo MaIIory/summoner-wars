@@ -59,6 +59,12 @@ canvas.addEventListener('mouseup', function (evt) {
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
+var Player = function () {
+
+    var that = this;
+    var selected_faction = 0; //Phoenic Elves by default
+}
+
 var MainMenu = function () {
 
     //Set context
@@ -194,11 +200,7 @@ var BriefingMenu = function () {
 
 }
 
-var Player = function () {
 
-    var that = this;
-    var selected_faction = 0; //Phoenic Elves by default
-}
 
 //TODO moze zamiast globalnie tworzyc menu,
 //stworzyc instancje tej klasy wtedy nie bedzie przechowywana caly czas
