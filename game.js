@@ -22,6 +22,7 @@ var page_handler = null;
 var mouse_x = 0;
 var mouse_y = 0;
 var mouse_button_down = false;
+var clicks_cnt = 0;
 
 //players settings
 var player = null;
@@ -50,10 +51,12 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('mousedown', function (evt) {
     mouse_button_down = true;
+    clicks_cnt++;
 }, false);
 
 canvas.addEventListener('mouseup', function (evt) {
     mouse_button_down = false;
+    clicks_cnt = 0;
 }, false);
 
 /***************************CLASSES****************************/
@@ -349,25 +352,30 @@ var gameLoop = function () {
         var result = page_handler.checkAction();
 
         //start game
-        if (result === 1) {
+        if (clicks_cnt === 0) {
+            if (result === 1) {
 
-            //TODO change game state and page_handler
+                //TODO change game state and page_handler
 
-        } else if (result === 2) {
+            } else if (result === 2) {
 
-            //TODO AAAA TO STRASZNE !
-            if (player.selected_faction === 0)
-                player.selected_faction = 1;
-            else
-                player.selected_faction--;
+                //TODO AAAA TO STRASZNE !
+                if (player.selected_faction === 0)
+                    player.selected_faction = 1;
+                else
+                    player.selected_faction--;
 
-        } else if (result === 3) {
+            } else if (result === 3) {
 
-            if (player.selected_faction === 1)
-                player.selected_faction = 0;
-            else
-                player.selected_faction++;
+                if (player.selected_faction === 1)
+                    player.selected_faction = 0;
+                else
+                    player.selected_faction++;
+            }
         }
+
+
+
 
     }
 
