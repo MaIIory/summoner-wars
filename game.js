@@ -256,12 +256,17 @@ var gameLoop = function () {
 
         //start game
         if (page_handler.checkAction() === 1) {
+
             //change page handler to briefing menu
+
             page_handler = new BriefingMenu();
+            //change game state to briefing
+            state = 1;
         }
     }
 
     else if (state === 1) {
+
         /* briefing (faction selection) */
     }
 
