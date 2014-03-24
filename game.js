@@ -62,7 +62,7 @@ canvas.addEventListener('mouseup', function (evt) {
 var Player = function () {
 
     var that = this;
-    var selected_faction = 0; //Phoenic Elves by default
+    that.selected_faction = 0; //Phoenic Elves by default
 }
 
 var MainMenu = function () {
@@ -176,7 +176,7 @@ var BriefingMenu = function () {
 
     }
 
-    that.draw = function () {
+    that.draw = function (player) {
 
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
 
@@ -185,7 +185,7 @@ var BriefingMenu = function () {
             150, 75, that.header_w, that.header_h);
 
         //draw faction description
-        ctx.drawImage(that.image, 0,
+        ctx.drawImage(that.image, player.selected_faction * that.faction_desc_w,
             that.faction_desc_src_y, that.faction_desc_w, that.faction_desc_h,
             150, 175, that.faction_desc_w, that.faction_desc_h);
 
@@ -263,7 +263,7 @@ var gameLoop = function () {
     else if (state === 1) {
 
         page_handler.checkHover();
-        page_handler.draw();
+        page_handler.draw(player);
 
 
     }
