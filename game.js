@@ -156,7 +156,7 @@ var BriefingMenu = function () {
     that.header_src_y = 1053;
     that.header_w = 290;
     that.header_h = 50;
- 
+
     //faction desciption container
     that.faction_desc_src_y = 500;
     that.faction_desc_w = 306;
@@ -171,12 +171,16 @@ var BriefingMenu = function () {
     that.faction_image_w = 320;
     that.faction_image_h = 500;
 
-    //button settings
+    //begin button settings
+    that.btn_begin_src_y = 993;
     that.btn_begin_width = 300; // "Begin" button width
     that.btn_begin_height = 60; // "Begin" button height
+    that.btn_begin_hoover = 0;  /* button table with hoover data
+                                   0 - mouse out
+                                   1 - mouse over */
 
-    //buttons initialization 
-    that.buttons = [0, 0, 0]; /* button table with hoover data
+    //fraction selection buttons initialization 
+    that.buttons = [0, 0]; /* button table with hoover data [left, right]
                                    0 - mouse out
                                    1 - mouse over */
 
@@ -205,6 +209,12 @@ var BriefingMenu = function () {
         //draw faction image
         ctx.drawImage(that.image, player.selected_faction * that.faction_image_w, 0, that.faction_image_w, that.faction_image_h,
             (width / 2) + 50, 150, that.faction_image_w, that.faction_image_h);
+
+        //draw begin buttons
+        ctx.drawImage(that.image, that.btn_begin_hoover * that.btn_begin_width,
+            that.btn_begin_src_y, that.btn_begin_width, that.btn_begin_height,
+            (width / 2) - (that.btn_begin_width / 2), 675, that.btn_begin_width, that.btn_begin_height);
+
 
     }
 
