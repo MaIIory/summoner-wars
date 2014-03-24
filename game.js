@@ -15,6 +15,9 @@ var state = 0; /* 0 - menu
                   1 - briefing (faction selection)
                   2 - game in progress */
 
+//actual page handler
+var page_handler = null;
+
 //mouse settings
 var mouse_x = 0;
 var mouse_y = 0;
@@ -52,7 +55,7 @@ canvas.addEventListener('mouseup', function (evt) {
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
-var menu = new (function () {
+var MainMenu = function () {
 
     //Set context
     var that = this;
@@ -115,7 +118,7 @@ var menu = new (function () {
     that.checkAction = function () {
 
         if (that.buttons[0] && mouse_button_down)
-            state = 1;
+            return 1;
         else if (that.buttons[1] && mouse_button_down)
             null; //TODO draw options
         else if (that.buttons[2] && mouse_button_down)
@@ -128,7 +131,82 @@ var menu = new (function () {
     //TODO draw options
     //TODO draw credits
 
-})()
+}
+
+var BriefingMenu = function () {
+
+    //Set context
+    var that = this;
+
+    //ATTRIBUTES
+    that.image = new Image(); //background image
+    that.image.src = "/img/briefing_menu.png";
+
+    //logo settings
+
+    //button settings
+    that.btn_begin_width = 300; // "Begin" button width
+    that.btn_begin_height = 60; // "Begin" button height
+
+    //buttons initialization 
+    that.buttons = [0, 0, 0]; /* button table with hoover data
+                                   0 - mouse out
+                                   1 - mouse over */
+
+    that.checkHover = function () {
+
+        for (var i = 0; i < that.buttons.length; i++) {
+            if ((mouse_y > (height / 2) + (i * (that.b_height + 20))) &&
+                (mouse_y < (height / 2) + ((i * (that.b_height + 20)) + that.b_height)) &&
+                (mouse_x > (width / 2) - (that.b_width / 2)) &&
+                (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
+                that.buttons[i] = 1; //mouse over 
+            }
+            else {
+                that.buttons[i] = 0; //mouse out 
+            }
+        }
+    }
+
+    that.draw = function () {
+
+        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+
+        //draw buttons
+        for (var i = 0; i < that.buttons.length; i++) {
+            ctx.drawImage(that.image,
+                that.buttons[i] * that.b_width,
+                that.b_height * i,
+                that.b_width,
+                that.b_height,
+                (width / 2) - (that.b_width / 2),
+                (height / 2) + (i * (that.b_height + 20)),
+                that.b_width,
+                that.b_height);
+        }
+
+        //draw logo
+        ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
+
+    }
+
+    that.checkAction = function () {
+
+        if (that.buttons[0] && mouse_button_down)
+            return 1;
+        else if (that.buttons[1] && mouse_button_down)
+            null; //TODO draw options
+        else if (that.buttons[2] && mouse_button_down)
+            null; //TODO draw credits
+        else if (that.buttons[3] && mouse_button_down)
+            null; //TODO exit game
+
+    }
+
+    //TODO draw options
+    //TODO draw credits
+
+}
 
 //TODO moze zamiast globalnie tworzyc menu,
 //stworzyc instancje tej klasy wtedy nie bedzie przechowywana caly czas
@@ -149,6 +227,10 @@ var menu = new (function () {
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
 
+var initGame = function () {
+    page_handler = new MainMenu();
+}
+
 var Clear = function () {
     ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
     //ctx.fillStyle = 'black'; //set active color 
@@ -167,12 +249,16 @@ var gameLoop = function () {
 
     Clear();
 
-
     if (state === 0) {
         /* main menu */
-        menu.checkHover();
-        menu.draw();
-        menu.checkAction();
+        page_handler.checkHover();
+        page_handler.draw();
+
+        //start game
+        if (page_handler.checkAction() === 1) {
+            //change page handler to briefing menu
+            page_handler = new BriefingMenu();
+        }
     }
 
     else if (state === 1) {
@@ -183,5 +269,5 @@ var gameLoop = function () {
     requestAnimFrame(gameLoop);
 }
 
-//TODO initGame(); - inicjalizacja backgrounda, main menu oraz briefing
+initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
 gameLoop();
