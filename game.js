@@ -23,6 +23,10 @@ var mouse_x = 0;
 var mouse_y = 0;
 var mouse_button_down = false;
 
+//players settings
+var player = null;
+var opponent = null;
+
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
 
@@ -147,6 +151,11 @@ var BriefingMenu = function () {
     that.header_w = 290;
     that.header_h = 50;
  
+    //faction desciption container
+    that.faction_desc_src_y = 500;
+    that.faction_desc_w = 306;
+    that.faction_desc_h = 463;
+
     //button settings
     that.btn_begin_width = 300; // "Begin" button width
     that.btn_begin_height = 60; // "Begin" button height
@@ -161,13 +170,18 @@ var BriefingMenu = function () {
 
     }
 
-    that.draw = function () {
+    that.draw = function (player) {
 
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
 
         //draw header
         ctx.drawImage(that.image, 0, that.header_src_y, that.header_w, that.header_h,
             150, 75, that.header_w, that.header_h);
+
+        //draw faction description
+        ctx.drawImage(that.image, player.selected_faction * that.faction_desc_w,
+            that.faction_desc_src_y, that.faction_desc_w, that.faction_desc_h,
+            150, 175, that.faction_desc_w, that.faction_desc_h);
 
     }
 
@@ -178,6 +192,12 @@ var BriefingMenu = function () {
     }
 
 
+}
+
+var Player = function () {
+
+    var that = this;
+    var selected_faction = 0; //Phoenic Elves by default
 }
 
 //TODO moze zamiast globalnie tworzyc menu,
@@ -201,6 +221,7 @@ var BriefingMenu = function () {
 
 var initGame = function () {
     page_handler = new MainMenu();
+    player = new Player();
 }
 
 var Clear = function () {
@@ -240,7 +261,7 @@ var gameLoop = function () {
     else if (state === 1) {
 
         page_handler.checkHover();
-        page_handler.draw();
+        page_handler.draw(player);
 
 
     }
