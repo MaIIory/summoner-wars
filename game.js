@@ -142,8 +142,11 @@ var BriefingMenu = function () {
     that.image = new Image(); //background image
     that.image.src = "/img/briefing_menu.png";
 
-    //logo settings
-
+    //header settings
+    that.header_src_y = 1053;
+    that.header_w = 290;
+    that.header_h = 50;
+ 
     //button settings
     that.btn_begin_width = 300; // "Begin" button width
     that.btn_begin_height = 60; // "Begin" button height
@@ -155,56 +158,25 @@ var BriefingMenu = function () {
 
     that.checkHover = function () {
 
-        for (var i = 0; i < that.buttons.length; i++) {
-            if ((mouse_y > (height / 2) + (i * (that.b_height + 20))) &&
-                (mouse_y < (height / 2) + ((i * (that.b_height + 20)) + that.b_height)) &&
-                (mouse_x > (width / 2) - (that.b_width / 2)) &&
-                (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
-                that.buttons[i] = 1; //mouse over 
-            }
-            else {
-                that.buttons[i] = 0; //mouse out 
-            }
-        }
+
     }
 
     that.draw = function () {
 
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
 
-        //draw buttons
-        for (var i = 0; i < that.buttons.length; i++) {
-            ctx.drawImage(that.image,
-                that.buttons[i] * that.b_width,
-                that.b_height * i,
-                that.b_width,
-                that.b_height,
-                (width / 2) - (that.b_width / 2),
-                (height / 2) + (i * (that.b_height + 20)),
-                that.b_width,
-                that.b_height);
-        }
-
-        //draw logo
-        ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
+        //draw header
+        ctx.drawImage(that.image, 0, that.header_src_y, that.header_w, that.header_h,
+            150, 75, that.header_w, that.header_h);
 
     }
 
     that.checkAction = function () {
 
-        if (that.buttons[0] && mouse_button_down)
-            return 1;
-        else if (that.buttons[1] && mouse_button_down)
-            null; //TODO draw options
-        else if (that.buttons[2] && mouse_button_down)
-            null; //TODO draw credits
-        else if (that.buttons[3] && mouse_button_down)
-            null; //TODO exit game
+
 
     }
 
-    //TODO draw options
-    //TODO draw credits
 
 }
 
@@ -258,8 +230,8 @@ var gameLoop = function () {
         if (page_handler.checkAction() === 1) {
 
             //change page handler to briefing menu
-
             page_handler = new BriefingMenu();
+
             //change game state to briefing
             state = 1;
         }
@@ -267,7 +239,10 @@ var gameLoop = function () {
 
     else if (state === 1) {
 
-        /* briefing (faction selection) */
+        page_handler.checkHover();
+        page_handler.draw();
+
+
     }
 
 
