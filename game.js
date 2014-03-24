@@ -180,6 +180,9 @@ var BriefingMenu = function () {
                                    1 - mouse over */
 
     //fraction selection buttons initialization 
+    that.btn_sel_src_y = 963;
+    that.btn_sel_w = 30;
+    that.btn_sel_h = 30;
     that.buttons = [0, 0]; /* button table with hoover data [left, right]
                                    0 - mouse out
                                    1 - mouse over */
@@ -210,11 +213,18 @@ var BriefingMenu = function () {
         ctx.drawImage(that.image, player.selected_faction * that.faction_image_w, 0, that.faction_image_w, that.faction_image_h,
             (width / 2) + 50, 150, that.faction_image_w, that.faction_image_h);
 
-        //draw begin buttons
+        //draw begin button
         ctx.drawImage(that.image, that.btn_begin_hoover * that.btn_begin_width,
             that.btn_begin_src_y, that.btn_begin_width, that.btn_begin_height,
             (width / 2) - (that.btn_begin_width / 2), 675, that.btn_begin_width, that.btn_begin_height);
 
+        //draw selection buttons
+        //left
+        ctx.drawImage(that.image, that.buttons[i] * that.btn_sel_w, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
+            250, 575, that.btn_sel_w, that.btn_sel_h);
+        //right
+        ctx.drawImage(that.image, (that.buttons[i] * that.btn_sel_w) + 60, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
+            350, 575, that.btn_sel_w, that.btn_sel_h);
 
     }
 
