@@ -221,10 +221,10 @@ var BriefingMenu = function () {
         //draw selection buttons
         //left
         ctx.drawImage(that.image, that.buttons[0] * that.btn_sel_w, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
-            250, 575, that.btn_sel_w, that.btn_sel_h);
+            253 - (that.btn_sel_w / 2), 575, that.btn_sel_w, that.btn_sel_h);
         //right
         ctx.drawImage(that.image, (that.buttons[1] * that.btn_sel_w) + 60, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
-            350, 575, that.btn_sel_w, that.btn_sel_h);
+            353 - (that.btn_sel_w / 2), 575, that.btn_sel_w, that.btn_sel_h);
 
     }
 
