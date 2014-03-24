@@ -201,6 +201,30 @@ var BriefingMenu = function () {
             that.btn_begin_hoover = 0;
         }
 
+        //check fraction selection buttons
+        //left
+        if ((mouse_x > 253 - (that.btn_sel_w / 2)) &&
+            (mouse_x < (253 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
+            (mouse_y > 575) &&
+            (mouse_y < 575 + that.btn_sel_h)) {
+
+            that.buttons[0] = 1;
+        }
+        else {
+            that.buttons[0] = 0;
+        }
+
+        //right
+        if ((mouse_x > 353 - (that.btn_sel_w / 2)) &&
+            (mouse_x < (353 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
+            (mouse_y > 575) &&
+            (mouse_y < 575 + that.btn_sel_h)) {
+
+            that.buttons[1] = 1;
+        }
+        else {
+            that.buttons[1] = 0;
+        }
 
     }
 
