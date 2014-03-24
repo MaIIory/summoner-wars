@@ -189,6 +189,18 @@ var BriefingMenu = function () {
 
     that.checkHover = function () {
 
+        //check begin button hoover
+        if ((mouse_x > (width / 2) - (that.btn_begin_width / 2)) &&
+            (mouse_x < ((width / 2) - (that.btn_begin_width / 2)) + that.btn_begin_width) &&
+            (mouse_y > 675) &&
+            (mouse_y < 675 + that.btn_begin_height)) {
+
+            that.btn_begin_hoover = 1;
+        }
+        else {
+            that.btn_begin_hoover = 0;
+        }
+
 
     }
 
