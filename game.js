@@ -22,7 +22,7 @@ var page_handler = null;
 var mouse_x = 0;
 var mouse_y = 0;
 var mouse_button_down = false;
-var clicks_cnt = 0;
+var trigger_pulled = false;
 
 //players settings
 var player = null;
@@ -51,12 +51,11 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('mousedown', function (evt) {
     mouse_button_down = true;
-    clicks_cnt++;
 }, false);
 
 canvas.addEventListener('mouseup', function (evt) {
     mouse_button_down = false;
-    clicks_cnt = 0;
+    trigger_pulled = false;
 }, false);
 
 /***************************CLASSES****************************/
@@ -269,13 +268,19 @@ var BriefingMenu = function () {
 
     that.checkAction = function () {
 
-        if (that.btn_begin_hoover === 1 && mouse_button_down)
+        if (that.btn_begin_hoover === 1 && mouse_button_down && !trigger_pulled) {
+            trigger_pulled = true;
             return 1;
-        if (that.buttons[0] === 1 && mouse_button_down)
-            return 2;
-        if (that.buttons[1] === 1 && mouse_button_down)
-            return 3;
+        }
 
+        if (that.buttons[0] === 1 && mouse_button_down && !trigger_pulled) {
+            trigger_pulled = true;
+            return 2;
+        }
+        if (that.buttons[1] === 1 && mouse_button_down && !trigger_pulled) {
+            trigger_pulled = true;
+            return 3;
+        }
         return 0;
     }
 
@@ -352,7 +357,6 @@ var gameLoop = function () {
         var result = page_handler.checkAction();
 
         //start game
-        if (clicks_cnt === 0) {
             if (result === 1) {
 
                 //TODO change game state and page_handler
@@ -372,11 +376,6 @@ var gameLoop = function () {
                 else
                     player.selected_faction++;
             }
-        }
-
-
-
-
     }
 
 
