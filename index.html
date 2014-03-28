@@ -412,7 +412,9 @@
         */
 
         var text="";
-        $.get('/decks/tundra_orcs.txt', function(data){text=data;//Do something more with the data here. data variable contains the response})
+        $.get('/decks/tundra_orcs.txt', function (data) {
+            text = data;//Do something more with the data here. data variable contains the response
+        })
 
         alert(text)
         initActions();
