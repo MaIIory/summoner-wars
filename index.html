@@ -397,7 +397,7 @@
             });
 
         }
-
+        /*
         var file_content = ""
 
         var xhr = new XMLHttpRequest();
@@ -407,8 +407,14 @@
             file_content = this.responseText;
         }
         xhr.send();
-        alert(file_content)
 
+        alert(file_content)
+        */
+
+        var text="";
+        $.get('/decks/tundra_orcs.txt', function(data){text=data;//Do something more with the data here. data variable contains the response})
+
+        alert(text)
         initActions();
         setEventHandlers();
 
