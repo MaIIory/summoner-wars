@@ -65,25 +65,24 @@ var Player = function () {
 
     var that = this;
     that.selected_faction = 0; //Phoenic Elves by default
+    that.total_card_nb = 34;
+    that.magic_pile = [];
+    that.deck = [];
+    that.discard_pile = [];
 }
 
-var Faction = function (name) {
-
+var Card = function (name, type, ability, ability_mantatory, atack, life_points, cost) {
     var that = this;
     that.name = name;
-    that.card_nb = 34;
-    that.deck = []
+    that.type = type; // 0: Summon, 1: Common, 2:Champion, 3:Ability
+    that.ability = ability;
+    that.ability_mandatory = ability_mandatory;
+    that.atack = atack;
+    that.life_points = life_points;
+    that.cost = cost;
 
-    
-    var xhr = new XMLHttpRequest();
-    xhr.overrideMimeType("application/json");
-    xhr.open("GET", "/decks/" + that.name + ".txt", true);
-    xhr.onload = function () {
-        //explJSON = JSON.parse(this.responseText);
-    }
-    xhr.send();
-    
 }
+
 
 var MainMenu = function () {
 

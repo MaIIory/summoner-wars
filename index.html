@@ -397,7 +397,7 @@
             });
 
         }
-        
+
         /*
         var file_content = ""
 
@@ -412,16 +412,15 @@
         alert(file_content)
         */
 
-        
+
         $.get("/decks/tundra_orcs.txt", function (data, status) {
-            //alert("Data: " + data[0] + "\nStatus: " + status);
+            alert("Data: " + data[0] + "\nStatus: " + status);
         });
         //alert(text)
 
-        $(window).load("cos.js");
-        
-        //var crd = new Card();
-        //alert(crd.name)
+        $.getScript("cos.js", function (data) {
+
+        });
 
         initActions();
         setEventHandlers();
