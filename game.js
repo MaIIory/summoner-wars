@@ -67,6 +67,24 @@ var Player = function () {
     that.selected_faction = 0; //Phoenic Elves by default
 }
 
+var Faction = function (name) {
+
+    var that = this;
+    that.name = name;
+    that.card_nb = 34;
+    that.deck = []
+
+    
+    var xhr = new XMLHttpRequest();
+    xhr.overrideMimeType("application/json");
+    xhr.open("GET", "/decks/" + that.name + ".txt", true);
+    xhr.onload = function () {
+        //explJSON = JSON.parse(this.responseText);
+    }
+    xhr.send();
+    
+}
+
 var MainMenu = function () {
 
     //Set context
@@ -294,10 +312,6 @@ var BriefingMenu = function () {
 
 //hmmm a moze jedna klasa a tylko dwie instancje? kuszace:)
 // ktorym jest graczem player mozna zapisac do zmiennej po prostu
-
-//Player
-//state
-//
 
 //Opponent
 //  state
