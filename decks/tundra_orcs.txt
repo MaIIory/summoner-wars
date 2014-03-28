@@ -1,1 +1,1 @@
-Smasher, 2, 3, 2
+[cos, tam, dwa]
