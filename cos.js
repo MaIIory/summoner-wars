@@ -1,5 +1,5 @@
 var Card = function () {
 
     var that = this;
-    that.name = "card1"
+    that.name = "card1";
 }
