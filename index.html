@@ -404,18 +404,19 @@
         });
 
 
-        number = null
+
         $.getScript('cos.js', function () {
-            //fun()
-            initDeck(number)
+
         }, true);
 
-        alert(number)
 
-        //$.getScript("cos.js");
+        var fileref = document.createElement('script')
+        fileref.setAttribute("type", "text/javascript")
+        fileref.setAttribute("src", "/cos.js")
+        document.getElementById('page_content').appendChild(fileref)
 
-        //var crd = new Card()
-        //alert(crd.name)
+        var crd = new Card()
+        alert(crd.name)
 
         initActions();
         setEventHandlers();
