@@ -2,8 +2,7 @@
 
 var initDeck = function () {
 
-    return
-    [cos, tam, cos, tam]
+    return 5
 }
 
 var fun = function () {

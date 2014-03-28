@@ -404,12 +404,13 @@
         });
 
 
-        data = null
+        number = null
         $.getScript('cos.js', function () {
             fun()
+            number = initDeck
         }, true);
 
-        alert(data)
+        alert(number)
 
         //$.getScript("cos.js");
 
