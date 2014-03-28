@@ -398,6 +398,7 @@
 
         }
         
+        /*
         var file_content = ""
 
         var xhr = new XMLHttpRequest();
@@ -409,16 +410,14 @@
         xhr.send();
         file_content = xhr.responseText;
         alert(file_content)
-        
-
-        /*
-        var text="";
-        $.get('/decks/tundra_orcs.txt', function (data) {
-            text = data;//Do something more with the data here. data variable contains the response
-        })
-        
-        alert(text)
         */
+
+        
+        $.get("demo_test.asp", function (data, status) {
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+        alert(text)
+        
         initActions();
         setEventHandlers();
 
