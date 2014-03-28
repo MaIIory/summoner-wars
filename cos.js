@@ -1,4 +1,4 @@
-alert('asd')
+
 
 var Card = function () {
 
