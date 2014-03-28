@@ -1,7 +1,7 @@
 
 
-var initDeck = function () {
-
+var initDeck = function (number) {
+    number = 5
     return 5
 }
 
