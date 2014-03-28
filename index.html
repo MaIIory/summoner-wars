@@ -404,10 +404,16 @@
         });
 
 
+        data = null
+        $.getScript('cos.js', function () {
+            data = initDeck()
+        }, true);
 
-        $.getScript("cos.js");
+        alert(data)
 
-        var crd = new Card()
+        //$.getScript("cos.js");
+
+        //var crd = new Card()
         //alert(crd.name)
 
         initActions();

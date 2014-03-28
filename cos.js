@@ -1,7 +1,7 @@
 
 
-var Card = function () {
+var initDeck = function () {
 
-    var that = this;
-    that.name = "card1";
+    return
+    [cos, tam, cos, tam]
 }
