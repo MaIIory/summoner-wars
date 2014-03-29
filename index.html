@@ -404,12 +404,12 @@
         });
         */
 
-
+/*
         $.getScript('cos.js', function () {
 
         }, true);
         
-
+        */
 
 
         function sleep(milliseconds) {
@@ -421,12 +421,15 @@
             }
         }
 
+        Components.utils.import("resource://cos.js");
+
+        /*
         var fileref = document.createElement('script')
         fileref.setAttribute("type", "text/javascript")
         fileref.src = 'cos.js'
         document.head.appendChild(fileref);
-
-        sleep(2000)
+        */
+        sleep(1000)
 
         var crd = new Card()
         alert("" + crd.name)
