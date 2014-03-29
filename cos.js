@@ -1,6 +1,6 @@
 //alert('asdsad')
 
-var cos = function () {
+var math = function () {
 
     return 5;
 }
