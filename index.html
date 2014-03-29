@@ -410,19 +410,28 @@
         }, true);
 
 
-
-
-        initActions();
-        setEventHandlers();
-
         var fileref = document.createElement('script')
         fileref.setAttribute("type", "text/javascript")
-        fileref.setAttribute("src", "/cos.js")
-        document.getElementById('page_content').appendChild(fileref)
+        fileref.src = 'cos.js'
 
+
+
+        document.head.appendChild(fileref);
         var crd = new Card()
         alert("" + crd.name)
 
+
+        //initActions();
+        //setEventHandlers();
+        /*
+        var fileref = document.createElement('script')
+        fileref.setAttribute("type", "text/javascript")
+        fileref.setAttribute("src", "/cos.js")
+
+        document.head.appendChild(fileref);
+        var crd = new Card()
+        alert("" + crd.name)
+        */
     </script>
 
 </body>

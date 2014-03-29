@@ -1,4 +1,4 @@
-
+alert('asdsad')
 
 
 var Card = function () {
