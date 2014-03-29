@@ -1,7 +1,7 @@
-//alert('asdsad')
+alert('asdsad')
 
 
 var Card = function () {
     var that = this;
-    that.name = 'adsads'
+    that.name = 'llllllll'
 }
