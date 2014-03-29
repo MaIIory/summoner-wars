@@ -398,25 +398,36 @@
 
         }
 
-
+        /* DZIALA 
         $.get("/decks/tundra_orcs.txt", function (data, status) {
             //alert("Data: " + data[0] + "\nStatus: " + status);
         });
+        */
 
-
-
+        /* DZIALA 
         $.getScript('cos.js', function () {
 
         }, true);
+        */
 
+
+
+        function sleep(milliseconds) {
+            var start = new Date().getTime();
+            for (var i = 0; i < 1e7; i++) {
+                if ((new Date().getTime() - start) > milliseconds) {
+                    break;
+                }
+            }
+        }
 
         var fileref = document.createElement('script')
         fileref.setAttribute("type", "text/javascript")
         fileref.src = 'cos.js'
-
-
-
         document.head.appendChild(fileref);
+
+        sleep(2000)
+
         var crd = new Card()
         alert("" + crd.name)
 
