@@ -8,7 +8,7 @@
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <script src="/socket.io/socket.io.js"></script>
-
+    <script data-main="scripts/main" src="scripts/require.js"></script>
     <script>
         $(function () {
             $("#dialog").dialog({
@@ -404,12 +404,12 @@
         });
         */
 
-/*
-        $.getScript('cos.js', function () {
-
-        }, true);
+        /*
+                $.getScript('cos.js', function () {
         
-        */
+                }, true);
+                
+                */
 
 
         function sleep(milliseconds) {
@@ -421,7 +421,6 @@
             }
         }
 
-        Components.utils.import("resource://cos.js");
 
         /*
         var fileref = document.createElement('script')
@@ -429,10 +428,12 @@
         fileref.src = 'cos.js'
         document.head.appendChild(fileref);
         */
-        sleep(1000)
+        var nmb = null
+        require(["cos"], function (cos) {
+            nmb = cos.cos();
+        });
 
-        var crd = new Card()
-        alert("" + crd.name)
+        aler(nmb)
 
 
         //initActions();
