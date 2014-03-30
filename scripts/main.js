@@ -379,15 +379,16 @@ fileref.setAttribute("type", "text/javascript")
 fileref.src = 'cos.js'
 document.head.appendChild(fileref);
 */
+/*
 var nmb = null
 require(["cos"], function (cos) {
     alert(cos.math());
 });
+*/
 
 
-
-//initActions();
-//setEventHandlers();
+initActions();
+setEventHandlers();
 /*
 var fileref = document.createElement('script')
 fileref.setAttribute("type", "text/javascript")
