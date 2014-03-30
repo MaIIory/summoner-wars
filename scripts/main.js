@@ -1,0 +1,399 @@
+
+//<script type="text/javascript" src="/game.js"/>
+//GLOBAL TODO
+//TODO wyciagnij skrypt i wyodrebij do osobnego pliku 
+
+/**************************************************
+** NODE.JS REQUIREMENTS
+**************************************************/
+
+var socket = io.connect(window.location.hostname);
+
+/**************************************************
+** APPLICATION VARIABLES
+**************************************************/
+
+var page_content = document.getElementById('page_content');
+var briefing_section = document.getElementById('briefing_section');
+var player_login = ""; //store player login after typing
+var room_name = "";    //room name that player joined
+
+/**************************************************
+** APPLICATION FUNCTIONS
+**************************************************/
+
+
+var initActions = function () {
+    rebuildStatusSection();
+}
+
+function WindowCloseHanlder() {
+    socket.disconnect();
+}
+
+var rebuildBriefingSection = function () {
+    //first remove old briefing section
+    removeBriefingSection();
+
+    //then create new one
+    var new_section = document.createElement('div');
+    new_section.setAttribute('id', 'briefing_section');
+    //<p>Briefing section</p> 
+    var p = document.createElement('p');
+    p.innerHTML = "Briefing section";
+    new_section.appendChild(p);
+
+    //<textarea id='players_list' cols="20" rows="2"></textarea>
+    var txtarea = document.createElement('textarea');
+    txtarea.setAttribute('id', 'players_list');
+    txtarea.setAttribute('cols', '20');
+    txtarea.setAttribute('rows', '2');
+    new_section.appendChild(txtarea);
+
+    //<input id='txt_room_name' type='text' />
+    var txt_input = document.createElement('input');
+    txt_input.setAttribute('id', 'txt_room_name');
+    txt_input.setAttribute('type', 'text');
+    new_section.appendChild(txt_input);
+
+    //<input id='btn_create_room' type='button' />
+    var btn_input = document.createElement('input');
+    btn_input.setAttribute('id', 'btn_create_room');
+    btn_input.setAttribute('type', 'button');
+
+    btn_input.addEventListener('click', function () {
+        //event to create new room and join player to room automatically
+        socket.emit('create_new_room', { player_login: player_login, room_name: document.getElementById('txt_room_name').value });
+    }, true);
+
+    new_section.appendChild(btn_input);
+
+    page_content.appendChild(new_section);
+
+    //reassign briefing section variable
+    briefing_section = new_section;
+}
+
+var removeBriefingSection = function () {
+    var old_section = document.getElementById('briefing_section');
+    if (old_section != undefined) {
+        page_content.removeChild(old_section);
+    }
+}
+
+var rebuildLoginSection = function () {
+    //firsly remove old login section 
+    removeLoginSection();
+
+    //then build new one
+    var new_section = document.createElement('div');
+    new_section.setAttribute('id', 'login_section');
+
+    //<p>
+    var p = document.createElement('p');
+    p.innerHTML = "Put your name:";
+    new_section.appendChild(p);
+    //<br>
+    var br = document.createElement('br');
+    new_section.appendChild(br);
+    //<input type="text">
+    var txt_login = document.createElement('input');
+    txt_login.setAttribute('type', 'text');
+    txt_login.setAttribute('id', 'txt_login');
+    new_section.appendChild(txt_login);
+    //<br>
+    var br = document.createElement('br');
+    new_section.appendChild(br);
+    //<input type="button">
+    var btn = document.createElement('input');
+    btn.setAttribute('type', 'button');
+    //btn.setAttribute('id', 'btn_join_game');
+
+    btn.onclick = function (e) {
+        e = e || window.event;
+
+        rebuildBriefingSection();
+
+        player_login = document.getElementById('txt_login').value;
+        player_login = player_login.trim();
+        if (player_login === "") {
+            //TODO change alert to dialog
+            alert("login is empty!" + player_login);
+            return;
+        }
+
+        socket.on('update_players_list', function (data) {
+            var players_list = document.getElementById('players_list');
+
+            if (players_list === undefined) {
+                alert("ZONK");
+            }
+
+            players_list.value = "";
+
+            for (var i = 0; i < data.players.length; i = i + 1) {
+                players_list.value += data.players[i].name;
+                players_list.value += "\n";
+            }
+        });
+
+        socket.on('update_room_table', function (data) {
+            rebuildRoomTable(data.rooms);
+        });
+
+        socket.emit('add_new_player', { login: player_login });
+
+        removeLoginSection();
+
+    };
+    /*
+    btn.addEventListener('click', function() 
+               { 
+               
+               //rebuildBriefingSection();
+               
+               player_login = document.getElementById('txt_login').value;
+               player_login = player_login.trim();
+               if(player_login === "") 
+                  {
+                  //TODO change alert to dialog
+                  alert("login is empty!" + player_login);
+                  return;
+                  }
+                  
+               
+               socket.emit('add_new_player', { login: player_login });
+               removeLoginSection();
+               //LUCN rebuildBriefingSection();
+               }, true);
+   */
+
+    new_section.appendChild(btn);
+    //add to page content
+    page_content.appendChild(new_section);
+}
+
+var removeLoginSection = function () {
+    var old_section = document.getElementById('login_section');
+    if (old_section != undefined) {
+        page_content.removeChild(old_section);
+    }
+}
+
+var rebuildStatusSection = function () {
+    //first remove old status section
+    removeStatusSection();
+
+    //then build new one
+    var new_status_section = document.createElement('div');
+    new_status_section.setAttribute('id', 'connection_status_section');
+    var p = document.createElement('p');
+    p.innerHTML = "Connection with server in progress... Please wait...";
+    new_status_section.appendChild(p);
+    page_content.appendChild(new_status_section);
+}
+
+var removeStatusSection = function () {
+    var old_section = document.getElementById('connection_status_section');
+    if (old_section != undefined) {
+        page_content.removeChild(old_section);
+    }
+}
+
+var rebuildRoomTable = function (rooms) {
+    rooms_container = rooms;
+
+    //firsly remove old room table 
+    var old_table = document.getElementById('room_table');
+    if (old_table != undefined) {
+        briefing_section.removeChild(old_table);
+    }
+
+    //then create new one
+    var new_table = document.createElement('table');
+    new_table.border = '1';
+    new_table.setAttribute('id', 'room_table');
+
+    //create header row
+    var header_row = document.createElement('tr');
+
+    addNewTh('Room name', header_row);
+    addNewTh('1st player', header_row);
+    addNewTh('2nd player', header_row);
+    addNewTh('Status', header_row);
+
+    new_table.appendChild(header_row);
+
+    //generating rows for every room
+    for (var i = 0; i < rooms.length; i = i + 1) {
+        var room_row = document.createElement('tr');
+        room_row.setAttribute('id', rooms[i].name);
+
+        addNewTd(rooms[i].name, room_row);
+        addNewTd(rooms[i].first_player, room_row);
+        addNewTd(rooms[i].second_player, room_row);
+
+        //status handling
+        if (rooms[i].status === 0) //status: waiting for players
+        {
+            addNewTd("Waiting for players", room_row);
+        }
+        else if (rooms[i].status === 1) {
+
+            if (((rooms[i].first_player === player_login) && (rooms[i].first_player_ready)) ||
+            ((rooms[i].second_player === player_login) && (rooms[i].second_player_ready))) {
+                addNewTd("Waiting for your opponent", room_row);
+            }
+            else if ((rooms[i].first_player === player_login) || (rooms[i].second_player === player_login)) {
+                var td = document.createElement('td');
+                room_row.appendChild(td);
+
+                //<input type="button">
+                var btn = document.createElement('input');
+                btn.setAttribute('type', 'button');
+                btn.onclick = function (e) {
+                    e = e || window.event;
+                    room_name = (e.target || e.srcElement).parentNode.parentNode.id;
+
+
+                    socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
+
+                };
+                td.appendChild(btn);
+            }
+            else {
+                addNewTd("Ready to start", room_row);
+            }
+
+
+        }
+        else //status: game in progress
+        {
+            addNewTd("Game in progress", room_row);
+        }
+
+
+        room_row.onmousedown = function (e) {
+            e = e || window.event;
+            var elementId = (e.target || e.srcElement).parentNode.id;
+            //sent request to join player to room
+
+            socket.emit('assign_player_to_room', { player_login: player_login, room_name: elementId });
+        };
+
+        //append new row to table
+        new_table.appendChild(room_row);
+    }
+
+    briefing_section.appendChild(new_table);
+}
+
+var addNewTh = function (inner_HTML_text, row) {
+    var th = document.createElement('th');
+    th.innerHTML = inner_HTML_text;
+    row.appendChild(th);
+}
+
+var addNewTd = function (inner_HTML_text, row) {
+    var td = document.createElement('td');
+    td.innerHTML = inner_HTML_text;
+    row.appendChild(td);
+}
+
+var myFunction = function () {
+    $("#dialog").dialog("open");
+}
+
+var startGame = function () {
+    //main settings and game data
+
+    //create canvas HTML document
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'canvas');
+    canvas.width = 1024;
+    canvas.height = 768;
+    page_content.appendChild(canvas)
+
+    var fileref = document.createElement('script')
+    fileref.setAttribute("type", "text/javascript")
+    fileref.setAttribute("src", "/game.js")
+    document.getElementById('page_content').appendChild(fileref)
+
+}
+
+/**************************************************
+** EVENTS HANDLING
+**************************************************/
+
+var setEventHandlers = function () {
+
+
+    socket.on('connection_confirmation', function () {
+        window.onbeforeunload = WindowCloseHanlder;
+        removeStatusSection();
+        rebuildLoginSection();
+
+
+        socket.on('error', function (data) {
+            //$("#dialog-text").text(data.message);
+            $('#dialog').dialog('open');
+        });
+
+
+        socket.on('start_game', function () {
+            //Nie kasuj tego bo dziala $('#dialog').dialog('open');
+            startGame();
+        });
+
+    });
+
+}
+
+/* DZIALA 
+$.get("/decks/tundra_orcs.txt", function (data, status) {
+    //alert("Data: " + data[0] + "\nStatus: " + status);
+});
+*/
+
+/*
+        $.getScript('cos.js', function () {
+
+        }, true);
+        
+        */
+
+
+function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+            break;
+        }
+    }
+}
+
+
+/*
+var fileref = document.createElement('script')
+fileref.setAttribute("type", "text/javascript")
+fileref.src = 'cos.js'
+document.head.appendChild(fileref);
+*/
+var nmb = null
+require(["cos"], function (cos) {
+    alert(cos.math());
+});
+
+
+
+//initActions();
+//setEventHandlers();
+/*
+var fileref = document.createElement('script')
+fileref.setAttribute("type", "text/javascript")
+fileref.setAttribute("src", "/cos.js")
+
+document.head.appendChild(fileref);
+var crd = new Card()
+alert("" + crd.name)
+*/
