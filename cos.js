@@ -2,7 +2,7 @@
 
 var math = function () {
 
-    return 5;
+    alert("KREWETA");
 }
 
 

@@ -395,5 +395,6 @@ var gameLoop = function () {
     requestAnimFrame(gameLoop);
 }
 
+math();
 initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
 gameLoop();
