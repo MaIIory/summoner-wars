@@ -8,8 +8,8 @@
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script data-main="scripts/main" src="scripts/require.js"></script>
-    <script type="text/javascript" src="cos.js"></script>
+
+    <!--<script type="text/javascript" src="cos.js"></script>-->
     <script>
         $(function () {
             $("#dialog").dialog({
@@ -23,17 +23,13 @@
                     duration: 1000
                 }
             });
-
-            //$( "#opener" ).click(function() {
-            //$( "#dialog" ).dialog( "open" );
-            //});
         });
     </script>
 
 </head>
 
 <body id='main_body'>
-    <!--<img src='/img/button1.png' alt="Smiley face">-->
+
     <div id="dialog" title="Basic dialog">
         <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
     </div>

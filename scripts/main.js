@@ -316,7 +316,7 @@ var startGame = function () {
 
     var fileref = document.createElement('script')
     fileref.setAttribute("type", "text/javascript")
-    fileref.setAttribute("src", "/game.js")
+    fileref.setAttribute("src", "/scripts/game.js")
     document.getElementById('page_content').appendChild(fileref)
 
 }
