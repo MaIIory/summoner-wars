@@ -8,7 +8,7 @@ var height = 768;   //canvas height and background image
 
 //load background image
 var background_image = new Image();
-background_image.src = "/img/background.jpg";
+background_image.src = "/../img/background.jpg";
 
 //game state
 var state = 0; /* 0 - menu
