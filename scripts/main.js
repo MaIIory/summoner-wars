@@ -380,13 +380,6 @@ fileref.src = 'cos.js'
 document.head.appendChild(fileref);
 */
 
-
-require(["cos"], function (cos) {
-    alert(cos.math());
-});
-
-
-
 initActions();
 setEventHandlers();
 /*
