@@ -374,7 +374,7 @@ var gameLoop = function () {
         if (result === 1) {
 
             state = 2;
-            player.deck = InitDeck();
+            InitDeck();
 
             } else if (result === 2) {
 
