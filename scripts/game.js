@@ -374,16 +374,7 @@ var gameLoop = function () {
         if (result === 1) {
 
             state = 2;
-
-            var head= document.getElementsByTagName('head')[0];
-            var script= document.createElement('script');
-            script.type= 'text/javascript';
-            script.onreadystatechange= function () {
-                if (this.readyState == 'complete') InitDeck();
-            }
-            script.onload= InitDeck;
-            script.src= '/scripts/tundra_orcs.js';
-            head.appendChild(script);
+            player.deck = InitDeck();
 
             } else if (result === 2) {
 
