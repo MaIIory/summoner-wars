@@ -25,11 +25,3 @@ var InitDeck = function () {
 
 }
 
-var wallsOfIceShard = function () {
-
-}
-
-var fury = function () {
-
-}
-*/
