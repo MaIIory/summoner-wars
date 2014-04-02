@@ -11,6 +11,7 @@ var Card = function (name, type, ability, ability_mantatory, atack, life_points,
 
 }
 */
+/*
 var InitDeck = function () {
     var that = this;
 
@@ -29,3 +30,4 @@ var wallsOfIceShard = function () {
 var fury = function () {
 
 }
+*/
