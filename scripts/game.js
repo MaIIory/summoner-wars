@@ -71,10 +71,10 @@ var Player = function () {
     that.discard_pile = [];
 }
 
-var Card = function (/*name, type, ability, ability_mantatory, atack, life_points, cost*/) {
+var Card = function (name/*, type, ability, ability_mantatory, atack, life_points, cost*/) {
     var that = this;
-    /*
-    that.name = name;
+    
+    that.name = name; /*
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
     that.ability = ability;
     that.ability_mandatory = ability_mandatory;
