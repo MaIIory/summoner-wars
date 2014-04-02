@@ -379,7 +379,7 @@ var gameLoop = function () {
             var script= document.createElement('script');
             script.type= 'text/javascript';
             script.onreadystatechange= function () {
-                if (this.readyState == 'complete') player.deck = InitDeck();
+                if (this.readyState == 'complete') InitDeck();
             }
             script.onload= helper;
             script.src= '/scripts/tundra_orcs.js';
