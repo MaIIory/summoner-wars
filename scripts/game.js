@@ -381,7 +381,7 @@ var gameLoop = function () {
             script.onreadystatechange= function () {
                 if (this.readyState == 'complete') InitDeck();
             }
-            script.onload= helper;
+            script.onload= InitDeck;
             script.src= '/scripts/tundra_orcs.js';
             head.appendChild(script);
 
