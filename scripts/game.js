@@ -74,7 +74,7 @@ var Player = function () {
 var Card = function (name, type, ability, ability_mantatory, atack, life_points, cost) {
     var that = this;
     that.name = name;
-    that.type = type; // 0: Summon, 1: Common, 2:Champion, 3:Ability
+    that.type = type; // 0: Summon, 1: Unit, 2:Ability
     that.ability = ability;
     that.ability_mandatory = ability_mandatory;
     that.atack = atack;
@@ -324,6 +324,7 @@ var BriefingMenu = function () {
 var initGame = function () {
     page_handler = new MainMenu();
     player = new Player();
+    opponent = new Player();
 }
 
 var Clear = function () {
@@ -363,16 +364,25 @@ var gameLoop = function () {
     }
 
     else if (state === 1) {
-
+        /* fraction selection */
         page_handler.checkHover();
         page_handler.draw(player);
 
         var result = page_handler.checkAction();
 
         //start game
-            if (result === 1) {
+        if (result === 1) {
 
-                //TODO change game state and page_handler
+            state = 2;
+            var head= document.getElementsByTagName('head')[0];
+            var script= document.createElement('script');
+            script.type= 'text/javascript';
+            script.onreadystatechange= function () {
+                if (this.readyState == 'complete') player.deck = InitDeck();
+            }
+            script.onload= helper;
+            script.src= '/scripts/tundra_orcs.js';
+            head.appendChild(script);
 
             } else if (result === 2) {
 
@@ -390,6 +400,14 @@ var gameLoop = function () {
                     player.selected_faction++;
             }
     }
+
+    else if (state === 2) {
+        /* waiting for both players */
+        ctx.fillStyle = 'white'; //set active color    
+        ctx.fillText('decks length: ' + player.deck.length,  50, 80);
+    }
+
+    
 
 
     requestAnimFrame(gameLoop);
