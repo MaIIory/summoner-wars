@@ -382,6 +382,7 @@ var initGame = function () {
     page_handler = new MainMenu();
     player = new Player();
     opponent = new Player();
+    board = new Board();
 }
 
 var Clear = function () {
@@ -395,6 +396,7 @@ var Clear = function () {
     ctx.fillText('decks length: ' + player.deck.length, 50, 80);
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
+    //ctx.fillText('Board cards nb: ' , 50, 110);
 
 }
 
@@ -435,9 +437,6 @@ var gameLoop = function () {
 
             state = 2;
 
-            //init board
-            board = new Board();
-
             //init faction object
             //TODO trzeba zrobic zaleznie od wyboru
             faction = new TundraOrcs();
@@ -447,7 +446,10 @@ var gameLoop = function () {
             player.deck = faction.getDeck();
 
             //add start cards to board
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            start_cards = faction.getStartCards();
+            for (var i = 0; i < start_cards.length; i++) {
+                board.addCard(start_cards[i][0], start_cards[i][1], start_cards[2]);
+            }
 
             //send ready event
             socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
@@ -475,7 +477,6 @@ var gameLoop = function () {
 
     else if (state === 2) {
         /* waiting for both players */
-
         page_handler.draw();
     }
     else if (state === 3) {
