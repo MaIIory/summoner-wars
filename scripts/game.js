@@ -71,9 +71,9 @@ var Player = function () {
     that.discard_pile = [];
 }
 
-var Card = function (name/*, type, ability, ability_mantatory, atack, life_points, cost*/) {
+var Card = function (name/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
     var that = this;
-    
+
     that.name = name; /*
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
     that.ability = ability;
@@ -82,6 +82,24 @@ var Card = function (name/*, type, ability, ability_mantatory, atack, life_point
     that.life_points = life_points;
     that.cost = cost;
     */
+}
+
+var Board = function () {
+    var that = this;
+    that.s_x = 50; /* Starting     */
+    that.s_y = 50; /* coordination */
+    that.square_w = 70;
+    that.square_h = 50;
+    that.matrix =
+        [[null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null]]
+
 }
 
 
@@ -336,6 +354,8 @@ var Clear = function () {
     ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
     ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
     ctx.fillText('Game state: ' + state, 50, 70);
+    ctx.fillText('decks length: ' + player.deck.length, 50, 80);
+    ctx.fillText('Room name: ' + room_name, 50, 90);
 
 }
 
@@ -377,30 +397,32 @@ var gameLoop = function () {
             state = 2;
             player.deck = InitDeck();
 
-            } else if (result === 2) {
+            //send ready event
 
-                //TODO AAAA TO STRASZNE !
-                if (player.selected_faction === 0)
-                    player.selected_faction = 1;
-                else
-                    player.selected_faction--;
+        } else if (result === 2) {
 
-            } else if (result === 3) {
+            //TODO AAAA TO STRASZNE !
+            if (player.selected_faction === 0)
+                player.selected_faction = 1;
+            else
+                player.selected_faction--;
 
-                if (player.selected_faction === 1)
-                    player.selected_faction = 0;
-                else
-                    player.selected_faction++;
-            }
+        } else if (result === 3) {
+
+            if (player.selected_faction === 1)
+                player.selected_faction = 0;
+            else
+                player.selected_faction++;
+        }
     }
 
     else if (state === 2) {
         /* waiting for both players */
         ctx.fillStyle = 'white'; //set active color    
-        ctx.fillText('decks length: ' + player.deck.length,  50, 80);
+        
     }
 
-    
+
 
 
     requestAnimFrame(gameLoop);
