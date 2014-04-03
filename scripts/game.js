@@ -425,8 +425,13 @@ var gameLoop = function () {
             //init board
             board = new Board();
 
+            //init faction object
+            //TODO trzeba zrobic zaleznie od wyboru
+            faction = new TundraOrcs();
+            faction.initDeck();
+
             //init player deck
-            player.deck = InitDeck();
+            player.deck = faction.getDeck();
 
             //send ready event
             socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
