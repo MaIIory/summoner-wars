@@ -120,7 +120,7 @@ var Board = function () {
             if (c === i) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if (r === j) {
-                        that.matrix[i][j] = card;
+                        that.matrix[i][j] = "sdffds";
                     }
                 }
             }

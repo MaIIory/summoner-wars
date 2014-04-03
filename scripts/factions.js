@@ -22,7 +22,7 @@ var TundraOrcs = function () {
     that.getStartCards = function () {
 
         return [
-            [new Card('Fighter', 'to6'), 2, 8],
+            [new Card('Fighter', 'to6'), 2, 6],
             [new Card('Fighter', 'to7'), 2, 7],
             [new Card('Fighter', 'to8'), 5, 4]
             ]
