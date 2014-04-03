@@ -58,6 +58,8 @@ canvas.addEventListener('mouseup', function (evt) {
     trigger_pulled = false;
 }, false);
 
+
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -101,7 +103,6 @@ var Board = function () {
         [null, null, null, null, null, null]]
 
 }
-
 
 var MainMenu = function () {
 
@@ -323,10 +324,26 @@ var BriefingMenu = function () {
 
 }
 
+var WaitingMenu = function () {
 
+    //Set context
+    var that = this;
 
-//TODO moze zamiast globalnie tworzyc menu,
-//stworzyc instancje tej klasy wtedy nie bedzie przechowywana caly czas
+    //ATTRIBUTES
+    that.image = new Image(); //background image
+    that.image.src = "/img/waiting_menu.png";
+
+    //logo settings
+    that.img_width = 600; //logo width
+    that.img_height = 100; //logo height
+
+    that.draw = function () {
+
+        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+        //draw logo
+        ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (img_height / 2), that.img_width, that.img_height);
+    }
+}
 
 //hmmm a moze jedna klasa a tylko dwie instancje? kuszace:)
 // ktorym jest graczem player mozna zapisac do zmiennej po prostu
@@ -398,6 +415,7 @@ var gameLoop = function () {
             player.deck = InitDeck();
 
             //send ready event
+            page_handler = new WaitingMenu()
 
         } else if (result === 2) {
 
@@ -418,8 +436,8 @@ var gameLoop = function () {
 
     else if (state === 2) {
         /* waiting for both players */
-        ctx.fillStyle = 'white'; //set active color    
-        
+
+        page_handler.draw();
     }
 
 
