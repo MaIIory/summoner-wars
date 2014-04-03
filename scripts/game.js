@@ -396,7 +396,7 @@ var Clear = function () {
     ctx.fillText('decks length: ' + player.deck.length, 50, 80);
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
-    //ctx.fillText('Board cards nb: ' , 50, 110);
+    ctx.fillText('matrix: ' + board.matrix, 50, 150);
 
 }
 
@@ -477,6 +477,7 @@ var gameLoop = function () {
 
     else if (state === 2) {
         /* waiting for both players */
+        //TODO mogla by to byc jakas animacja, co? 
         page_handler.draw();
     }
     else if (state === 3) {
