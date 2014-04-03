@@ -29,6 +29,9 @@ var trigger_pulled = false;
 var player = null;
 var opponent = null;
 
+//board initialization
+var board = null;
+
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
 
@@ -59,7 +62,10 @@ canvas.addEventListener('mouseup', function (evt) {
     trigger_pulled = false;
 }, false);
 
-socket.on('start_play', function () { state = 3; })
+socket.on('start_play', function (data) {
+    //TODO prepare board
+    state = 3;
+})
 
 
 /***************************CLASSES****************************/
@@ -76,10 +82,12 @@ var Player = function () {
     that.hand = [];
 }
 
-var Card = function (name/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
+var Card = function (name, id/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
     var that = this;
 
-    that.name = name; /*
+    that.name = name;
+    that.id = id;
+    /*
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
     that.ability = ability;
     that.ability_mandatory = ability_mandatory;
@@ -414,6 +422,9 @@ var gameLoop = function () {
 
             state = 2;
 
+            //init board
+            board = new Board();
+
             //init player deck
             player.deck = InitDeck();
 
@@ -422,6 +433,7 @@ var gameLoop = function () {
 
             //change page handler
             page_handler = new WaitingMenu();
+
 
         } else if (result === 2) {
 

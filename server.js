@@ -30,6 +30,12 @@ var Player = function (login, socket_id) {
     var that = this;
     that.name = login;
     that.socket_id = socket_id; //using during disconnection
+
+    that.selected_faction = null;
+
+    //TODO for future use
+    that.ready_to_start_game = false;
+    that.ready_to_start_play = false; //moze nie potrzebne bo jak selected_faction not null to moze to oznaczac ready to play
 };
 
 
@@ -47,9 +53,9 @@ var Room = function (Name) {
     that.second_player_ready_to_play = false;
 };
 
+//TODO moze okazac sie nie potrzebne
 var Game = function () {
     var that = this;
-
 }
 
 /**************************************************
