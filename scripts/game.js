@@ -98,6 +98,7 @@ var Card = function (name, id/*, type, ability, ability_mandatory, atack, life_p
 }
 
 var Board = function () {
+
     var that = this;
     that.s_x = 50; /* Starting     */
     that.s_y = 50; /* coordination */
@@ -113,6 +114,18 @@ var Board = function () {
         [null, null, null, null, null, null],
         [null, null, null, null, null, null]]
 
+    /* c (column), r (row) - position from matrix */
+    that.addCard = function (card, c, r) {
+        for (var i = 0; i < that.matrix.length; i++) {
+            if (c === i) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+                    if (r === j) {
+                        that.matrix[i][j] = card;
+                    }
+                }
+            }
+        }
+    }
 }
 
 var MainMenu = function () {
@@ -432,6 +445,9 @@ var gameLoop = function () {
 
             //init player deck
             player.deck = faction.getDeck();
+
+            //add start cards to board
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             //send ready event
             socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
