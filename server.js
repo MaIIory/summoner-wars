@@ -29,7 +29,7 @@ app.get('/', function (req, res) {
 var Player = function (login, socket_id) {
     var that = this;
     that.name = login;
-    that.socket_id = socket_id;
+    that.socket_id = socket_id; //using during disconnection
 };
 
 
@@ -38,11 +38,13 @@ var Room = function (Name) {
     that.name = Name;
     that.first_player = "none";
     that.second_player = "none";
-    that.status = 0; // 0 - waiting for players
-    // 1 - ready to start
-    // 2 - battle in progress
+    that.status = 0; // 0 - waiting for players, 1 - ready to start, 2 - battle in progress
+    //if players ready to START GAME
     that.first_player_ready = false;
     that.second_player_ready = false;
+    //if players ready to play a game
+    that.first_player_ready_to_play = false;
+    that.second_player_ready_to_play = false;
 };
 
 var Game = function () {
@@ -219,6 +221,20 @@ io.sockets.on('connection', function (socket) {
 
 
         }
+    });
+
+    socket.on('player_ready_to_play', function (data) {
+
+        for (var i = 0; i < rooms.length; i = i + 1) {
+            if (rooms[i].name === data.room_name) {
+                
+                null
+            }
+        }
+
+
+        io.sockets.emit('update_room_table', { rooms: rooms });
+
     });
 
 });

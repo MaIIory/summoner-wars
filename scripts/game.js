@@ -11,9 +11,9 @@ var background_image = new Image();
 background_image.src = "/img/background.jpg";
 
 //game state
-var state = 0; /* 0 - menu
+var state = 0; /* 0 - main menu
                   1 - briefing (faction selection)
-                  2 - game in progress */
+                  2 - waiting for other players */
 
 //actual page handler
 var page_handler = null;
@@ -71,6 +71,7 @@ var Player = function () {
     that.magic_pile = [];
     that.deck = [];
     that.discard_pile = [];
+    that.hand = [];
 }
 
 var Card = function (name/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
@@ -351,15 +352,6 @@ var PlaygroundHandler = function () {
     var that = this;
 }
 
-//hmmm a moze jedna klasa a tylko dwie instancje? kuszace:)
-// ktorym jest graczem player mozna zapisac do zmiennej po prostu
-
-//Opponent
-//  state
-//  faction
-//  img
-
-
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
 
@@ -379,6 +371,7 @@ var Clear = function () {
     ctx.fillText('Game state: ' + state, 50, 70);
     ctx.fillText('decks length: ' + player.deck.length, 50, 80);
     ctx.fillText('Room name: ' + room_name, 50, 90);
+    ctx.fillText('Player login: ' + player_login, 50, 90);
 
 }
 
@@ -418,9 +411,14 @@ var gameLoop = function () {
         if (result === 1) {
 
             state = 2;
+
+            //init player deck
             player.deck = InitDeck();
 
             //send ready event
+            socket.emit('player_ready_to_play', { room_name: room_name  })
+
+            //change page handler
             page_handler = new WaitingMenu();
 
         } else if (result === 2) {
