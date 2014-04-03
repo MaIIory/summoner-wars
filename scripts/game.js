@@ -117,13 +117,13 @@ var Board = function () {
     /* c (column), r (row) - position from matrix */
     that.addCard = function (card, c, r) {
         for (var i = 0; i < that.matrix.length; i++) {
-            if (c === i) {
+            //if (c === i) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
-                    if (r === j) {
+                //    if (r === j) {
                         that.matrix[i][j] = card;
                         alert(i)
-                    }
-                }
+              //      }
+               // }
             }
         }
     }
