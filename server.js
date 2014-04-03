@@ -227,8 +227,17 @@ io.sockets.on('connection', function (socket) {
 
         for (var i = 0; i < rooms.length; i = i + 1) {
             if (rooms[i].name === data.room_name) {
-                
-                null
+
+                if (data.player_login === rooms[i].first_player) {
+                    rooms[i].first_player_ready_to_play = true;
+                }
+                else {
+                    rooms[i].second_player_ready_to_play = true;
+                }
+
+                if (rooms[i].first_player_ready_to_play && rooms[i].second_player_ready_to_play) {
+                    io.sockets.in(data.room_name).emit('start_play');
+                }
             }
         }
 

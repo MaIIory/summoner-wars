@@ -13,7 +13,8 @@ background_image.src = "/img/background.jpg";
 //game state
 var state = 0; /* 0 - main menu
                   1 - briefing (faction selection)
-                  2 - waiting for other players */
+                  2 - waiting for other players 
+                  3 - play in progress */
 
 //actual page handler
 var page_handler = null;
@@ -58,6 +59,7 @@ canvas.addEventListener('mouseup', function (evt) {
     trigger_pulled = false;
 }, false);
 
+socket.on('start_play', function () { state = 3; })
 
 
 /***************************CLASSES****************************/
@@ -371,7 +373,7 @@ var Clear = function () {
     ctx.fillText('Game state: ' + state, 50, 70);
     ctx.fillText('decks length: ' + player.deck.length, 50, 80);
     ctx.fillText('Room name: ' + room_name, 50, 90);
-    ctx.fillText('Player login: ' + player_login, 50, 90);
+    ctx.fillText('Player login: ' + player_login, 50, 100);
 
 }
 
@@ -416,7 +418,7 @@ var gameLoop = function () {
             player.deck = InitDeck();
 
             //send ready event
-            socket.emit('player_ready_to_play', { room_name: room_name  })
+            socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
 
             //change page handler
             page_handler = new WaitingMenu();
