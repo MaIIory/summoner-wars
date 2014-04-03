@@ -121,6 +121,7 @@ var Board = function () {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if (r === j) {
                         that.matrix[i][j] = card;
+                        alert(i)
                     }
                 }
             }
