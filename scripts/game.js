@@ -341,7 +341,7 @@ var WaitingMenu = function () {
 
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
         //draw logo
-        ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (img_height / 2), that.img_width, that.img_height);
+        ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (that.img_height / 2), that.img_width, that.img_height);
     }
 }
 
@@ -415,7 +415,7 @@ var gameLoop = function () {
             player.deck = InitDeck();
 
             //send ready event
-            page_handler = new WaitingMenu()
+            page_handler = new WaitingMenu();
 
         } else if (result === 2) {
 
