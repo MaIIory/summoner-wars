@@ -117,13 +117,13 @@ var Board = function () {
     /* c (column), r (row) - position from matrix */
     that.addCard = function (card, c, r) {
         for (var i = 0; i < that.matrix.length; i++) {
-            //if (c === i) {
+            if (r === i) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
-                //    if (r === j) {
+                    if (c === j) {
                         that.matrix[i][j] = card;
                         alert(i)
-              //      }
-               // }
+                    }
+                }
             }
         }
     }
@@ -450,7 +450,7 @@ var gameLoop = function () {
             for (var i = 0; i < start_cards.length; i++) {
                 board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
             }
-            
+
             //send ready event
             socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
 
