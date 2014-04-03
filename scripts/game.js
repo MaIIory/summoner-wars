@@ -345,6 +345,12 @@ var WaitingMenu = function () {
     }
 }
 
+var PlaygroundHandler = function () {
+
+    //set context
+    var that = this;
+}
+
 //hmmm a moze jedna klasa a tylko dwie instancje? kuszace:)
 // ktorym jest graczem player mozna zapisac do zmiennej po prostu
 
@@ -438,6 +444,9 @@ var gameLoop = function () {
         /* waiting for both players */
 
         page_handler.draw();
+    }
+    else if (state === 3) {
+        /* playground */
     }
 
 

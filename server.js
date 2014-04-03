@@ -194,7 +194,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('join_to_game', function (data) {
 
-        socket.join('room1');
+        socket.join(data.room_name)
 
         for (var i = 0; i < rooms.length; i = i + 1) {
             if (rooms[i].name === data.room_name) {
@@ -210,7 +210,7 @@ io.sockets.on('connection', function (socket) {
 
                 if (rooms[i].first_player_ready && rooms[i].second_player_ready) {
                     rooms[i].status = 2;
-                    io.sockets.in('room1').emit('start_game');
+                    io.sockets.in(data.room_name).emit('start_game');
                 }
 
                 io.sockets.emit('update_room_table', { rooms: rooms });
