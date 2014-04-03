@@ -404,7 +404,7 @@ var Clear = function () {
 //-----------------------------------------------------------//
 var gameLoop = function () {
 
-
+    board.matrix[0][0] = "asd"
     Clear();
 
     if (state === 0) {
@@ -450,7 +450,7 @@ var gameLoop = function () {
             for (var i = 0; i < start_cards.length; i++) {
                 board.addCard(start_cards[i][0], start_cards[i][1], start_cards[2]);
             }
-
+            
             //send ready event
             socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
 
