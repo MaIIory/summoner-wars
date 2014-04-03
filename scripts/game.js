@@ -404,7 +404,6 @@ var Clear = function () {
 //-----------------------------------------------------------//
 var gameLoop = function () {
 
-    board.matrix[0][0] = "asd"
     Clear();
 
     if (state === 0) {
@@ -439,16 +438,16 @@ var gameLoop = function () {
 
             //init faction object
             //TODO trzeba zrobic zaleznie od wyboru
-            faction = new TundraOrcs();
+            var faction = new TundraOrcs();
             faction.initDeck();
 
             //init player deck
             player.deck = faction.getDeck();
 
             //add start cards to board
-            start_cards = faction.getStartCards();
+            var start_cards = faction.getStartCards();
             for (var i = 0; i < start_cards.length; i++) {
-                board.addCard(start_cards[i][0], start_cards[i][1], start_cards[2]);
+                board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
             }
             
             //send ready event
