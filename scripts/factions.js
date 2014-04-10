@@ -25,11 +25,28 @@ var TundraOrcs = function () {
             [new Card('Fighter', 'to6'), 2, 6],
             [new Card('Fighter', 'to7'), 2, 7],
             [new Card('Fighter', 'to8'), 5, 4]
-            ]
+        ]
     }
 
 }
 
 var PheonixElves = function () {
+
+    var that = this;
+    deck = []
+
+    that.initDeck = function () {
+
+        deck = []
+    }
+
+    that.getDeck = function () {
+        return deck;
+    }
+
+    that.getStartCards = function () {
+
+        return []
+    }
 
 }

@@ -75,6 +75,7 @@ var Player = function () {
 
     var that = this;
     that.selected_faction = 0; //Phoenic Elves by default
+    that.faction = null;
     that.total_card_nb = 34;
     that.magic_pile = [];
     that.deck = [];
@@ -100,8 +101,8 @@ var Card = function (name, id/*, type, ability, ability_mandatory, atack, life_p
 var Board = function () {
 
     var that = this;
-    that.s_x = 50; /* Starting     */
-    that.s_y = 50; /* coordination */
+    that.s_x = 50; /*   Starting    */
+    that.s_y = 50; /* coordinations */
     that.square_w = 70;
     that.square_h = 50;
     that.matrix =
@@ -439,7 +440,12 @@ var gameLoop = function () {
 
             //init faction object
             //TODO trzeba zrobic zaleznie od wyboru
-            var faction = new TundraOrcs();
+            if (player.selected_faction === 0) {
+                player.faction = new TundraOrcs();
+            }
+            else if(player.selected_faction === 1){
+                player.faction = new PheonixElves();
+            }
             faction.initDeck();
 
             //init player deck
