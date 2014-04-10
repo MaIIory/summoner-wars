@@ -446,13 +446,13 @@ var gameLoop = function () {
             else if(player.selected_faction === 1){
                 player.faction = new PheonixElves();
             }
-            faction.initDeck();
+            player.faction.initDeck();
 
             //init player deck
-            player.deck = faction.getDeck();
+            player.deck = player.faction.getDeck();
 
             //add start cards to board
-            var start_cards = faction.getStartCards();
+            var start_cards = player.faction.getStartCards();
             for (var i = 0; i < start_cards.length; i++) {
                 board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
             }
