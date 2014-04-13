@@ -191,7 +191,7 @@ io.sockets.on('connection', function (socket) {
 
                 if (rooms[i].first_player.name === data.player_login) //TODO moze byc blad przy probie dostepu
                     rooms[i].first_player.ready_to_start_game = true;
-                else if (rooms[i].second_player === data.player_login)
+                else if (rooms[i].second_player.name === data.player_login)
                     rooms[i].second_player.ready_to_start_game = true;
                 else {
                     socket.emit('error', { message: "Something went wrong!" });
