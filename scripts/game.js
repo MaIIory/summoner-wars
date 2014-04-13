@@ -439,16 +439,15 @@ var gameLoop = function () {
             state = 2;
 
             //init faction object
-            //TODO trzeba zrobic zaleznie od wyboru
             if (player.selected_faction === 0) {
                 player.faction = new TundraOrcs();
             }
             else if(player.selected_faction === 1){
                 player.faction = new PheonixElves();
             }
-            player.faction.initDeck();
 
             //init player deck
+            player.faction.initDeck();
             player.deck = player.faction.getDeck();
 
             //add start cards to board

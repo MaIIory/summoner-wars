@@ -30,33 +30,20 @@ var Player = function (login, socket_id) {
     var that = this;
     that.name = login;
     that.socket_id = socket_id; //using during disconnection
-
     that.selected_faction = null;
-
-    //TODO for future use
     that.ready_to_start_game = false;
-    that.ready_to_start_play = false; //moze nie potrzebne bo jak selected_faction not null to moze to oznaczac ready to play
+    that.ready_to_start_play = false; 
 };
 
 
 var Room = function (Name) {
     var that = this;
     that.name = Name;
-    that.first_player = "none";
-    that.second_player = "none";
+    that.first_player = "none";  /*  containers for */
+    that.second_player = "none"; /*  Player class   */
     that.status = 0; // 0 - waiting for players, 1 - ready to start, 2 - battle in progress
-    //if players ready to START GAME
-    that.first_player_ready = false;
-    that.second_player_ready = false;
-    //if players ready to play a game
-    that.first_player_ready_to_play = false;
-    that.second_player_ready_to_play = false;
-};
 
-//TODO moze okazac sie nie potrzebne
-var Game = function () {
-    var that = this;
-}
+};
 
 /**************************************************
 ** GAME VARIABLES
@@ -115,31 +102,30 @@ io.sockets.on('connection', function (socket) {
         }
 
         for (var i = 0; i < rooms.length; i = i + 1) {
-            if ((rooms[i].first_player === data.player_login) || (rooms[i].second_player === data.player_login)) {
+            if ((rooms[i].first_player.name === data.player_login) || (rooms[i].second_player.name === data.player_login)) {
                 socket.emit('error', { message: "You have to leave any other rooms" });
                 return;
             }
         }
 
         var new_room = new Room(data.room_name);
-        new_room.first_player = data.player_login;
+        new_room.first_player = new Player(data.player_login, socket.id);
         rooms.push(new_room);
 
         //broadcast rooms to all clients
         io.sockets.emit('update_room_table', { rooms: rooms });
     });
 
+    //request for assignment to specific room
     socket.on('assign_player_to_room', function (data) {
         for (var i = 0; i < rooms.length; i = i + 1) {
             if (rooms[i].name === data.room_name) {
 
                 //case 1: unassign first player
                 //and reset players status
-                if (data.player_login === rooms[i].first_player) {
+                if (data.player_login === rooms[i].first_player.name) {
                     rooms[i].first_player = "none";
-                    //TODO not shure if two below lines are necessary
-                    rooms[i].first_player_ready = false;
-                    rooms[i].second_player_ready = false;
+
                     if (rooms[i].second_player === "none") {
                         rooms.splice(i, 1);
                         break;
@@ -148,11 +134,9 @@ io.sockets.on('connection', function (socket) {
                 }
                     //case 2: unassign second player
                     //and reset players status
-                else if (data.player_login === rooms[i].second_player) {
+                else if (data.player_login === rooms[i].second_player.name) {
                     rooms[i].second_player = "none";
-                    //TODO not shure if two below lines are necessary
-                    rooms[i].first_player_ready = false;
-                    rooms[i].second_player_ready = false;
+
                     if (rooms[i].first_player === "none") {
                         rooms.splice(i, 1);
                         break;
@@ -160,9 +144,9 @@ io.sockets.on('connection', function (socket) {
                 }
                 else {
                     if (rooms[i].first_player === "none")
-                        rooms[i].first_player = data.player_login;
+                        rooms[i].first_player = new Player(data.player_login, socket.id);
                     else if (rooms[i].second_player === "none")
-                        rooms[i].second_player = data.player_login;
+                        rooms[i].second_player = new Player(data.player_login, socket.id);
                     else {
                         socket.emit('error', { message: "No empty seat in the room" });
                         return;
@@ -171,9 +155,9 @@ io.sockets.on('connection', function (socket) {
                     //remove player from any other rooms any delete empty rooms
                     for (var j = 0; j < rooms.length; j = j + 1) {
                         if (rooms[j].name != data.room_name) {
-                            if (rooms[j].first_player === data.player_login)
+                            if (rooms[j].first_player.name === data.player_login) //TODO moze byc blad przy probie dostepu
                                 rooms[j].first_player = "none";
-                            if (rooms[j].second_player === data.player_login)
+                            if (rooms[j].second_player.name === data.player_login)
                                 rooms[j].second_player = "none";
                             if ((rooms[j].first_player === "none") && (rooms[j].second_player === "none")) {
                                 rooms.splice(j, 1);
@@ -181,11 +165,9 @@ io.sockets.on('connection', function (socket) {
                             }
                         }
                     }
-
                 }
 
-
-                //TODO check this room status
+                //check this room status
                 if ((rooms[i].first_player != "none") && (rooms[i].second_player != "none")) {
                     rooms[i].status = 1; //ready to play
                 }
@@ -195,11 +177,11 @@ io.sockets.on('connection', function (socket) {
             }
         }
 
-
         io.sockets.emit('update_room_table', { rooms: rooms });
 
     });
 
+    //report that player is ready to start game
     socket.on('join_to_game', function (data) {
 
         socket.join(data.room_name)
@@ -207,17 +189,17 @@ io.sockets.on('connection', function (socket) {
         for (var i = 0; i < rooms.length; i = i + 1) {
             if (rooms[i].name === data.room_name) {
 
-                if (rooms[i].first_player === data.player_login)
-                    rooms[i].first_player_ready = true;
+                if (rooms[i].first_player.name === data.player_login) //TODO moze byc blad przy probie dostepu
+                    rooms[i].first_player.ready_to_start_game = true;
                 else if (rooms[i].second_player === data.player_login)
-                    rooms[i].second_player_ready = true;
+                    rooms[i].second_player.ready_to_start_game = true;
                 else {
                     socket.emit('error', { message: "Something went wrong!" });
                     return;
                 }
 
-                if (rooms[i].first_player_ready && rooms[i].second_player_ready) {
-                    rooms[i].status = 2;
+                if (rooms[i].first_player.ready_to_start_game && rooms[i].second_player.ready_to_start_game) {
+                    rooms[i].status = 2; //battle in progress
                     io.sockets.in(data.room_name).emit('start_game');
                 }
 
@@ -229,24 +211,24 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
+    //report that player is ready to play battle
     socket.on('player_ready_to_play', function (data) {
 
         for (var i = 0; i < rooms.length; i = i + 1) {
             if (rooms[i].name === data.room_name) {
 
-                if (data.player_login === rooms[i].first_player) {
-                    rooms[i].first_player_ready_to_play = true;
+                if (data.player_login === rooms[i].first_player.name) {
+                    rooms[i].first_player.ready_to_start_play = true;
                 }
                 else {
-                    rooms[i].second_player_ready_to_play = true;
+                    rooms[i].second_player.ready_to_start_play = true;
                 }
 
-                if (rooms[i].first_player_ready_to_play && rooms[i].second_player_ready_to_play) {
+                if (rooms[i].first_player.ready_to_start_play && rooms[i].second_player.ready_to_start_play) {
                     io.sockets.in(data.room_name).emit('start_play');
                 }
             }
         }
-
 
         io.sockets.emit('update_room_table', { rooms: rooms });
 
