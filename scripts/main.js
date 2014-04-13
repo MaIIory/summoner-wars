@@ -230,8 +230,8 @@ var rebuildRoomTable = function (rooms) {
         room_row.setAttribute('id', rooms[i].name);
 
         addNewTd(rooms[i].name, room_row);
-        addNewTd(rooms[i].first_player, room_row);
-        addNewTd(rooms[i].second_player, room_row);
+        addNewTd(rooms[i].first_player.name, room_row);
+        addNewTd(rooms[i].second_player.name, room_row);
 
         //status handling
         if (rooms[i].status === 0) //status: waiting for players
@@ -240,11 +240,11 @@ var rebuildRoomTable = function (rooms) {
         }
         else if (rooms[i].status === 1) {
 
-            if (((rooms[i].first_player === player_login) && (rooms[i].first_player_ready)) ||
-            ((rooms[i].second_player === player_login) && (rooms[i].second_player_ready))) {
+            if (((rooms[i].first_player.name === player_login) && (rooms[i].first_player.ready_to_start_game)) ||
+            ((rooms[i].second_player.name === player_login) && (rooms[i].second_player.ready_to_start_game))) {
                 addNewTd("Waiting for your opponent", room_row);
             }
-            else if ((rooms[i].first_player === player_login) || (rooms[i].second_player === player_login)) {
+            else if ((rooms[i].first_player.name === player_login) || (rooms[i].second_player.name === player_login)) {
                 var td = document.createElement('td');
                 room_row.appendChild(td);
 
