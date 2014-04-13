@@ -335,7 +335,7 @@ var setEventHandlers = function () {
 
 
         socket.on('error', function (data) {
-            //$("#dialog-text").text(data.message);
+            $("#dialog").text(data.message);
             $('#dialog').dialog('open');
         });
 
