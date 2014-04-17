@@ -130,7 +130,7 @@ var rebuildLoginSection = function () {
             }
 
             players_list.value = "";
-            alert('teraz');
+
             for (var i = 0; i < data.players.length; i = i + 1) {
                 players_list.value += data.players[i].name;
                 players_list.value += "\n";
