@@ -153,6 +153,7 @@ io.sockets.on('connection', function (socket) {
                         return;
                     }
 
+
                     //remove player from any other rooms any delete empty rooms
                     for (var j = 0; j < rooms.length; j = j + 1) {
                         if (rooms[j].name != data.room_name) {
