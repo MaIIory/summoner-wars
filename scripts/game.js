@@ -164,16 +164,20 @@ var Board = function () {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if (that.matrix[i][j] != null) {
 
-                    /*
+                    
                     //check card owner in order to load proper facrion image
                     if (that.matrix[i][j].owner === player.name)
-                        //TODO nie powinno byc card.draw tylko pobieraj atrybuty i bezposrednio zrob drawimage dodaj opcje name do player
-                        that.matrix[i][j].draw(player.faction.image)
-                    else if(that.matrix[i][j] === opponent.name)
-                        that.matrix[i][j].draw(opponent.faction.image)
-                    else
-                        null //TODO throw execption or something
-                        */
+                        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                            that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    else if (that.matrix[i][j] === opponent.name) {
+                        $("#dialog").text("Nie powinienes byc w tym miejscu kodu:/");
+                        $('#dialog').dialog('open');
+                    }
+                    else {
+                        $("#dialog").text("Error: Card owned not found!");
+                        $('#dialog').dialog('open');
+                    }
                 }
             }
         }
