@@ -100,8 +100,8 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     //image source and draw data
     that.src_x = x;
     that.src_y = y;
-    that.height = 367;
-    that.width = 239;
+    that.height = 239;
+    that.width = 367;
 
     /*
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
