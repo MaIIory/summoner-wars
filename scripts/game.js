@@ -159,8 +159,10 @@ var Board = function () {
         //ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
 
         for (var i = 0; i < that.matrix.length; i++) {
-            if (that.matrix[i] != null)
-                that.matrix[i].draw();
+            for (var j = 0; j < that.matrix[i].length; j++) {
+                if(that.matrix[i][j] != null)
+                    that.matrix[i][j].draw()
+            }
         }
     }
 }
