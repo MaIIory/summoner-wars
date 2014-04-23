@@ -419,8 +419,8 @@ var initGame = function () {
 
 var Clear = function () {
 
-    //in state 3 (play in progress) background is draw with board by Board object
-    if (state != 3)
+    //in state 3 (play in progress) background is draw with board
+    if (state === 3)
         ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
     else
         ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
