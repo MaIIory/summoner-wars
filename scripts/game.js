@@ -76,9 +76,10 @@ socket.on('start_play', function (data) {
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
-var Player = function () {
+var Player = function (name) {
 
     var that = this;
+    that.name = name;
     that.selected_faction = 0; //Phoenic Elves by default
     that.faction = null;
     that.total_card_nb = 34;
@@ -88,12 +89,13 @@ var Player = function () {
     that.hand = [];
 }
 
-var Card = function (name, id, x, y/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
+var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
     var that = this;
 
     //basic data
-    that.name = name;
+    that.name = card_name;
     that.id = id;
+    that.owner = owner_name;
 
     //image source and draw data
     that.src_x = x;
@@ -109,7 +111,7 @@ var Card = function (name, id, x, y/*, type, ability, ability_mandatory, atack, 
     that.life_points = life_points;
     that.cost = cost;
     */
-    that.draw = function () {
+    that.draw = function (image) {
 
     }
 }
@@ -160,8 +162,19 @@ var Board = function () {
 
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
-                if(that.matrix[i][j] != null)
-                    that.matrix[i][j].draw()
+                if (that.matrix[i][j] != null) {
+
+                    /*
+                    //check card owner in order to load proper facrion image
+                    if (that.matrix[i][j].owner === player.name)
+                        //TODO nie powinno byc card.draw tylko pobieraj atrybuty i bezposrednio zrob drawimage dodaj opcje name do player
+                        that.matrix[i][j].draw(player.faction.image)
+                    else if(that.matrix[i][j] === opponent.name)
+                        that.matrix[i][j].draw(opponent.faction.image)
+                    else
+                        null //TODO throw execption or something
+                        */
+                }
             }
         }
     }
@@ -282,7 +295,7 @@ var BriefingMenu = function () {
                                    0 - mouse out
                                    1 - mouse over */
 
-    //fraction selection buttons initialization 
+    //faction selection buttons initialization 
     that.btn_sel_src_y = 963;
     that.btn_sel_w = 30;
     that.btn_sel_h = 30;
@@ -304,7 +317,7 @@ var BriefingMenu = function () {
             that.btn_begin_hoover = 0;
         }
 
-        //check fraction selection buttons
+        //check faction selection buttons
         //left
         if ((mouse_x > 253 - (that.btn_sel_w / 2)) &&
             (mouse_x < (253 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
@@ -420,7 +433,7 @@ var PlaygroundHandler = function () {
 
 var initGame = function () {
     page_handler = new MainMenu();
-    player = new Player();
+    player = new Player(player_login);
     opponent = new Player();
     board = new Board();
 }
@@ -428,6 +441,7 @@ var initGame = function () {
 var Clear = function () {
 
     //in state 3 (play in progress) background is draw with board
+    //to save memmory background is marged with board to one picture
     if (state === 3)
         ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
     else
@@ -475,7 +489,7 @@ var gameLoop = function () {
 
     else if (state === 1) {
         /* ================== */
-        /* fraction selection */
+        /* faction selection */
         /* ================== */
         page_handler.checkHover();
         page_handler.draw(player);
@@ -489,10 +503,10 @@ var gameLoop = function () {
 
             //init faction object
             if (player.selected_faction === 0) {
-                player.faction = new PheonixElves();
+                player.faction = new PheonixElves(player.name);
             }
             else if (player.selected_faction === 1) {
-                player.faction = new TundraOrcs();
+                player.faction = new TundraOrcs(player.name);
             }
 
             //init player deck
