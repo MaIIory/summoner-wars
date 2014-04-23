@@ -226,12 +226,14 @@ io.sockets.on('connection', function (socket) {
                 }
 
                 if (rooms[i].first_player.ready_to_start_play && rooms[i].second_player.ready_to_start_play) {
+                    //TODO randomly select starting player and attach this data to message
                     io.sockets.in(data.room_name).emit('start_play');
                 }
             }
         }
 
-        io.sockets.emit('update_room_table', { rooms: rooms });
+        //TODO not sure if necessary (by now disabled)
+        //io.sockets.emit('update_room_table', { rooms: rooms });
 
     });
 

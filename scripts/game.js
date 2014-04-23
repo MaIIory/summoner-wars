@@ -63,8 +63,10 @@ canvas.addEventListener('mouseup', function (evt) {
 }, false);
 
 socket.on('start_play', function (data) {
-    //TODO prepare board
-    state = 3;
+    //TODO prepare board = set page handler
+    //TODO set proper player according to received data
+    //TODO init opponent deck
+    state = 3; //play in progress
 })
 
 
@@ -83,11 +85,19 @@ var Player = function () {
     that.hand = [];
 }
 
-var Card = function (name, id/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
+var Card = function (name, id, x, y/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
     var that = this;
 
+    //basic data
     that.name = name;
     that.id = id;
+    
+    //image source and draw data
+    that.src_x = x;
+    that.src_y = y;
+    that.height = 367;
+    that.width = 239;
+
     /*
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
     that.ability = ability;
@@ -101,10 +111,18 @@ var Card = function (name, id/*, type, ability, ability_mandatory, atack, life_p
 var Board = function () {
 
     var that = this;
-    that.s_x = 50; /*   Starting    */
-    that.s_y = 50; /* coordinations */
-    that.square_w = 70;
-    that.square_h = 50;
+
+    that.s_x = 40; /*   Starting    */
+    that.s_y = 40; /* coordinations */
+
+    that.square_w = 130;
+    that.square_h = 85;
+
+    //load board image
+    that.background_image = new Image(); //background image
+    that.background_image.src = "/img/board.jpg";
+
+    //init board
     that.matrix =
         [[null, null, null, null, null, null],
         [null, null, null, null, null, null],
@@ -122,14 +140,21 @@ var Board = function () {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if (c === j) {
                         that.matrix[i][j] = card;
-                        alert(i)
                     }
                 }
             }
         }
     }
+
+    that.draw = function () {
+
+        ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
+
+        //TODO draw cards added to board
+    }
 }
 
+//Page Handlers Definitions
 var MainMenu = function () {
 
     //Set context
@@ -388,7 +413,11 @@ var initGame = function () {
 }
 
 var Clear = function () {
-    ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
+
+    //in state 3 (play in progress) background is draw with board by Board object
+    if(state != 3) 
+        ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
+    
     //ctx.fillStyle = 'black'; //set active color 
     //ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color    
@@ -409,7 +438,9 @@ var gameLoop = function () {
     Clear();
 
     if (state === 0) {
+        /* ========= */
         /* main menu */
+        /* ========= */
         page_handler.checkHover();
         page_handler.draw();
 
@@ -427,16 +458,18 @@ var gameLoop = function () {
     }
 
     else if (state === 1) {
+        /* ================== */
         /* fraction selection */
+        /* ================== */
         page_handler.checkHover();
         page_handler.draw(player);
 
         var result = page_handler.checkAction();
 
-        //start game
+        //start game button
         if (result === 1) {
 
-            state = 2;
+            state = 2; //waiting for other players
 
             //init faction object
             if (player.selected_faction === 0) {
@@ -462,7 +495,7 @@ var gameLoop = function () {
             //change page handler
             page_handler = new WaitingMenu();
 
-
+        // << select faction button
         } else if (result === 2) {
 
             //TODO AAAA TO STRASZNE !
@@ -471,6 +504,7 @@ var gameLoop = function () {
             else
                 player.selected_faction--;
 
+        // select faction button >>
         } else if (result === 3) {
 
             if (player.selected_faction === 1)
@@ -481,12 +515,21 @@ var gameLoop = function () {
     }
 
     else if (state === 2) {
+        /* ======================== */
         /* waiting for both players */
-        //TODO mogla by to byc jakas animacja, co? 
+        /* ======================== */
+
+        /* page handler and state will be changed */
+        /* after receiving 'start play' event     */
         page_handler.draw();
+
+        //TODO mogla by to byc jakas animacja, co?
     }
     else if (state === 3) {
+        /* ========== */
         /* playground */
+        /* ========== */
+        board.draw();
     }
 
 
