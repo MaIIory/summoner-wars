@@ -6,9 +6,12 @@ var ctx = canvas.getContext('2d');
 var width = 1024;   //canvas width and background image
 var height = 768;   //canvas height and background image
 
-//load background image
+//load background images
 var background_image = new Image();
 background_image.src = "/img/background.jpg";
+
+var background_image_with_board = new Image();
+background_image_with_board.src = "/img/board.jpg";
 
 //game state
 var state = 0; /* 0 - main menu
@@ -91,7 +94,7 @@ var Card = function (name, id, x, y/*, type, ability, ability_mandatory, atack, 
     //basic data
     that.name = name;
     that.id = id;
-    
+
     //image source and draw data
     that.src_x = x;
     that.src_y = y;
@@ -148,7 +151,9 @@ var Board = function () {
 
     that.draw = function () {
 
-        ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
+        // TODO uncomment this line when rest of the game will be finished
+        //and modify Clear() function 
+        //ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
 
         //TODO draw cards added to board
     }
@@ -415,9 +420,12 @@ var initGame = function () {
 var Clear = function () {
 
     //in state 3 (play in progress) background is draw with board by Board object
-    if(state != 3) 
+    if (state != 3)
+        ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
+    else
         ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
-    
+
+
     //ctx.fillStyle = 'black'; //set active color 
     //ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color    
@@ -475,7 +483,7 @@ var gameLoop = function () {
             if (player.selected_faction === 0) {
                 player.faction = new TundraOrcs();
             }
-            else if(player.selected_faction === 1){
+            else if (player.selected_faction === 1) {
                 player.faction = new PheonixElves();
             }
 
@@ -495,7 +503,7 @@ var gameLoop = function () {
             //change page handler
             page_handler = new WaitingMenu();
 
-        // << select faction button
+            // << select faction button
         } else if (result === 2) {
 
             //TODO AAAA TO STRASZNE !
@@ -504,7 +512,7 @@ var gameLoop = function () {
             else
                 player.selected_faction--;
 
-        // select faction button >>
+            // select faction button >>
         } else if (result === 3) {
 
             if (player.selected_faction === 1)
@@ -529,6 +537,7 @@ var gameLoop = function () {
         /* ========== */
         /* playground */
         /* ========== */
+
         board.draw();
     }
 
