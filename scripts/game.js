@@ -170,7 +170,7 @@ var Board = function () {
                         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
                         ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
                             that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                    else if (that.matrix[i][j] === opponent.name) {
+                    else if (that.matrix[i][j].owner === opponent.name) {
                         $("#dialog").text("Nie powinienes byc w tym miejscu kodu:/");
                         $('#dialog').dialog('open');
                     }
