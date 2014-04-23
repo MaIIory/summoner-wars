@@ -109,6 +109,9 @@ var Card = function (name, id, x, y/*, type, ability, ability_mandatory, atack, 
     that.life_points = life_points;
     that.cost = cost;
     */
+    that.draw = function () {
+
+    }
 }
 
 var Board = function () {
@@ -155,7 +158,10 @@ var Board = function () {
         //and modify Clear() function 
         //ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
 
-        //TODO draw cards added to board
+        for (var i = 0; i < that.matrix.length; i++) {
+            if (that.matrix[i] != null)
+                that.matrix[i].draw();
+        }
     }
 }
 
@@ -481,10 +487,10 @@ var gameLoop = function () {
 
             //init faction object
             if (player.selected_faction === 0) {
-                player.faction = new TundraOrcs();
+                player.faction = new PheonixElves();
             }
             else if (player.selected_faction === 1) {
-                player.faction = new PheonixElves();
+                player.faction = new TundraOrcs();
             }
 
             //init player deck
