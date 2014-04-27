@@ -13,11 +13,20 @@ background_image.src = "/img/background.jpg";
 var background_image_with_board = new Image();
 background_image_with_board.src = "/img/board.jpg";
 
-//game state
+//game state indicators
 var state = 0; /* 0 - main menu
                   1 - briefing (faction selection)
                   2 - waiting for other players 
                   3 - play in progress */
+
+var game_phase = 3; /* 0 - draw phase
+                       1 - summon phase
+                       2 - event phase
+                       3 - move phase (start phase)
+                       4 - atack phase
+                       5 - build magic phase */
+
+var your_turn = false;
 
 //actual page handler
 var page_handler = null;
@@ -67,7 +76,6 @@ canvas.addEventListener('mouseup', function (evt) {
 
 socket.on('start_play', function (data) {
     //TODO prepare board = set page handler
-    //TODO set proper player according to received data
 
     //create new oppponent instance and determine faction
     if (player.name != data.first_player_name) {
@@ -100,6 +108,10 @@ socket.on('start_play', function (data) {
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
 
+    //determine who start 
+    //data.starting_player: 0 - first player, 1 - second player
+    if (((player.name === data.first_player_name) && (data.starting_player === 0)) || ((player.name === data.second_player_name) && (data.starting_player === 1)))
+        your_turn = true;
 
     state = 3; //play in progress
 })
@@ -602,7 +614,8 @@ var gameLoop = function () {
         /* ========== */
 
         board.draw();
-        ctx.fillText('your opponent: ' + opponent.name, 800, 600);
+        ctx.fillText('your opponent: ' + opponent.name, 850, 600);
+        ctx.fillText('your turn: ' + your_turn, 850, 620);
     }
 
 
