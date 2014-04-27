@@ -88,12 +88,10 @@ socket.on('start_play', function (data) {
     //init opponent deck
     opponent.faction.initDeck();
 
-    //add start cards to board
+    //add oppnents start cards to board
     var start_cards = opponent.faction.getStartCards();
 
-
     for (var i = 0; i < start_cards.length; i++) {
-
         start_cards[i][1], start_cards[i][2] = rotate180(start_cards[i][1], start_cards[i][2]);
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
@@ -497,7 +495,7 @@ var rotate180 = function (x, y) {
     c_x = 3;
     c_y = 4;
 
-    return c_x - (x - c_x), c_y - (y - c_y)
+    return c_x - (x - c_x) - 1, c_y - (y - c_y) - 1
 }
 
 /************************Main game loop************************/
@@ -600,7 +598,7 @@ var gameLoop = function () {
         /* ========== */
 
         board.draw();
-        ctx.fillText('op: ' + opponent.name, 900, 640);
+        ctx.fillText('your opponent: ' + opponent.name, 800, 600);
     }
 
 
