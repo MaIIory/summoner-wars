@@ -72,7 +72,7 @@ socket.on('start_play', function (data) {
     //create new oppponent instance and determine faction
     if (player.name != data.first_player_name) {
         opponent = new Player(data.first_player_name);
-        if(data.first_player_faction === 0)
+        if (data.first_player_faction === 0)
             opponent.faction = new PheonixElves(opponent.name)
         else
             opponent.faction = new TundraOrcs(opponent.name)
@@ -91,13 +91,13 @@ socket.on('start_play', function (data) {
     //add start cards to board
     var start_cards = opponent.faction.getStartCards();
 
-    
+
     for (var i = 0; i < start_cards.length; i++) {
 
         start_cards[i][1], start_cards[i][2] = rotate180(start_cards[i][1], start_cards[i][2]);
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
-    
+
 
     state = 3; //play in progress
 })
@@ -195,15 +195,15 @@ var Board = function () {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if (that.matrix[i][j] != null) {
 
-                    
-                    //check card owner in order to load proper facrion image
+
+                    //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
                         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
                         ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
                             that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     else if (that.matrix[i][j].owner === opponent.name) {
-                        $("#dialog").text("Nie powinienes byc w tym miejscu kodu:/");
-                        $('#dialog').dialog('open');
+                        ctx.drawImage(opponent.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                            that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                     else {
                         $("#dialog").text("Error: Card owned not found!");
@@ -558,8 +558,9 @@ var gameLoop = function () {
             }
 
             //send ready event
-            socket.emit('player_ready_to_play', { 
-                   room_name: room_name, player_login: player_login, player_faction: player.selected_faction })
+            socket.emit('player_ready_to_play', {
+                room_name: room_name, player_login: player_login, player_faction: player.selected_faction
+            })
 
             //change page handler
             page_handler = new WaitingMenu();
@@ -576,7 +577,7 @@ var gameLoop = function () {
         } else if (result === 3) {
 
             if (player.selected_faction === 1)
-                player.selected_faction --;
+                player.selected_faction--;
             else
                 player.selected_faction++;
         }
