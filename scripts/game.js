@@ -68,7 +68,8 @@ canvas.addEventListener('mouseup', function (evt) {
 socket.on('start_play', function (data) {
     //TODO prepare board = set page handler
     //TODO set proper player according to received data
-    //TODO init opponent deck
+
+    opponent = new Player(data.opponent_name);
     state = 3; //play in progress
 })
 
@@ -80,13 +81,14 @@ var Player = function (name) {
 
     var that = this;
     that.name = name;
-    that.selected_faction = 0; //Phoenic Elves by default
+    that.selected_faction = 0; //Phoenic Elves by default, 1 - Tundra Orcs
     that.faction = null;
-    that.total_card_nb = 34;
-    that.magic_pile = [];
-    that.deck = [];
-    that.discard_pile = [];
-    that.hand = [];
+
+    //TODO dane ponizej moga wchodzic w sklad faction
+    //that.magic_pile = [];
+    //that.deck = [];
+    //that.discard_pile = [];
+    //that.hand = [];
 }
 
 var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
@@ -438,7 +440,6 @@ var PlaygroundHandler = function () {
 var initGame = function () {
     page_handler = new MainMenu();
     player = new Player(player_login);
-    opponent = new Player();
     board = new Board();
 }
 
@@ -458,10 +459,8 @@ var Clear = function () {
     ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
     ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
     ctx.fillText('Game state: ' + state, 50, 70);
-    ctx.fillText('decks length: ' + player.deck.length, 50, 80);
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
-    ctx.fillText('matrix: ' + board.matrix, 50, 150);
 
 }
 
@@ -515,7 +514,6 @@ var gameLoop = function () {
 
             //init player deck
             player.faction.initDeck();
-            player.deck = player.faction.getDeck();
 
             //add start cards to board
             var start_cards = player.faction.getStartCards();
@@ -524,7 +522,8 @@ var gameLoop = function () {
             }
 
             //send ready event
-            socket.emit('player_ready_to_play', { room_name: room_name, player_login: player_login })
+            socket.emit('player_ready_to_play', { 
+                   room_name: room_name, player_login: player_login, player_faction: player.selected_faction })
 
             //change page handler
             page_handler = new WaitingMenu();
@@ -532,9 +531,8 @@ var gameLoop = function () {
             // << select faction button
         } else if (result === 2) {
 
-            //TODO AAAA TO STRASZNE !
             if (player.selected_faction === 0)
-                player.selected_faction = 1;
+                player.selected_faction++;
             else
                 player.selected_faction--;
 
@@ -542,7 +540,7 @@ var gameLoop = function () {
         } else if (result === 3) {
 
             if (player.selected_faction === 1)
-                player.selected_faction = 0;
+                player.selected_faction --;
             else
                 player.selected_faction++;
         }

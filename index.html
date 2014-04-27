@@ -1,46 +1,57 @@
-<!DOCTYPE html>
+<!DOCTYPE=20html>
 <html>
 <head>
-    <meta charset="utf-8">
+=20=20=20=20<meta=20charset=3D"utf-8">
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+=20=20=20=20<link=20rel=3D"stylesheet"=20href=3D"//code.jquery.com/ui/1.1=
+0.4/themes/smoothness/jquery-ui.css">
+=20=20=20=20<script=20src=3D"//code.jquery.com/jquery-1.9.1.js"></script>=
 
-    <script src="/socket.io/socket.io.js"></script>
+=20=20=20=20<script=20src=3D"//code.jquery.com/ui/1.10.4/jquery-ui.js"></=
+script>
 
-    <script type="text/javascript" src="/scripts/factions.js"></script>
-    <script>
-        $(function () {
-            $("#dialog").dialog({
-                autoOpen: false,
-                show: {
-                    effect: "blind",
-                    duration: 1000
-                },
-                hide: {
-                    effect: "explode",
-                    duration: 1000
-                }
-            });
-        });
-    </script>
+=20=20=20=20<script=20src=3D"/socket.io/socket.io.js"></script>
+
+=20=20=20=20<script=20type=3D"text/javascript"=20src=3D"/scripts/factions=
+.js"></script>
+=20=20=20=20<script>
+=20=20=20=20=20=20=20=20$(function=20()=20{
+=20=20=20=20=20=20=20=20=20=20=20=20$("#dialog").dialog({
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20autoOpen:=20false,
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20show:=20{
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20effect:=20"bl=
+ind",
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20duration:=201=
+000
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20},
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20hide:=20{
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20effect:=20"ex=
+plode",
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20duration:=201=
+000
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20}
+=20=20=20=20=20=20=20=20=20=20=20=20});
+=20=20=20=20=20=20=20=20});
+=20=20=20=20</script>
 
 </head>
 
-<body id='main_body'>
+<body=20id=3D'main=5Fbody'>
 
-    <div id="dialog" title="Basic dialog">
-        <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-    </div>
-    <button id="opener">Open Dialog</button>
+=20=20=20=20<div=20id=3D"dialog"=20title=3D"Basic=20dialog">
+=20=20=20=20=20=20=20=20<p>This=20is=20an=20animated=20dialog=20which=20i=
+s=20useful=20for=20displaying=20information.=20The=20dialog=20window=20ca=
+n=20be=20moved,=20resized=20and=20closed=20with=20the=20'x'=20icon.</p>
+=20=20=20=20</div>
+=20=20=20=20<button=20id=3D"opener">Open=20Dialog</button>
 
-    <h1>Summoner Wars</h1>
+=20=20=20=20<h1>Summoner=20Wars</h1>
 
-    <div id='page_content'>
-    </div>
+=20=20=20=20<div=20id=3D'page=5Fcontent'>
+=20=20=20=20</div>
 
-    <script type="text/javascript" src="/scripts/main.js"></script>
+=20=20=20=20<script=20type=3D"text/javascript"=20src=3D"/scripts/main.js"=
+></script>
 
 </body>
 

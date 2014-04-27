@@ -2,14 +2,14 @@ var PheonixElves = function (player_name) {
 
     var that = this;
     that.player_name = player_name;
-    deck = [];
+    that.deck = [];
 
     that.image = new Image(); //background image
     that.image.src = "/img/phoenix_elves.jpg";
 
     that.initDeck = function () {
 
-        deck = [
+        that.deck = [
             /* new Card(name, id, src_x, src_y) */
             new Card('Archer', 'pe03', 0, 0, that.player_name),
             new Card('Archer', 'pe04', 0, 0, that.player_name),
@@ -43,7 +43,7 @@ var PheonixElves = function (player_name) {
     }
 
     that.getDeck = function () {
-        return deck;
+        return that.deck;
     }
 
     that.getStartCards = function () {
@@ -60,7 +60,7 @@ var PheonixElves = function (player_name) {
 
 }
 
-
+//TODO zrob kopie elfow i nanies zmiany
 var TundraOrcs = function () {
 
     var that = this;

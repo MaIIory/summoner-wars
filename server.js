@@ -142,6 +142,8 @@ io.sockets.on('connection', function (socket) {
                         break;
                     }
                 }
+                    //case 3: assign player
+                    //to first free seat
                 else {
                     if (rooms[i].first_player === "none")
                         rooms[i].first_player = new Player(data.player_login, socket.id);
@@ -220,14 +222,21 @@ io.sockets.on('connection', function (socket) {
 
                 if (data.player_login === rooms[i].first_player.name) {
                     rooms[i].first_player.ready_to_start_play = true;
+                    rooms[i].first_player.selected_faction = data.player_faction;
                 }
                 else {
                     rooms[i].second_player.ready_to_start_play = true;
+                    rooms[i].second_player.selected_faction = data.player_faction;
                 }
 
+                //if both players are ready start game
                 if (rooms[i].first_player.ready_to_start_play && rooms[i].second_player.ready_to_start_play) {
-                    //TODO randomly select starting player and attach this data to message
-                    io.sockets.in(data.room_name).emit('start_play');
+                                        
+                    
+                    io.sockets.in(data.room_name).emit('start_play', { 
+                                       starting_player: Math.floor(Math.random()*2),
+                                       
+                                       });
                 }
             }
         }
