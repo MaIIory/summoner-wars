@@ -91,13 +91,13 @@ socket.on('start_play', function (data) {
     //add start cards to board
     var start_cards = opponent.faction.getStartCards();
 
-    /*
+    
     for (var i = 0; i < start_cards.length; i++) {
 
         start_cards[i][1], start_cards[i][2] = rotate180(start_cards[i][1], start_cards[i][2]);
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
-    */
+    
 
     state = 3; //play in progress
 })
@@ -599,7 +599,7 @@ var gameLoop = function () {
         /* ========== */
 
         board.draw();
-        ctx.fillText('op: ' + opponent.name, 950, 700);
+        ctx.fillText('op: ' + opponent.name, 900, 640);
     }
 
 
