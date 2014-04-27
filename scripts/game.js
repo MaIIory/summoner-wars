@@ -69,8 +69,21 @@ socket.on('start_play', function (data) {
     //TODO prepare board = set page handler
     //TODO set proper player according to received data
 
-    //create new oppponent instance 
-    opponent = new Player(data.opponent_name);
+    //create new oppponent instance and determine faction
+    if (player.name != data.first_player_name) {
+        opponent = new Player(data.first_player_name);
+        if(data.first_player_faction === 0)
+            opponent.faction = new PheonixElves(opponent.name)
+        else
+            opponent.faction = new TundraOrcs(opponent.name)
+    }
+    else {
+        opponent = new Player(data.second_player_name);
+        if (data.second_player_faction === 0)
+            opponent.faction = new PheonixElves(opponent.name)
+        else
+            opponent.faction = new TundraOrcs(opponent.name)
+    }
 
     //init opponent deck
     opponent.faction.initDeck();
@@ -586,6 +599,7 @@ var gameLoop = function () {
         /* ========== */
 
         board.draw();
+        ctx.fillText('op: ' + opponent.name, 950, 700);
     }
 
 

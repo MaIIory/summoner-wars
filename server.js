@@ -30,7 +30,7 @@ var Player = function (login, socket_id) {
     var that = this;
     that.name = login;
     that.socket_id = socket_id; //using during disconnection
-    that.selected_faction = null;
+    that.selected_faction = null; //0 - phoenix elves, 1 - tundra orcs
     that.ready_to_start_game = false;
     that.ready_to_start_play = false; 
 };
@@ -232,10 +232,12 @@ io.sockets.on('connection', function (socket) {
                 //if both players are ready start game
                 if (rooms[i].first_player.ready_to_start_play && rooms[i].second_player.ready_to_start_play) {
                                         
-                    
                     io.sockets.in(data.room_name).emit('start_play', { 
-                                       starting_player: Math.floor(Math.random()*2),
-                                       
+                        starting_player: Math.floor(Math.random() * 2),
+                        first_player_name: rooms[i].first_player.name,
+                        second_player_name: rooms[i].second_player.name,
+                        first_player_faction: rooms[i].first_player.selected_faction,
+                        second_player_faction: rooms[i].second_player.selected_faction
                                        });
                 }
             }
