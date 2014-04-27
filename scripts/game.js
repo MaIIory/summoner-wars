@@ -69,7 +69,21 @@ socket.on('start_play', function (data) {
     //TODO prepare board = set page handler
     //TODO set proper player according to received data
 
+    //create new oppponent instance 
     opponent = new Player(data.opponent_name);
+
+    //init opponent deck
+    opponent.faction.initDeck();
+
+    //add start cards to board
+    var start_cards = opponent.faction.getStartCards();
+
+    for (var i = 0; i < start_cards.length; i++) {
+
+        start_cards[i][1], start_cards[i][2] = rotate180(start_cards[i][1], start_cards[i][2]);
+        board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
+    }
+
     state = 3; //play in progress
 })
 
@@ -462,6 +476,13 @@ var Clear = function () {
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
 
+}
+
+var rotate180 = function (x, y) {
+    c_x = 3;
+    c_y = 4;
+
+    return c_x - (x - c_x), c_y - (y - c_y)
 }
 
 /************************Main game loop************************/
