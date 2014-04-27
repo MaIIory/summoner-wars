@@ -92,7 +92,9 @@ socket.on('start_play', function (data) {
     var start_cards = opponent.faction.getStartCards();
 
     for (var i = 0; i < start_cards.length; i++) {
+        alert(start_cards[i][1] + ", " + start_cards[i][2])
         start_cards[i][1], start_cards[i][2] = rotate180(start_cards[i][1], start_cards[i][2]);
+        alert(start_cards[i][1] + ", " + start_cards[i][2])
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
 
