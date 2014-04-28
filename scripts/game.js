@@ -227,6 +227,7 @@ var Board = function () {
 
                         //check if player click eyeglass (20x20px in the middle of the card)
                         if (that.matrix[i][j].selected &&
+                            mouse_button_down &&
                             (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
                             (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
                             (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
@@ -283,9 +284,9 @@ var Board = function () {
                         ctx.fillText('SELECTED', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 40);
 
                     if (that.matrix[i][j].draw_big_picture)
-                        ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
-                        //ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
-                        //    (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
+                        //ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
+                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                            (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
 
                 }
             }
