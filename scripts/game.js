@@ -214,12 +214,18 @@ var Board = function () {
                     if ((mouse_x > that.s_x + (j * that.square_w)) &&
                         (mouse_x < that.s_x + (j * that.square_w) + that.square_w) &&
                         (mouse_y > that.s_y + (i * that.square_h)) &&
-                        (mouse_y < that.s_y + (i * that.square_h) + that.square_h)
-                        )
-                        that.matrix[i][j].hover = true;
-                    else
-                        that.matrix[i][j].hover = false;
+                        (mouse_y < that.s_y + (i * that.square_h) + that.square_h)) {
 
+                        that.matrix[i][j].hover = true;
+                        if (mouse_button_down)
+                            that.matrix[i][j].selected = true;
+
+                    }
+                    else {
+                        that.matrix[i][j].hover = false;
+                        if (mouse_button_down)
+                            that.matrix[i][j].selected = false;
+                    }
                 }
             }
         }
@@ -254,6 +260,11 @@ var Board = function () {
 
                     if (that.matrix[i][j].hover)
                         ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
+
+                    if (that.matrix[i][j].selected)
+                        ctx.fillText('SELECTED', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 40);
+
+
                 }
             }
         }
