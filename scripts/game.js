@@ -147,6 +147,7 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     that.width = 367;
     that.hover = false;
     that.selected = false;
+    that.draw_big_picture = false;
 
     /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
@@ -217,14 +218,31 @@ var Board = function () {
                         (mouse_y < that.s_y + (i * that.square_h) + that.square_h)) {
 
                         that.matrix[i][j].hover = true;
+
+                        //check if player wish to to select card
                         if (mouse_button_down)
                             that.matrix[i][j].selected = true;
 
+                        //TODO something with control menu
+
+                        //check if player click eyeglass (20x20px in the middle of the card)
+                        if (that.matrix[i][j].selected &&
+                            (mouse_x > ((that.s_x + (j * that.square_w) + that.square_w) / 2) - 10) &&
+                            (mouse_x < ((that.s_x + (j * that.square_w) + that.square_w) / 2) + 10) &&
+                            (mouse_y > ((that.s_y + (i * that.square_h) + that.square_h) / 2) - 10) &&
+                            (mouse_y > ((that.s_y + (i * that.square_h) + that.square_h) / 2) + 10))
+                            that.matrix[i][j].draw_big_picture = true;
                     }
                     else {
+
                         that.matrix[i][j].hover = false;
-                        if (mouse_button_down)
+
+                        //check id player wish to deselect card
+                        if (mouse_button_down) {
                             that.matrix[i][j].selected = false;
+                            that.matrix[i][j].draw_big_picture = false;
+
+                        }
                     }
                 }
             }
@@ -264,6 +282,9 @@ var Board = function () {
                     if (that.matrix[i][j].selected)
                         ctx.fillText('SELECTED', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 40);
 
+                    if (that.matrix[i][j].draw_big_picture)
+                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                            (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
 
                 }
             }
