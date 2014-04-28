@@ -230,7 +230,7 @@ var Board = function () {
                             (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
                             (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
                             (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
-                            (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10))
+                            (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10))
                             that.matrix[i][j].draw_big_picture = true;
                     }
                     else {
