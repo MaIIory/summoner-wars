@@ -100,11 +100,9 @@ socket.on('start_play', function (data) {
     var start_cards = opponent.faction.getStartCards();
 
     for (var i = 0; i < start_cards.length; i++) {
-        alert(start_cards[i][1] + ", " + start_cards[i][2])
         var tmp_res = rotate180(start_cards[i][1], start_cards[i][2]);
         start_cards[i][1] = tmp_res[0]
         start_cards[i][2] = tmp_res[1]
-        alert(start_cards[i][1] + ", " + start_cards[i][2])
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
 
@@ -147,8 +145,10 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     that.src_y = y;
     that.height = 239;
     that.width = 367;
+    that.hover = false;
+    that.selected = false;
 
-    /*
+    /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
     that.ability = ability;
     that.ability_mandatory = ability_mandatory;
@@ -199,6 +199,34 @@ var Board = function () {
         }
     }
 
+    that.checkMouseActivity = function () {
+
+        /* function of this method:
+           - in case of hover change "hover indicator" in Card object
+           - in case of click on card change "selection indicator" in Card object
+        */
+
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+                if (that.matrix[i][j] != null) {
+
+                    //check if mouse is over card
+                    if ((mouse_x > that.s_x + (j * that.square_w)) &&
+                        (mouse_x < that.s_x + (j * that.square_w) + that.square_w) &&
+                        (mouse_y > that.s_y + (i * that.square_h)) &&
+                        (mouse_y < that.s_y + (i * that.square_h) + that.square_h)
+                        )
+                        that.matrix[i][j].hover = true;
+                    else
+                        that.matrix[i][j].hover = false;
+
+                }
+            }
+        }
+
+
+    }
+
     that.draw = function () {
 
         // TODO uncomment this line when rest of the game will be finished
@@ -223,6 +251,9 @@ var Board = function () {
                         $("#dialog").text("Error: Card owned not found!");
                         $('#dialog').dialog('open');
                     }
+
+                    if (that.matrix[i][j].hover)
+                        ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
                 }
             }
         }
@@ -613,9 +644,36 @@ var gameLoop = function () {
         /* playground */
         /* ========== */
 
+        if (your_turn) {
+
+            if (game_phase === 0) {
+
+            } else if (game_phase === 1) {
+
+            } else if (game_phase === 2) {
+
+            } else if (game_phase === 3) {
+                /* PSEUDO 
+                board.checkHover(); draw eyeglass for all card
+
+                */
+
+            } else if (game_phase === 4) {
+
+            } else if (game_phase === 5) {
+
+            }
+
+        } else {
+
+
+
+        }
+
+        board.checkMouseActivity();
         board.draw();
-        ctx.fillText('your opponent: ' + opponent.name, 850, 600);
-        ctx.fillText('your turn: ' + your_turn, 850, 620);
+        ctx.fillText('your opponent: ' + opponent.name, 840, 600);
+        ctx.fillText('your turn: ' + your_turn, 840, 610);
     }
 
 
