@@ -283,10 +283,13 @@ var Board = function () {
                     if (that.matrix[i][j].selected)
                         ctx.fillText('SELECTED', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 40);
 
-                    if (that.matrix[i][j].draw_big_picture)
+                    if (that.matrix[i][j].draw_big_picture) {
                         //ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
+                        ctx.fillStyle = 'black'; //set active color 
+                        ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
                             (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
+                    }
 
                 }
             }
