@@ -227,10 +227,10 @@ var Board = function () {
 
                         //check if player click eyeglass (20x20px in the middle of the card)
                         if (that.matrix[i][j].selected &&
-                            (mouse_x > ((that.s_x + (j * that.square_w) + that.square_w) / 2) - 10) &&
-                            (mouse_x < ((that.s_x + (j * that.square_w) + that.square_w) / 2) + 10) &&
-                            (mouse_y > ((that.s_y + (i * that.square_h) + that.square_h) / 2) - 10) &&
-                            (mouse_y > ((that.s_y + (i * that.square_h) + that.square_h) / 2) + 10))
+                            (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
+                            (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
+                            (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
+                            (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10))
                             that.matrix[i][j].draw_big_picture = true;
                     }
                     else {
