@@ -5,7 +5,7 @@ var PheonixElves = function (player_name) {
     that.deck = [];
 
     that.image = new Image(); //background image
-    that.image.src = "/img/phoenix_elves.jpg";
+    that.image.src = "/img/phoenix_elves.png";
 
     that.initDeck = function () {
 
