@@ -289,7 +289,7 @@ var Board = function () {
                         //ctx.fillRect(0, 0, width, height);
                         //ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
                         //    (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
-                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, 367, 239, 200, 200, 367, 239);
+                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 200, 200, 367, 239);
                     }
 
                 }
