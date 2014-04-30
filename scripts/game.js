@@ -287,8 +287,9 @@ var Board = function () {
                         //ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
                         //ctx.fillStyle = 'black'; //set active color 
                         //ctx.fillRect(0, 0, width, height);
-                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
-                            (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
+                        //ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                        //    (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
+                        ctx.drawImage(player.faction.image, 0, 0, 367, 239, 200, 200, 367, 239);
                     }
 
                 }
@@ -527,9 +528,6 @@ var WaitingMenu = function () {
     that.image = new Image(); //background image
     that.image.src = "/img/waiting_menu.png";
 
-    that.tmp_image = new Image();
-    that.tmp_image.src = "/img/phoenix_elves.jpg";
-
     //logo settings
     that.img_width = 600; //logo width
     that.img_height = 100; //logo height
@@ -539,7 +537,7 @@ var WaitingMenu = function () {
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
         //draw logo
         ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (that.img_height / 2), that.img_width, that.img_height);
-        ctx.drawImage(that.tmp_image, 0, 0, 367, 239, 200, 200, 367, 239);
+        
     }
 }
 
