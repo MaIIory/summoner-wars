@@ -527,6 +527,9 @@ var WaitingMenu = function () {
     that.image = new Image(); //background image
     that.image.src = "/img/waiting_menu.png";
 
+    that.tmp_image = new Image();
+    that.tmp_image.src = "/img/phoenix_elves.jpg";
+
     //logo settings
     that.img_width = 600; //logo width
     that.img_height = 100; //logo height
@@ -536,6 +539,7 @@ var WaitingMenu = function () {
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
         //draw logo
         ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (that.img_height / 2), that.img_width, that.img_height);
+        ctx.drawImage(that.tmp_image, 0, 0, 367, 239, 200, 200, 367, 239);
     }
 }
 
