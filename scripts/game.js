@@ -176,6 +176,9 @@ var Board = function () {
     that.background_image = new Image(); //background image
     that.background_image.src = "/img/board.jpg";
 
+    that.tmp_img = new Image();
+    that.background_image.src = "/img/eye_glass.png";
+
     //init board
     that.matrix =
         [[null, null, null, null, null, null],
@@ -281,6 +284,9 @@ var Board = function () {
                         ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
                     if (that.matrix[i][j].selected)
+                        ctx.drawImage(that.tmp_image, 0, 0, 367, 239,
+                            that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), 367, 239);
+
                         ctx.fillText('SELECTED', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 40);
 
                     if (that.matrix[i][j].draw_big_picture) {
