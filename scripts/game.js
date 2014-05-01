@@ -284,7 +284,8 @@ var Board = function () {
                         ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
                     if (that.matrix[i][j].selected)
-                        ctx.drawImage(that.tmp_img, 0, 0, 367, 239, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), 367, 239);
+                        ctx.drawImage(that.tmp_img, 0, 0, that.matrix[i][j].width, that.matrix[i][j].height, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        
 
                     if (that.matrix[i][j].draw_big_picture) {
                         //ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
@@ -293,6 +294,7 @@ var Board = function () {
                         //ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
                         //    (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
                         ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+                        
                     }
 
                 }
