@@ -293,9 +293,9 @@ var Board = function () {
                     if (that.matrix[i][j].hover)
                         ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
-                    ctx.fillText('1: ', 50, 120);
+                    ctx.fillText('xxxxxxxxx: ' + mouse_state, 50, 110);
                     if (that.matrix[i][j].selected) {
-                        ctx.fillText('2: ', 50, 130);
+                        ctx.fillText('yyyyyyyyyy: ' + mouse_state, 70, 110);
                         ctx.drawImage(that.tmp_img, 0, 0, that.matrix[i][j].width, that.matrix[i][j].height, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                         
