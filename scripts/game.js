@@ -229,7 +229,7 @@ var Board = function () {
                         that.matrix[i][j].hover = true;
 
                         //check if player wish to to select card
-                        if ((mouse_state === 1) && !that.matrix[i][j].selected) {
+                        if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
                             mouse_state = 2; //mouse state -> used
                         }
