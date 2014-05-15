@@ -257,6 +257,7 @@ var Board = function () {
                             that.matrix[i][j].draw_big_picture = false;
                         }
                     }
+                    mouse_state = 2;
                 }
             }
         }
