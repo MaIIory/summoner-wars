@@ -293,8 +293,11 @@ var Board = function () {
                     if (that.matrix[i][j].hover)
                         ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
-                    if (that.matrix[i][j].selected)
+                    ctx.fillText('1: ', 50, 120);
+                    if (that.matrix[i][j].selected) {
+                        ctx.fillText('2: ', 50, 130);
                         ctx.drawImage(that.tmp_img, 0, 0, that.matrix[i][j].width, that.matrix[i][j].height, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    }
                         
 
                     if (that.matrix[i][j].draw_big_picture) {
