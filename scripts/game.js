@@ -1,6 +1,8 @@
 //alert("asdasd");
+
 /*********************VARIABLES DECLARATION********************/
 //-----------------------------------------------------------//
+
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var width = 1024;   //canvas width and background image
@@ -34,13 +36,11 @@ var page_handler = null;
 //mouse settings
 var mouse_x = 0;
 var mouse_y = 0;
-var mouse_cnt = 0; /* 0 - standby
-                          1 - mouse clicked
-                          2 =< - mouse is still clicked*/
-
 var mouse_button_down = false;
 var trigger_pulled = false;
-
+var mouse_state = 0; /* 0 - standby
+                        1 - clicked
+                        2 - used */
 //players settings
 var player = null;
 var opponent = null;
@@ -71,13 +71,14 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('mousedown', function (evt) {
     mouse_button_down = true;
-    mouse_cnt++;
+    if (mouse_state === 0)
+        mouse_state = 1;
 }, false);
 
 canvas.addEventListener('mouseup', function (evt) {
     mouse_button_down = false;
     trigger_pulled = false;
-    mouse_cnt = 0;
+    mouse_state = 0;
 }, false);
 
 socket.on('start_play', function (data) {
@@ -228,16 +229,15 @@ var Board = function () {
                         that.matrix[i][j].hover = true;
 
                         //check if player wish to to select card
-                        if (mouse_cnt === 1 && !that.matrix[i][j].selected) {
+                        if ((mouse_state++ === 1) && !that.matrix[i][j].selected) {
                             that.matrix[i][j].selected = true;
-                            mouse_cnt = 0; //increase mouse counter to avoid printing eyeglass in the same click
                         }
 
                         //TODO something with control menu
 
                         //check if player click eyeglass (20x20px in the middle of the card)
                         if (that.matrix[i][j].selected &&
-                            (mouse_cnt === 1) &&
+                            (mouse_state++ === 1) &&
                             (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
                             (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
                             (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
@@ -249,7 +249,7 @@ var Board = function () {
                         that.matrix[i][j].hover = false;
 
                         //check id player wish to deselect card
-                        if (mouse_cnt === 1) {
+                        if (mouse_state++ === 1) {
                             that.matrix[i][j].selected = false;
                             that.matrix[i][j].draw_big_picture = false;
 
@@ -586,6 +586,7 @@ var Clear = function () {
     ctx.fillText('Game state: ' + state, 50, 70);
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
+    ctx.fillText('mouse state: ' + mouse_state, 50, 110);
 
 }
 
