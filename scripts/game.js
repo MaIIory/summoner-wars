@@ -228,7 +228,7 @@ var Board = function () {
                         that.matrix[i][j].hover = true;
 
                         //check if player wish to to select card
-                        if (mouse_cnt === 1) {
+                        if (mouse_cnt === 1 && !that.matrix[i][j].selected) {
                             that.matrix[i][j].selected = true;
                             mouse_cnt++; //increase mouse counter to avoid printing eyeglass in the same click
                         }
