@@ -255,7 +255,6 @@ var Board = function () {
                         if (mouse_state === 1) {
                             that.matrix[i][j].selected = false;
                             that.matrix[i][j].draw_big_picture = false;
-                            mouse_state = 2; //mouse state -> used
                         }
                     }
                 }
