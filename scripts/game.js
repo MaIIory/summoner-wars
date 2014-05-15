@@ -34,6 +34,10 @@ var page_handler = null;
 //mouse settings
 var mouse_x = 0;
 var mouse_y = 0;
+var mouse_cnt = 0; /* 0 - standby
+                          1 - mouse clicked
+                          2 =< - mouse is still clicked*/
+
 var mouse_button_down = false;
 var trigger_pulled = false;
 
@@ -67,11 +71,13 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('mousedown', function (evt) {
     mouse_button_down = true;
+    mouse_cnt++;
 }, false);
 
 canvas.addEventListener('mouseup', function (evt) {
     mouse_button_down = false;
     trigger_pulled = false;
+    mouse_cnt = 0;
 }, false);
 
 socket.on('start_play', function (data) {
@@ -96,9 +102,8 @@ socket.on('start_play', function (data) {
     //init opponent deck
     opponent.faction.initDeck();
 
-    //add oppnents start cards to board
+    //add opponents start cards to board
     var start_cards = opponent.faction.getStartCards();
-
     for (var i = 0; i < start_cards.length; i++) {
         var tmp_res = rotate180(start_cards[i][1], start_cards[i][2]);
         start_cards[i][1] = tmp_res[0]
@@ -223,14 +228,16 @@ var Board = function () {
                         that.matrix[i][j].hover = true;
 
                         //check if player wish to to select card
-                        if (mouse_button_down)
+                        if (mouse_cnt === 1) {
                             that.matrix[i][j].selected = true;
+                            mouse_cnt++; //increase mouse counter to avoid printing eyeglass in the same click
+                        }
 
                         //TODO something with control menu
 
                         //check if player click eyeglass (20x20px in the middle of the card)
                         if (that.matrix[i][j].selected &&
-                            mouse_button_down &&
+                            (mouse_cnt === 1) &&
                             (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
                             (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
                             (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
@@ -242,7 +249,7 @@ var Board = function () {
                         that.matrix[i][j].hover = false;
 
                         //check id player wish to deselect card
-                        if (mouse_button_down) {
+                        if (mouse_cnt === 1) {
                             that.matrix[i][j].selected = false;
                             that.matrix[i][j].draw_big_picture = false;
 
