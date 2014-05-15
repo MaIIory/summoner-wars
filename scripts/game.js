@@ -257,11 +257,12 @@ var Board = function () {
                             that.matrix[i][j].draw_big_picture = false;
                         }
                     }
-                    
+
                 }
             }
         }
-        mouse_state = 2;
+        if (mouse_state === 1)
+            mouse_state = 2;
 
     }
 
@@ -298,7 +299,7 @@ var Board = function () {
                         ctx.fillText('yyyyyyyyyy: ' + mouse_state, 70, 110);
                         ctx.drawImage(that.tmp_img, 0, 0, that.matrix[i][j].width, that.matrix[i][j].height, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
-                        
+
 
                     if (that.matrix[i][j].draw_big_picture) {
                         //ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
@@ -307,7 +308,7 @@ var Board = function () {
                         //ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
                         //    (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
                         ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
-                        
+
                     }
 
                 }
@@ -555,7 +556,7 @@ var WaitingMenu = function () {
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
         //draw logo
         ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (that.img_height / 2), that.img_width, that.img_height);
-        
+
     }
 }
 
