@@ -231,7 +231,6 @@ var Board = function () {
                         //check if player wish to to select card
                         if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
-                            mouse_state = 2; //mouse state -> used
                         }
 
                         //TODO something with control menu
@@ -244,7 +243,6 @@ var Board = function () {
                             (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
                             (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10)) {
                             that.matrix[i][j].draw_big_picture = true;
-                            mouse_state = 2; //mouse state -> used
                         }
                     }
                     else {
