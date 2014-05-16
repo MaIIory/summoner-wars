@@ -217,12 +217,17 @@ var Board = function () {
         */
 
         //check if user want to deselect focused card
-        
+
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
-                if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (mouse_state === 1)) {
-                    that.matrix[i][j].draw_big_picture = false;
-                    mouse_state = 2;
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
+
+                    if ((mouse_state === 1)) {
+                        that.matrix[i][j].draw_big_picture = false;
+                        mouse_state = 2;
+                    }
+                    return;
+
                 }
             }
         }
@@ -244,7 +249,7 @@ var Board = function () {
                         if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
                         }
-                        //check if player click eyeglass (20x20px in the middle of the card)
+                            //check if player click eyeglass (20x20px in the middle of the card)
                         else if (that.matrix[i][j].selected &&
                             (mouse_state === 1) &&
                             (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
