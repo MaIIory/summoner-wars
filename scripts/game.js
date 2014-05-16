@@ -220,9 +220,9 @@ var Board = function () {
         
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
-                //if ((that.matrix[i][j].draw_big_picture === true) && (mouse_state === 1) && that.matrix[i][j] != null) {
-                //    that.matrix[i][j].draw_big_picture = false;
-                //    mouse_state = 2;
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (mouse_state === 1)) {
+                    that.matrix[i][j].draw_big_picture = false;
+                    mouse_state = 2;
                 }
             }
         }
