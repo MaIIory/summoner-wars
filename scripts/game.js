@@ -232,11 +232,8 @@ var Board = function () {
                         if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
                         }
-
-                        //TODO something with control menu
-
                         //check if player click eyeglass (20x20px in the middle of the card)
-                        if (that.matrix[i][j].selected &&
+                        else if (that.matrix[i][j].selected &&
                             (mouse_state === 1) &&
                             (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
                             (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
