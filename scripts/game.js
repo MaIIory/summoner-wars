@@ -216,6 +216,18 @@ var Board = function () {
            - in case of click on card change "selection indicator" in Card object
         */
 
+        //check if user want to deselect focused card
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+                if ((that.matrix[i][j].draw_big_picture) && (mouse_state === 1)) {
+                    that.matrix[i][j].draw_big_picture = false;
+                    mouse_state = 2;
+                    return;
+                }
+            }
+        }
+
+        //rest functonality described above
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if (that.matrix[i][j] != null) {
