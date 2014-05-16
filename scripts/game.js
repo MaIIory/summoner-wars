@@ -221,13 +221,11 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
-
                     if ((mouse_state === 1)) {
                         that.matrix[i][j].draw_big_picture = false;
                         mouse_state = 2;
                     }
                     return;
-
                 }
             }
         }
@@ -306,26 +304,24 @@ var Board = function () {
                     if (that.matrix[i][j].hover)
                         ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
-                    ctx.fillText('xxxxxxxxx: ' + mouse_state, 50, 110);
                     if (that.matrix[i][j].selected) {
-                        ctx.fillText('yyyyyyyyyy: ' + mouse_state, 70, 110);
                         ctx.drawImage(that.tmp_img, 0, 0, that.matrix[i][j].width, that.matrix[i][j].height, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                    }
-
-
-                    if (that.matrix[i][j].draw_big_picture) {
-                        //ctx.fillText("TRUE", that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 50);
-                        //ctx.fillStyle = 'black'; //set active color 
-                        //ctx.fillRect(0, 0, width, height);
-                        //ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
-                        //    (width / 2) - (that.matrix[i][j].width / 2), (height / 2) - (that.matrix[i][j].height / 2), that.matrix[i][j].width, that.matrix[i][j].height);
-                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
-
                     }
 
                 }
             }
         }
+
+        //draw increased card
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+                if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
+
+                    ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+                }
+            }
+        }
+
     }
 }
 
