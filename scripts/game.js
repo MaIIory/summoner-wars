@@ -317,7 +317,7 @@ var Board = function () {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
                     ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
-                    ctx.fillRect(0, 0, width, height);
+                    ctx.fillRect(12, 12, width - 22, height - 22);
                     ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
                 }
             }
