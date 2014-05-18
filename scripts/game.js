@@ -302,8 +302,9 @@ var Board = function () {
                     }
 
                     if (that.matrix[i][j].hover)
-                        //ctx.fillStyle = "rgba(233, 233, 233, 0.4)";
+                        ctx.fillStyle = "rgba(233, 233, 233, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        ctx.fillStyle = 'white'; //restore active color    
 
                         //ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
