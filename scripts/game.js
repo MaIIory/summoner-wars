@@ -335,6 +335,9 @@ var Board = function () {
                 }
             }
         }
+
+        //temporary printouts
+        ctx.fillText('card selected: ' + that.card_selected, 50, 120);
     }
 
     that.drawAvailMoves = function () {
