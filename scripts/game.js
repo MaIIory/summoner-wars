@@ -187,6 +187,8 @@ var Board = function () {
 
     //Phase handlers
     that.phase_handlers = [null, null, null, null, null, null];
+    //TODO remove below line
+    that.move_phase_handler = new MovePhaseHandler();
 
     //init board
     that.matrix =
@@ -588,6 +590,42 @@ var PlaygroundHandler = function () {
 
 //Phase Handlers Definitions
 
+var MovePhaseHandler = function () {
+
+    //set context
+    var that = this;
+
+    that.draw = function () {
+
+        //if card is selected draw available moves
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+
+                ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
+                if (that.matrix[i][j].selected) {
+                    
+                    for (var k = 1; k < 3; k++) {
+
+
+                        if (that.matrix[i + k][j] === null) {
+                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + ((i + k) * that.square_h), that.square_w, that.square_h);
+                        }
+                        else
+                            break;
+                       
+                            
+
+
+
+                        
+                    }
+                }
+            }
+        }
+
+
+    }
+}
 
 
 /***************************FUNCTIONS**************************/
@@ -740,6 +778,8 @@ var gameLoop = function () {
                 board.checkHover(); draw eyeglass for all card
 
                 */
+                board.move_phase_handler.draw();
+
 
             } else if (game_phase === 4) {
 
