@@ -344,7 +344,7 @@ var Board = function () {
                     for (var k = 1; k < 3; k++) {
 
 
-                        if (that.matrix[i + k][j] === null) {
+                        if (that.matrix[i + k][j] === null && (i + k) < that.matrix.length) {
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + ((i + k) * that.square_h), that.square_w, that.square_h);
                         }
                         else
