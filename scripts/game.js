@@ -185,6 +185,9 @@ var Board = function () {
     that.tmp_img = new Image();
     that.tmp_img.src = "/img/eye_glass.png";
 
+    //Phase handlers
+    that.phase_handlers = [null, null, null, null, null, null];
+
     //init board
     that.matrix =
         [[null, null, null, null, null, null],
@@ -582,6 +585,10 @@ var PlaygroundHandler = function () {
     //set context
     var that = this;
 }
+
+//Phase Handlers Definitions
+
+
 
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
