@@ -311,9 +311,9 @@ var Board = function () {
                         (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
                         (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
                         (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10))
-                            ctx.drawImage(that.tmp_img, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        else
                             ctx.drawImage(that.tmp_img, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        else
+                            ctx.drawImage(that.tmp_img, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                     }
                 }
