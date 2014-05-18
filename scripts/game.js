@@ -281,7 +281,7 @@ var Board = function () {
         // TODO uncomment this line when rest of the game will be finished
         //and modify Clear() function 
         //ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
-        ctx.fillStyle = "rgba(233, 233, 233, 0.4)";
+        ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
 
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
