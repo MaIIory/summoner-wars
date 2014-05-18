@@ -185,6 +185,9 @@ var Board = function () {
     that.tmp_img = new Image();
     that.tmp_img.src = "/img/eye_glass.png";
 
+    //selection information
+    that.card_selected = false; //indicate if any card is selected at this moment
+
     //init board
     that.matrix =
         [[null, null, null, null, null, null],
@@ -246,6 +249,7 @@ var Board = function () {
                         //check if player wish to to select card
                         if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
+                            that.card_selected = true;
                         }
                             //check if player click eyeglass (20x20px in the middle of the card)
                         else if (that.matrix[i][j].selected &&
@@ -264,6 +268,7 @@ var Board = function () {
                         //check id player wish to deselect card
                         if (mouse_state === 1) {
                             that.matrix[i][j].selected = false;
+                            that.card_selected = false;
                             that.matrix[i][j].draw_big_picture = false;
                         }
                     }
@@ -330,58 +335,34 @@ var Board = function () {
                 }
             }
         }
-
     }
 
     that.drawAvailMoves = function () {
 
-        //if card is selected draw available moves
-        for (var i = 0; i < that.matrix.length; i++) {
-            for (var j = 0; j < that.matrix[i].length; j++) {
+        //firstly check if any card is selected
+        if (that.card_selected) {
 
-                if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+            var card_i = null;
+            var card_j = null;
 
-                    //TODO replace 3 digit eith number of moves
-                    //check lowe places
-                    for (var k = 1; k < 3; k++) {
+            //get selected coordinates
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
 
-                        if ((i + k) < that.matrix.length && that.matrix[i + k][j] === null) {
-                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + ((i + k) * that.square_h), that.square_w, that.square_h);
-                        }
-                        else
-                            break;
+                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+                        card_i = i;
+                        card_j = j;
                     }
+                }
+            }
 
-                    //check upper places 
-                    for (var k = 1; k < 3; k++) {
+            //draw available places
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
 
-                        if ((i - k) >= 0 && that.matrix[i - k][j] === null) {
-                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + ((i - k) * that.square_h), that.square_w, that.square_h);
-                        }
-                        else
-                            break;
+                    if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
-
-                    //check left places
-                    for (var k = 1; k < 3; k++) {
-                        if ((j - k) >= 0 && that.matrix[i][j - k] === null) {
-                            ctx.fillRect(that.s_x + ((j - k) * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        }
-                        else
-                            break;
-                    }
-
-                    //check right places
-                    for (var k = 1; k < 3; k++) {
-
-                        if ((j + k) < that.matrix[i].length && that.matrix[i][j + k] === null) {
-                            ctx.fillRect(that.s_x + ((j + k) * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        }
-                        else
-                            break;
-                    }
-
-
                 }
             }
         }
