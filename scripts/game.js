@@ -250,10 +250,10 @@ var Board = function () {
                             //check if player click eyeglass (20x20px in the middle of the card)
                         else if (that.matrix[i][j].selected &&
                             (mouse_state === 1) &&
-                            (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
-                            (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
-                            (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
-                            (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10)) {
+                            (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
+                            (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 15) &&
+                            (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
+                            (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) {
                             that.matrix[i][j].draw_big_picture = true;
                         }
                     }
@@ -307,10 +307,10 @@ var Board = function () {
 
                     if (that.matrix[i][j].selected) {
                         if (
-                        (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 10) &&
-                        (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 10) &&
-                        (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 10) &&
-                        (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 10))
+                        (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
+                        (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 15) &&
+                        (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
+                        (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15))
                             ctx.drawImage(that.tmp_img, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                         else
                             ctx.drawImage(that.tmp_img, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
