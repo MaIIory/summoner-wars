@@ -785,7 +785,6 @@ var gameLoop = function () {
         //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 600);
         ctx.fillText('your turn: ' + your_turn, 840, 610);
-        ctx.fillText('any card selected: ' + board.card_selected, 840, 620);
 
     }
 
