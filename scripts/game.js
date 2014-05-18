@@ -339,7 +339,7 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
-                if ((that.matrix[i][j].selected != null) && (that.matrix[i][j].selected)) {
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
 
                     for (var k = 1; k < 3; k++) {
 
