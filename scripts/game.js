@@ -185,9 +185,6 @@ var Board = function () {
     that.tmp_img = new Image();
     that.tmp_img.src = "/img/eye_glass.png";
 
-    //selection information
-    that.card_selected = false; //indicate if any card is selected at this moment
-
     //init board
     that.matrix =
         [[null, null, null, null, null, null],
@@ -249,8 +246,6 @@ var Board = function () {
                         //check if player wish to to select card
                         if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
-                            that.card_selected = true;
-                            mouse_state = 2;
                         }
                             //check if player click eyeglass (20x20px in the middle of the card)
                         else if (that.matrix[i][j].selected &&
@@ -269,7 +264,6 @@ var Board = function () {
                         //check id player wish to deselect card
                         if (mouse_state === 1) {
                             that.matrix[i][j].selected = false;
-                            that.card_selected = false;
                             that.matrix[i][j].draw_big_picture = false;
                         }
                     }
@@ -342,32 +336,32 @@ var Board = function () {
 
     that.drawAvailMoves = function () {
 
-        //firstly check if any card is selected
-        if (that.card_selected) {
+        var card_i = null;
+        var card_j = null;
 
-            var card_i = null;
-            var card_j = null;
+        //get selected coordinates
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
 
-            //get selected coordinates
-            for (var i = 0; i < that.matrix.length; i++) {
-                for (var j = 0; j < that.matrix[i].length; j++) {
-
-                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
-                        card_i = i;
-                        card_j = j;
-                    }
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+                    card_i = i;
+                    card_j = j;
                 }
             }
+        }
 
-            //draw available places
-            for (var i = 0; i < that.matrix.length; i++) {
-                for (var j = 0; j < that.matrix[i].length; j++) {
+        //if there is no selected card break function
+        if ((card_i === null) || (card_j === null))
+            return
 
-                    ctx.fillText('card_i: ' + card_i, 840, 630);
-                    ctx.fillText('card j: ' + card_j, 840, 640);
-                    if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                    }
+        //draw available places
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+
+                ctx.fillText('card_i: ' + card_i, 840, 630);
+                ctx.fillText('card j: ' + card_j, 840, 640);
+                if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
+                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                 }
             }
         }
