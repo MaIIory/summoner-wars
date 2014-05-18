@@ -362,6 +362,8 @@ var Board = function () {
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
 
+                    ctx.fillText('card_i: ' + card_i, 840, 630);
+                    ctx.fillText('card j: ' + card_j, 840, 640);
                     if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
