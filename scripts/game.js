@@ -310,6 +310,7 @@ var Board = function () {
                     if (that.matrix[i][j].hover)
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                    //draw eyeglass for selected card
                     if (that.matrix[i][j].selected) {
                         if (
                         (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
@@ -323,7 +324,7 @@ var Board = function () {
                     }
                 }
             }
-            ctx.fillText('card selected: ' + that.card_selected, 840, 620);
+
         }
 
         //draw increased card
@@ -783,8 +784,11 @@ var gameLoop = function () {
 
         board.checkMouseActivity();
         board.draw();
+
+        //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 600);
         ctx.fillText('your turn: ' + your_turn, 840, 610);
+        ctx.fillText('any card selected: ' + board.card_selected, 840, 620);
 
     }
 
