@@ -297,12 +297,15 @@ var Board = function () {
                             that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                     else {
-                        $("#dialog").text("Error: Card owned not found!");
+                        $("#dialog").text("Error: Card owner not found!");
                         $('#dialog').dialog('open');
                     }
 
                     if (that.matrix[i][j].hover)
-                        ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
+                        ctx.fillStyle = "rgba(233, 233, 233, 0.4)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                        //ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
                     if (that.matrix[i][j].selected) {
                         ctx.drawImage(that.tmp_img, 0, 0, that.matrix[i][j].width, that.matrix[i][j].height, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
