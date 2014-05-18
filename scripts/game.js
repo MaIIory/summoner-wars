@@ -597,6 +597,7 @@ var MovePhaseHandler = function () {
 
     that.draw = function () {
 
+        /*
         //if card is selected draw available moves
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
@@ -613,17 +614,12 @@ var MovePhaseHandler = function () {
                         else
                             break;
                        
-                            
-
-
-
-                        
                     }
                 }
             }
         }
 
-
+        */
     }
 }
 
