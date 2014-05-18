@@ -281,6 +281,7 @@ var Board = function () {
         // TODO uncomment this line when rest of the game will be finished
         //and modify Clear() function 
         //ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
+        ctx.fillStyle = "rgba(233, 233, 233, 0.4)";
 
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
@@ -302,9 +303,8 @@ var Board = function () {
                     }
 
                     if (that.matrix[i][j].hover)
-                        ctx.fillStyle = "rgba(233, 233, 233, 0.4)";
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        ctx.fillStyle = 'white'; //restore active color    
+                        
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);  
 
                         //ctx.fillText('HOVER', that.s_x + (j * that.square_w) + 20, that.s_y + (i * that.square_h) + 20);
 
