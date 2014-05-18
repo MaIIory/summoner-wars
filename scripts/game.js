@@ -364,7 +364,7 @@ var Board = function () {
 
                     //check left places
                     for (var k = 1; k < 3; k++) {
-                        if ((j - k) > 0 && that.matrix[i][j - k] === null) {
+                        if ((j - k) >= 0 && that.matrix[i][j - k] === null) {
                             ctx.fillRect(that.s_x + ((j - k) * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                         }
                         else
