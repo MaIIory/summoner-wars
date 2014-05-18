@@ -347,16 +347,10 @@ var Board = function () {
                         if ((i + k) < that.matrix.length && that.matrix[i + k][j] === null) {
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + ((i + k) * that.square_h), that.square_w, that.square_h);
                         }
-                        else
-                            break;
 
                         if ((i - k) >= 0 && that.matrix[i - k][j] === null) {
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + ((i - k) * that.square_h), that.square_w, that.square_h);
                         }
-                        else
-                            break;
-
-
                     }
                 }
             }
