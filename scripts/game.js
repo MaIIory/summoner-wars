@@ -323,6 +323,7 @@ var Board = function () {
                     }
                 }
             }
+            ctx.fillText('card selected: ' + that.card_selected, 840, 620);
         }
 
         //draw increased card
@@ -335,9 +336,6 @@ var Board = function () {
                 }
             }
         }
-
-        //temporary printouts
-        ctx.fillText('card selected: ' + that.card_selected, 50, 120);
     }
 
     that.drawAvailMoves = function () {
@@ -787,6 +785,7 @@ var gameLoop = function () {
         board.draw();
         ctx.fillText('your opponent: ' + opponent.name, 840, 600);
         ctx.fillText('your turn: ' + your_turn, 840, 610);
+
     }
 
 
