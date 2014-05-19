@@ -377,8 +377,8 @@ var Board = function () {
                     if ((mouse_state === 1) &&
                         (parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                         (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
-                        (parseInt((((mouse_x - that.s_x) / that.square_w))) != card_i) &&
-                        (parseInt((((mouse_y - that.s_y) / that.square_h))) != card_j)) {
+                        (i != card_i) &&
+                        (j != card_j)) {
 
                         mouse_state = 2;
 
