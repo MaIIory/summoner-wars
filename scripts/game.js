@@ -373,8 +373,13 @@ var Board = function () {
 
                     ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 620);
 
+
                     if (parseInt((((mouse_x - that.s_x) / that.square_w))) === j) {
-                        ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 630);
+                        ctx.fillText('mouse coordination "x": ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 630);
+                    }
+
+                    if (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) {
+                        ctx.fillText('mouse coordination "Y":' + parseInt(((mouse_y - that.s_y) / that.square_y)), 840, 640);
                     }
                 }
             }
