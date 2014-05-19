@@ -373,7 +373,7 @@ var Board = function () {
 
                     ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 620);
 
-                    if (parseInt((((mouse_x - that.s_x) / that.square_w)) === j) && (mouse_button_down)) {
+                    if (parseInt((((mouse_x - that.s_x) / that.square_w))) === j) {
                         ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 630);
                     }
                 }
