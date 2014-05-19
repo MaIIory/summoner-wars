@@ -362,6 +362,7 @@ var Board = function () {
                 if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
 
                     if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
+                        alert('asad');
                         continue;
                     }
 
