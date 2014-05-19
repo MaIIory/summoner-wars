@@ -371,6 +371,8 @@ var Board = function () {
 
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                    ctx.fillText('your turn: ' + ((mouse_x - that.s_x) / that.square_w), 840, 610);
+
                     if ((((mouse_x - that.s_x) / that.square_w) === i) && (mouse_button_down)) {
                         alert('asad')
                     }
