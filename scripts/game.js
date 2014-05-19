@@ -365,6 +365,10 @@ var Board = function () {
                         continue;
                     }
 
+                    if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
+                        continue;
+                    }
+
                    
                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
