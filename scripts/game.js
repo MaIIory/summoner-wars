@@ -360,10 +360,20 @@ var Board = function () {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
                 if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
-                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                    if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
+                        continue;
+                    }
+
+
+                   ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                    //TODO check cards between
                 }
             }
         }
+
+        //TODO save previous moves and draw them as only available moves if no left any
     }
 }
 
