@@ -374,12 +374,15 @@ var Board = function () {
                     ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 620);
 
 
-                    if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) && (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) && (mouse_state === 1)) {
+                    if ((mouse_state === 1) &&
+                        (parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                        (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
+                        (parseInt((((mouse_x - that.s_x) / that.square_w))) != card_i) &&
+                        (parseInt((((mouse_y - that.s_y) / that.square_h))) != card_j)) {
 
-                        mouse_state === 2;
+                        mouse_state = 2;
 
                         that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
-                        that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))].selected = false;
                         that.matrix[card_i][card_j] = null;
 
                         //ctx.fillText('mouse coordination "x": ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 630);
