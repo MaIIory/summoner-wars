@@ -371,9 +371,9 @@ var Board = function () {
 
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                    ctx.fillText('your turn: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 620);
+                    ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 620);
 
-                    if (parseInt((((mouse_x - that.s_x) / that.square_w)) === i) && (mouse_button_down)) {
+                    if (parseInt((((mouse_x - that.s_x) / that.square_w)) === j) && (mouse_button_down)) {
                         alert('asad')
                     }
                 }
