@@ -369,10 +369,11 @@ var Board = function () {
                         continue;
                     }
 
-                   
-                   ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                    //TODO check cards between
+                    if ((((mouse_x - that.s_x) / that.square_w) === i) && (mouse_button_down)) {
+                        alert('asad')
+                    }
                 }
             }
         }
