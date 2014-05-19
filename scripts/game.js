@@ -379,6 +379,7 @@ var Board = function () {
                         mouse_state === 2;
 
                         that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+                        that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))].selected = false;
                         that.matrix[card_i][card_j] = null;
 
                         //ctx.fillText('mouse coordination "x": ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 630);
