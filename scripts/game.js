@@ -377,21 +377,18 @@ var Board = function () {
                     if ((mouse_state === 1) &&
                         (parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                         (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
-                        ((i != card_i) || (j != card_j))) {
+                        ((i != card_i) || (j != card_j)) &&
+                        (that.matrix[i][j] === null)) {
 
                         mouse_state = 2;
 
                         that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
                         that.matrix[card_i][card_j] = null;
-
-                        //ctx.fillText('mouse coordination "x": ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 630);
                     }
 
                 }
             }
         }
-
-        //TODO save previous moves and draw them as only available moves if no left any
     }
 }
 
