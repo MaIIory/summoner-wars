@@ -343,7 +343,7 @@ var Board = function () {
         var card_i = null;
         var card_j = null;
 
-        //get selected coordinates
+        //get selected card coordinates
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
@@ -392,6 +392,7 @@ var Board = function () {
 
                             that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
                             that.matrix[card_i][card_j] = null;
+                            return;
                         }
 
                     }
