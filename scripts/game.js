@@ -358,6 +358,10 @@ var Board = function () {
         if ((card_i === null) || (card_j === null))
             return
 
+        //draw in big picture is active break function
+        if (that.matrix[card_i][card_j].draw_big_picture)
+            return
+
         //draw available places
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
@@ -385,7 +389,7 @@ var Board = function () {
                             (that.matrix[i][j] === null)) {
 
                             //hover available tiles
-                            ctx.fillStyle = "rgba(4, 124, 10, 0.5)";
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                             if (mouse_state === 1) {
