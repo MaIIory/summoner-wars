@@ -128,8 +128,9 @@ var Player = function (name) {
 
     var that = this;
     that.name = name;
-    that.selected_faction = 0; //Phoenic Elves by default, 1 - Tundra Orcs
+    that.selected_faction = 0; //0 - Phoenics Elves by default, 1 - Tundra Orcs
     that.faction = null;
+    that.moves_left = 2;  //in first turn player has 2 moves
 
     //TODO dane ponizej moga wchodzic w sklad faction
     //that.magic_pile = [];
@@ -154,6 +155,9 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     that.hover = false;
     that.selected = false;
     that.draw_big_picture = false;
+
+    //move phase data
+    that.moves_left = 2; 
 
     /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
@@ -358,7 +362,7 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
-                if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= 2) {
+                if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
 
                     if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
                         continue;
@@ -383,6 +387,7 @@ var Board = function () {
 
                         if (mouse_state === 1) {
 
+                            that.matrix[card_i][card_j].moves_left = that.matrix[card_i][card_j].moves_left - (Math.abs(card_i - i) + Math.abs(card_j - j));
                             mouse_state = 2;
 
                             that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
