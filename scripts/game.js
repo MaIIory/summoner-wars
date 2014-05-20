@@ -355,7 +355,6 @@ var Board = function () {
             return
 
         //draw available places
-        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
@@ -370,6 +369,7 @@ var Board = function () {
                     }
 
                     //highlight achievable tiles
+                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                     if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
@@ -378,7 +378,7 @@ var Board = function () {
                         (that.matrix[i][j] === null)) {
 
                         //hover available tiles
-                        ctx.fillStyle = "rgba(4, 124, 10, 0.6)";
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.5)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                         if (mouse_state === 1) {
