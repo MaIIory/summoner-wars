@@ -369,23 +369,27 @@ var Board = function () {
                         continue;
                     }
 
+                    //highlight achievable tiles
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                    ctx.fillText('mouse coordination: ' + parseInt(((mouse_x - that.s_x) / that.square_w)), 840, 620);
-
-
-                    if ((mouse_state === 1) &&
-                        (parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                    if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                         (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
                         ((i != card_i) || (j != card_j)) &&
                         (that.matrix[i][j] === null)) {
 
-                        mouse_state = 2;
+                        //hover available tiles
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.6)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                        that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
-                        that.matrix[card_i][card_j] = null;
+                        if (mouse_state === 1) {
+
+                            mouse_state = 2;
+
+                            that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+                            that.matrix[card_i][card_j] = null;
+                        }
+
                     }
-
                 }
             }
         }
