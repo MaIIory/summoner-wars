@@ -157,7 +157,7 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     that.draw_big_picture = false;
 
     //move phase data
-    that.moves_left = 2; 
+    that.moves_left = 2;
 
     /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
@@ -362,39 +362,43 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
-                if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
+                //Wall cant moves 
+                if (that.matrix[card_i][card_j].name != 'Wall') {
 
-                    if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
-                        continue;
-                    }
+                    if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
 
-                    if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
-                        continue;
-                    }
-
-                    //highlight achievable tiles
-                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
-                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                    if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
-                        (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
-                        ((i != card_i) || (j != card_j)) &&
-                        (that.matrix[i][j] === null)) {
-
-                        //hover available tiles
-                        ctx.fillStyle = "rgba(4, 124, 10, 0.5)";
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                        if (mouse_state === 1) {
-
-                            that.matrix[card_i][card_j].moves_left = that.matrix[card_i][card_j].moves_left - (Math.abs(card_i - i) + Math.abs(card_j - j));
-                            mouse_state = 2;
-
-                            that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
-                            that.matrix[card_i][card_j] = null;
-                            return;
+                        if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
+                            continue;
                         }
 
+                        if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
+                            continue;
+                        }
+
+                        //highlight achievable tiles
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                        if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                            (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
+                            ((i != card_i) || (j != card_j)) &&
+                            (that.matrix[i][j] === null)) {
+
+                            //hover available tiles
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.5)";
+                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                            if (mouse_state === 1) {
+
+                                that.matrix[card_i][card_j].moves_left = that.matrix[card_i][card_j].moves_left - (Math.abs(card_i - i) + Math.abs(card_j - j));
+                                mouse_state = 2;
+
+                                that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+                                that.matrix[card_i][card_j] = null;
+                                return;
+                            }
+
+                        }
                     }
                 }
             }
