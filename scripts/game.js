@@ -356,11 +356,15 @@ var Board = function () {
 
         //if there is no selected card break function
         if ((card_i === null) || (card_j === null))
-            return
+            return;
 
         //draw in big picture is active break function
         if (that.matrix[card_i][card_j].draw_big_picture)
-            return
+            return;
+
+        //if cards owner is not a player break function
+        if (that.matrix[card_i][card_j].owner != player.name)
+            return;
 
         //draw available places
         for (var i = 0; i < that.matrix.length; i++) {
