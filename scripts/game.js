@@ -342,7 +342,7 @@ var Board = function () {
     that.drawPreviousMoves = function () {
 
         for (var card_i = 0; card_i < that.matrix.length; card_i++) {
-            for (var card_j = 0; card_j < that.matrix[i].length; card_j++) {
+            for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
                 //draw previous moves
                 for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
 
