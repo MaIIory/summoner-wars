@@ -402,16 +402,16 @@ var Board = function () {
                         //draw previous moves
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
                             
-                            ctx.fillStyle = "rgba(200, 124, 110, 1)";
+                            ctx.fillStyle = "green";
                             if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
                                 ctx.beginPath();
-                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
-                                ctx.lineTo(that.s_x + (card_j * that.square_w), that.s_y + (card_i * that.square_h));
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                                ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
                                 ctx.stroke();
                             } else {
                                 ctx.beginPath();
-                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
-                                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h));
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
                                 ctx.stroke();
                             }
                             
