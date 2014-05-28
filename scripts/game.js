@@ -348,7 +348,10 @@ var Board = function () {
                     for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
 
                         if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
+                            
                             ctx.strokeStyle = '#003300';  // Purple path
+                            if (that.matrix[card_i][card_j].selected)
+                                ctx.strokeStyle = '#008000';  // Purple path
                             ctx.lineWidth = "5";
                             ctx.beginPath();
                             ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
@@ -356,6 +359,8 @@ var Board = function () {
                             ctx.stroke();
                         } else {
                             ctx.strokeStyle = '#003300';  // Purple path
+                            if (that.matrix[card_i][card_j].selected)
+                                ctx.strokeStyle = '#008000';  // Purple path
                             ctx.lineWidth = "5";
                             ctx.beginPath();
                             ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
@@ -370,6 +375,8 @@ var Board = function () {
                         ctx.fill();
                         ctx.lineWidth = 4;
                         ctx.strokeStyle = '#003300';
+                        if (that.matrix[card_i][card_j].selected)
+                            ctx.strokeStyle = '#008000';  // Purple path
                         ctx.stroke();
 
                     }
