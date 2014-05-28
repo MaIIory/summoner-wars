@@ -402,7 +402,8 @@ var Board = function () {
                         //draw previous moves
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
                             
-                            ctx.fillStyle = "green";
+                            ctx.strokeStyle = "purple";  // Purple path
+                            ctx.lineWidth = "5";
                             if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
                                 ctx.beginPath();
                                 ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
