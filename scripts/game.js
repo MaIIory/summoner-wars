@@ -393,7 +393,7 @@ var Board = function () {
                             }
                         }
 
-                        //highlight achievable tiles
+                        //highlight this tile of available
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
@@ -401,7 +401,17 @@ var Board = function () {
                         //draw previous moves
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
                             ctx.fillStyle = "rgba(200, 124, 110, 0.45)";
-                            ctx.fillRect(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h), that.square_w, that.square_h);
+                            if (k === that.matrix[card_i][card_j].previous_moves.length) {
+                                ctx.beginPath();
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
+                                ctx.lineTo(that.s_x + (card_i * that.square_w), that.s_y + (card_j * that.square_h));
+                                ctx.stroke();
+                            } else {
+                                ctx.beginPath();
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
+                                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h));
+                                ctx.stroke();
+                            }
                         }
 
                         if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
@@ -412,9 +422,6 @@ var Board = function () {
                             //hover available tiles
                             ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-
-
 
                             if (mouse_state === 1) {
 
@@ -446,12 +453,14 @@ var Board = function () {
                                 that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
                                 that.matrix[card_i][card_j] = null;
                                 return;
+
                             }
 
 
 
                         }
                     }
+
                 }
             }
         }
