@@ -397,7 +397,7 @@ var Board = function () {
                         ctx.fillText('card_j: ' + card_j, that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 40);
                         //check there is no blocking card diagonally
                         if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
-                            if ((that.matrix[i - (card_i - i)][j] != null) && (that.matrix[i][j - (card_j - j)] != null)) {
+                            if ((that.matrix[card_i - (card_i - i)][card_j] != null) && (that.matrix[card_i][card_j - (card_j - j)] != null)) {
 
                                 continue;
                             }
