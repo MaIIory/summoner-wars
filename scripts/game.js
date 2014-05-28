@@ -407,16 +407,14 @@ var Board = function () {
                                 ctx.beginPath();
                                 ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
                                 ctx.lineTo(that.s_x + (card_j * that.square_w), that.s_y + (card_i * that.square_h));
-                                //ctx.moveTo(0,0);
-                                //ctx.lineTo(100, 100);
                                 ctx.stroke();
-                            } /*else {
+                            } else {
                                 ctx.beginPath();
                                 ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
                                 ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h));
                                 ctx.stroke();
                             }
-                            */
+                            
                         }
 
                         if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
