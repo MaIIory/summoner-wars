@@ -341,6 +341,7 @@ var Board = function () {
 
     that.drawAvailMoves = function () {
 
+
         var card_i = null;
         var card_j = null;
 
@@ -374,6 +375,42 @@ var Board = function () {
                 //Wall cant moves 
                 if (that.matrix[card_i][card_j].name != 'Wall') {
 
+
+
+                    //draw previous moves
+                    for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
+
+
+
+                        if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
+                            ctx.strokeStyle = '#003300';  // Purple path
+                            ctx.lineWidth = "5";
+                            ctx.beginPath();
+                            ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                            ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
+                            ctx.stroke();
+                        } else {
+                            ctx.strokeStyle = '#003300';  // Purple path
+                            ctx.lineWidth = "5";
+                            ctx.beginPath();
+                            ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                            ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
+                            ctx.stroke();
+                        }
+
+                        ctx.beginPath();
+                        ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                            that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
+                        ctx.fillStyle = 'green';
+                        ctx.fill();
+                        ctx.lineWidth = 4;
+                        ctx.strokeStyle = '#003300';
+                        ctx.stroke();
+
+
+                    }
+
+
                     if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
 
                         //check if there is no blocking card in row
@@ -399,38 +436,7 @@ var Board = function () {
 
 
                         ctx.fillText('previous moves length: ' + that.matrix[card_i][card_j].previous_moves.length, 840, 620);
-                        //draw previous moves
-                        for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
-                            
 
-
-                            if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
-                                ctx.strokeStyle = '#003300';  // Purple path
-                                ctx.lineWidth = "5";
-                                ctx.beginPath();
-                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                                ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
-                                ctx.stroke();
-                            } else {
-                                ctx.strokeStyle = '#003300';  // Purple path
-                                ctx.lineWidth = "5";
-                                ctx.beginPath();
-                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
-                                ctx.stroke();
-                            }
-
-                            ctx.beginPath();
-                            ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
-                                that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
-                            ctx.fillStyle = 'green';
-                            ctx.fill();
-                            ctx.lineWidth = 4;
-                            ctx.strokeStyle = '#003300';
-                            ctx.stroke();
-
-                            
-                        }
 
                         if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                             (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
