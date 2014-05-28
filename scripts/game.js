@@ -400,15 +400,15 @@ var Board = function () {
 
                         ctx.fillText('previous moves length: ' + that.matrix[card_i][card_j].previous_moves.length, 840, 620);
                         //draw previous moves
-                        for (var k = 0; k <= that.matrix[card_i][card_j].previous_moves.length; k++) {
+                        for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
                             
                             ctx.fillStyle = "rgba(200, 124, 110, 1)";
-                            if (k === that.matrix[card_i][card_j].previous_moves.length) {
+                            if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
                                 ctx.beginPath();
-                                //ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
-                                //ctx.lineTo(that.s_x + (card_i * that.square_w), that.s_y + (card_j * that.square_h));
-                                ctx.moveTo(0,0);
-                                ctx.lineTo(100, 100);
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h));
+                                ctx.lineTo(that.s_x + (card_i * that.square_w), that.s_y + (card_j * that.square_h));
+                                //ctx.moveTo(0,0);
+                                //ctx.lineTo(100, 100);
                                 ctx.stroke();
                             } /*else {
                                 ctx.beginPath();
