@@ -435,9 +435,9 @@ var Board = function () {
                                 }
                                 else if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
                                     if (that.matrix[card_i - (card_i - i)][card_j] === null)
-                                        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [card_i - (card_i - i), card_j];
+                                        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i - (card_i - i), card_j];
                                     else if (that.matrix[card_i][card_j - (card_j - j)] === null)
-                                        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [card_i, card_j - (card_j - j)];
+                                        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j - (card_j - j)];
                                     else
                                         alert('ERROR51')
                                 }
