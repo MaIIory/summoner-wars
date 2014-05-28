@@ -391,8 +391,8 @@ var Board = function () {
                         ctx.fillText('mouse state: ' + mouse_state, 50, 110);
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                         ctx.fillStyle = "white";
-                        ctx.fillText('(card_i - i): ' + (card_i - i), that.s_x + (j * that.square_w), that.s_y + (i * that.square_h));
-                        ctx.fillText('(card_j - j): ' + (card_j - j), that.s_x + (j * that.square_w), that.s_y + (i * that.square_h));
+                        ctx.fillText('(card_i - i): ' + (card_i - i), that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 20);
+                        ctx.fillText('(card_j - j): ' + (card_j - j), that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 40);
                         //check there is no blocking card diagonally
                         if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
                             if ((that.matrix[i - (card_i - i)][j] != null) && (that.matrix[i][j - (card_j - j)] != null)) {
