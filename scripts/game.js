@@ -158,6 +158,7 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
 
     //move phase data
     that.moves_left = 2;
+    that.previous_moves = []; //container for coordinates with previous moves in the same turn
 
     /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
@@ -375,12 +376,21 @@ var Board = function () {
 
                     if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
 
+                        //check if there is no blocking card in row
                         if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
                             continue;
                         }
 
+                        //check if there is no blocking card in column
                         if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
                             continue;
+                        }
+
+                        //check there is no blocking card diagonally
+                        if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
+                            if ((that.matrix[i - (card_i - i)][j] != null) && (that.matrix[i][j - (card_j - j)] != null) ) {
+                                continue;
+                            }
                         }
 
                         //highlight achievable tiles
