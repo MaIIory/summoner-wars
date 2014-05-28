@@ -402,7 +402,14 @@ var Board = function () {
                         //draw previous moves
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
                             
-
+                            ctx.beginPath();
+                            ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                                that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
+                            ctx.fillStyle = 'green';
+                            ctx.fill();
+                            ctx.lineWidth = 4;
+                            ctx.strokeStyle = '#003300';
+                            ctx.stroke();
 
                             if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
                                 ctx.strokeStyle = '#003300';  // Purple path
@@ -420,16 +427,6 @@ var Board = function () {
                                 ctx.stroke();
                             }
 
-                            if (k === 0) {
-                                ctx.beginPath();
-                                ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
-                                    that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
-                                ctx.fillStyle = 'green';
-                                ctx.fill();
-                                ctx.lineWidth = 5;
-                                ctx.strokeStyle = '#003300';
-                                ctx.stroke();
-                            }
                             
                         }
 
