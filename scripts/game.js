@@ -490,7 +490,7 @@ var Board = function () {
                                 that.matrix[card_i][card_j] = null;
                                 return;
 
-                            }
+                            } 
 
 
 
