@@ -393,8 +393,8 @@ var Board = function () {
                         ctx.fillStyle = "white";
                         ctx.fillText('(card_i - i): ' + (card_i - i), that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 10);
                         ctx.fillText('(card_j - j): ' + (card_j - j), that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 20);
-                        ctx.fillText('card_i: ' + card_i, that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 30);
-                        ctx.fillText('card_j: ' + card_j, that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 40);
+                        //ctx.fillText('card_i: ' + card_i, that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 30);
+                        //ctx.fillText('card_j: ' + card_j, that.s_x + (j * that.square_w) + 10, that.s_y + (i * that.square_h) + 40);
                         //check there is no blocking card diagonally
                         if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
                             if ((that.matrix[i - (card_i - i)][j] != null) && (that.matrix[i][j - (card_j - j)] != null)) {
