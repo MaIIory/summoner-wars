@@ -406,14 +406,14 @@ var Board = function () {
 
                             if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
                                 ctx.strokeStyle = '#003300';  // Purple path
-                                ctx.lineWidth = "8";
+                                ctx.lineWidth = "5";
                                 ctx.beginPath();
                                 ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
                                 ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
                                 ctx.stroke();
                             } else {
                                 ctx.strokeStyle = '#003300';  // Purple path
-                                ctx.lineWidth = "8";
+                                ctx.lineWidth = "5";
                                 ctx.beginPath();
                                 ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
                                 ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
@@ -421,14 +421,14 @@ var Board = function () {
                             }
 
                             if (k === 0) {
-                                context.beginPath();
-                                context.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                                ctx.beginPath();
+                                ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
                                     that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
-                                context.fillStyle = 'green';
-                                context.fill();
-                                context.lineWidth = 5;
-                                context.strokeStyle = '#003300';
-                                context.stroke();
+                                ctx.fillStyle = 'green';
+                                ctx.fill();
+                                ctx.lineWidth = 5;
+                                ctx.strokeStyle = '#003300';
+                                ctx.stroke();
                             }
                             
                         }
