@@ -397,6 +397,13 @@ var Board = function () {
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                        ctx.fillText('previous moves length: ' + that.matrix[card_i][card_j].previous_moves.length, 840, 620);
+                        //draw previous moves
+                        for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
+                            ctx.fillStyle = "rgba(200, 124, 110, 0.45)";
+                            ctx.fillRect(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h), that.square_w, that.square_h);
+                        }
+
                         if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                             (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
                             ((i != card_i) || (j != card_j)) &&
@@ -407,12 +414,7 @@ var Board = function () {
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
 
-                            ctx.fillText('previous moves length: ' + that.matrix[card_i][card_j].previous_moves.length, 840, 620);
-                            //draw previous moves
-                            for(var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++){
-                                ctx.fillStyle = "rgba(200, 124, 110, 0.45)";
-                                ctx.fillRect(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h), that.square_w, that.square_h);
-                            }
+
 
                             if (mouse_state === 1) {
 
@@ -422,14 +424,14 @@ var Board = function () {
 
                                 //store previous moves
                                 //firsly store base position
-                                that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [card_i, card_j];
+                                that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j];
 
                                 //if necessary store coordinates lay beetwen
                                 if (Math.abs(card_j - j) === 2) {
-                                    that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [i, j + ((card_j - j) / Math.abs(card_j - j))];
+                                    that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [i, j + ((card_j - j) / Math.abs(card_j - j))];
                                 }
                                 else if (Math.abs(card_i - i) === 2) {
-                                    that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [i + ((card_i - i) / Math.abs(card_i - i)), j];
+                                    that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [i + ((card_i - i) / Math.abs(card_i - i)), j];
                                 }
                                 else if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
                                     if (that.matrix[card_i - (card_i - i)][card_j] === null)
