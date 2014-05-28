@@ -406,6 +406,12 @@ var Board = function () {
                             ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                            //draw previous moves
+                            for(var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++){
+                                ctx.fillStyle = "rgba(200, 124, 110, 0.45)";
+                                ctx.fillRect(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h), that.square_w, that.square_h);
+                            }
+
                             if (mouse_state === 1) {
 
                                 //decrease number of left moves
@@ -417,7 +423,6 @@ var Board = function () {
                                 that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [card_i, card_j];
 
                                 //if necessary store coordinates lay beetwen
-
                                 if (Math.abs(card_j - j) === 2) {
                                     that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].length] = [i, j + ((card_j - j) / Math.abs(card_j - j))];
                                 }
@@ -433,13 +438,13 @@ var Board = function () {
                                         alert('ERROR51')
                                 }
 
-
-
                                 //move card to selected destination
                                 that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
                                 that.matrix[card_i][card_j] = null;
                                 return;
                             }
+
+
 
                         }
                     }
