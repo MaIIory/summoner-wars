@@ -397,6 +397,11 @@ var Board = function () {
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(500, 500);
+                        ctx.stroke();
+
                         ctx.fillText('previous moves length: ' + that.matrix[card_i][card_j].previous_moves.length, 840, 620);
                         //draw previous moves
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
