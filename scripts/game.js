@@ -389,10 +389,10 @@ var Board = function () {
 
                         ctx.fillStyle = "red";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        ctx.fillText('card i: ' + card_i, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h));
+
                         //check there is no blocking card diagonally
                         if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
-                            if ((that.matrix[i - (card_i - i)][j] != null) && (that.matrix[i][j - (card_j - j)] != null)) {
+                            if ((that.matrix[i - (card_j - j)][j] != null) && (that.matrix[i][j - (card_i - i)] != null)) {
 
                                 continue;
                             }
