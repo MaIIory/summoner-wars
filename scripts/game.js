@@ -892,6 +892,7 @@ var gameLoop = function () {
             } else if (game_phase === 3) {
 
                 board.drawAvailMoves();
+                board.drawPreviousMoves();
 
             } else if (game_phase === 4) {
 
