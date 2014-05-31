@@ -352,7 +352,7 @@ var Board = function () {
             for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
                 //draw previous moves
                 if (that.matrix[card_i][card_j] != null) {
-                    if (that.matrix[card_i][card_j].selected != false) {
+                    if (that.matrix[card_i][card_j].selected != true) {
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
 
                             if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
