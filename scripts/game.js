@@ -341,46 +341,94 @@ var Board = function () {
 
     that.drawPreviousMoves = function () {
 
+        //TODO This function should be optimized - draw methods should be closed in one internal method
+        /* selected card moves path should be drawn at the
+        end in order to show whole path */
+        sel_card_x = null;
+        sel_card_y = null;
+        card_selected = null; //indidcate if any card is selected
+
         for (var card_i = 0; card_i < that.matrix.length; card_i++) {
             for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
                 //draw previous moves
-                if (that.matrix[card_i][card_j] != null){
-                    for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
+                if (that.matrix[card_i][card_j] != null) {
+                    if (that.matrix[card_i][card_j].selected != false) {
+                        for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
 
-                        if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
-                            
-                            ctx.strokeStyle = '#003300';  // Purple path
-                            if (that.matrix[card_i][card_j].selected)
-                                ctx.strokeStyle = '#000000';  // Purple path
-                            ctx.lineWidth = "5";
+                            if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
+                                /* This is last move - draw line from last position to current position */
+                                ctx.strokeStyle = '#003300';  // Purple path
+                                if (that.matrix[card_i][card_j].selected)
+                                    ctx.strokeStyle = '#000000';  // Purple path
+                                ctx.lineWidth = "5";
+                                ctx.beginPath();
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                                ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
+                                ctx.stroke();
+                            } else {
+                                ctx.strokeStyle = '#003300';  // Purple path
+                                if (that.matrix[card_i][card_j].selected)
+                                    ctx.strokeStyle = '#000000';  // Purple path
+                                ctx.lineWidth = "5";
+                                ctx.beginPath();
+                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
+                                ctx.stroke();
+                            }
+
                             ctx.beginPath();
-                            ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                            ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
+                            ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                                that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
+                            ctx.fillStyle = 'green';
+                            ctx.fill();
+                            ctx.lineWidth = 4;
+                            ctx.strokeStyle = '#003300';
                             ctx.stroke();
-                        } else {
-                            ctx.strokeStyle = '#003300';  // Purple path
-                            if (that.matrix[card_i][card_j].selected)
-                                ctx.strokeStyle = '#000000';  // Purple path
-                            ctx.lineWidth = "5";
-                            ctx.beginPath();
-                            ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                            ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
-                            ctx.stroke();
+
                         }
-
-                        ctx.beginPath();
-                        ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
-                            that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
-                        ctx.fillStyle = 'green';
-                        ctx.fill();
-                        ctx.lineWidth = 4;
-                        ctx.strokeStyle = '#003300';
-                        if (that.matrix[card_i][card_j].selected)
-                            ctx.strokeStyle = '#000000';  // Purple path
-                        ctx.stroke();
-
+                    }
+                    else {
+                        sel_card_x = card_i;
+                        sel_card_y = card_j;
+                        card_selected = true;
                     }
                 }
+            }
+        }
+
+        if (card_selected) {
+
+            card_i = sel_card_x;
+            card_j = sel_card_y;
+
+            for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
+
+                if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
+                    /* This is last move - draw line from last position to current position */
+                    ctx.strokeStyle = 'purple';  // Purple path
+                    ctx.lineWidth = "5";
+                    ctx.beginPath();
+                    ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                    ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
+                    ctx.stroke();
+                } else {
+                    ctx.strokeStyle = 'purple';  // Purple path
+                    ctx.lineWidth = "5";
+                    ctx.beginPath();
+                    ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                    ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
+                    ctx.stroke();
+                }
+
+                ctx.beginPath();
+                ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                    that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
+                ctx.fillStyle = 'green';
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'purple';
+                ctx.stroke();
+
             }
         }
 
@@ -490,7 +538,7 @@ var Board = function () {
                                 that.matrix[card_i][card_j] = null;
                                 return;
 
-                            } 
+                            }
 
 
 
@@ -750,6 +798,17 @@ var PlaygroundHandler = function () {
 
     //set context
     var that = this;
+
+    that.move_phase_handler = new MovePhaseHandler();
+}
+
+//Phase Handlers Definitions (parts of the page handlers)
+
+var MovePhaseHandler = function () {
+
+    //set context
+    var that = this;
+
 }
 
 /***************************FUNCTIONS**************************/
