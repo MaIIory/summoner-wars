@@ -214,15 +214,58 @@ var Board = function () {
         }
     }
 
+    that.moveCard = function (id, dest_x, dest_y) {
+
+        //get selected card coordinates
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+
+                if (that.matrix[i][j].id === id) {
+                    card_i = i;
+                    card_j = j;
+                }
+            }
+        }
+
+        //decrease number of left moves
+        that.matrix[card_i][card_j].moves_left = that.matrix[card_i][card_j].moves_left - (Math.abs(card_i - dest_x) + Math.abs(card_j - dest_y));
+
+        //store previous moves
+        //firsly store base position
+        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j];
+
+        //if necessary store coordinates laying beetwen
+        if (Math.abs(card_j - dest_y) === 2) {
+            that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [dest_x, dest_y + ((card_j - dest_y) / Math.abs(card_j - dest_y))];
+        }
+        else if (Math.abs(card_i - dest_x) === 2) {
+            that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [dest_x + ((card_i - dest_x) / Math.abs(card_i - dest_x)), dest_y];
+        }
+        else if ((Math.abs(Math.abs(card_i - dest_x) === 1)) && (Math.abs(card_j - dest_y) === 1)) {
+            if (that.matrix[card_i - (card_i - dest_x)][card_j] === null)
+                that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i - (card_i - dest_x), card_j];
+            else if (that.matrix[card_i][card_j - (card_j - dest_y)] === null)
+                that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j - (card_j - dest_y)];
+            else
+                alert('ERROR51')
+        }
+
+        //move card to selected destination
+        that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+        that.matrix[card_i][card_j] = null;
+
+    }
+
     that.checkMouseActivity = function () {
 
-        /* function of this method:
+        /* This function is independent from game phase
+        
+           function of this method:
            - in case of hover change "hover indicator" in Card object
            - in case of click on card change "selection indicator" in Card object
         */
 
         //check if user want to deselect focused card
-
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
@@ -350,9 +393,14 @@ var Board = function () {
 
         for (var card_i = 0; card_i < that.matrix.length; card_i++) {
             for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
+
                 //draw previous moves
                 if (that.matrix[card_i][card_j] != null) {
+
+                    //selected cards moves should be draw at the end
                     if (that.matrix[card_i][card_j].selected != true) {
+
+
                         for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
 
                             if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
@@ -388,6 +436,7 @@ var Board = function () {
                         }
                     }
                     else {
+                        //selected data should be store for further actions
                         sel_card_x = card_i;
                         sel_card_y = card_j;
                         card_selected = true;
@@ -395,7 +444,7 @@ var Board = function () {
                 }
             }
         }
-
+        //if any card is selected its moves should be draw at the end (now)
         if (card_selected) {
 
             card_i = sel_card_x;
@@ -455,7 +504,7 @@ var Board = function () {
         if ((card_i === null) || (card_j === null))
             return;
 
-        //draw in big picture is active break function
+        //if draw in big picture is active break function
         if (that.matrix[card_i][card_j].draw_big_picture)
             return;
 
@@ -494,10 +543,6 @@ var Board = function () {
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-
-                        ctx.fillText('previous moves length: ' + that.matrix[card_i][card_j].previous_moves.length, 840, 620);
-
-
                         if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                             (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
                             ((i != card_i) || (j != card_j)) &&
@@ -517,7 +562,7 @@ var Board = function () {
                                 //firsly store base position
                                 that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j];
 
-                                //if necessary store coordinates lay beetwen
+                                //if necessary store coordinates laying beetwen
                                 if (Math.abs(card_j - j) === 2) {
                                     that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [i, j + ((card_j - j) / Math.abs(card_j - j))];
                                 }
