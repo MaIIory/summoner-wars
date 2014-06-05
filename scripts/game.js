@@ -579,7 +579,8 @@ var Board = function () {
                                 }
 
                                 //move card to selected destination
-                                that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+                                //that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+                                that.matrix[i][j] = that.matrix[card_i][card_j];
                                 that.matrix[card_i][card_j] = null;
                                 return;
 
