@@ -246,12 +246,10 @@ var Board = function () {
                 that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i - (card_i - dest_x), card_j];
             else if (that.matrix[card_i][card_j - (card_j - dest_y)] === null)
                 that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j - (card_j - dest_y)];
-            else
-                alert('ERROR51')
         }
 
         //move card to selected destination
-        that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+        that.matrix[dest_x][dest_y] = that.matrix[card_i][card_j];
         that.matrix[card_i][card_j] = null;
 
     }
@@ -554,6 +552,7 @@ var Board = function () {
 
                             if (mouse_state === 1) {
 
+                                /*
                                 //decrease number of left moves
                                 that.matrix[card_i][card_j].moves_left = that.matrix[card_i][card_j].moves_left - (Math.abs(card_i - i) + Math.abs(card_j - j));
                                 mouse_state = 2;
@@ -579,10 +578,15 @@ var Board = function () {
                                 }
 
                                 //move card to selected destination
-                                //that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
+                                //TODO DEL that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
                                 that.matrix[i][j] = that.matrix[card_i][card_j];
                                 that.matrix[card_i][card_j] = null;
                                 return;
+                                */
+                                that.moveCard(that.matrix[card_i][card_j], i, j);
+                                mouse_state = 2;
+                                return;
+
 
                             }
 
