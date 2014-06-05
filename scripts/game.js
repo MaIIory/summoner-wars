@@ -583,7 +583,7 @@ var Board = function () {
                                 that.matrix[card_i][card_j] = null;
                                 return;
                                 */
-                                that.moveCard(that.matrix[card_i][card_j], i, j);
+                                that.moveCard(that.matrix[card_i][card_j].id, i, j);
                                 mouse_state = 2;
                                 return;
 
