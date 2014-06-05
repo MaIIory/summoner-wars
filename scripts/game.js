@@ -220,7 +220,7 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
-                if (that.matrix[i][j].id === id) {
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].id === id)) {
                     card_i = i;
                     card_j = j;
                 }
