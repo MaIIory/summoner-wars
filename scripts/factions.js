@@ -60,36 +60,64 @@ var PheonixElves = function (player_name) {
 
 }
 
-//TODO zrob kopie elfow i nanies zmiany
-var TundraOrcs = function () {
+var TundraOrcs = function (player_name) {
 
     var that = this;
-    deck = [];
+    that.player_name = player_name;
+    that.deck = [];
 
+    that.image = new Image(); //background image
+    that.image.src = "/img/tundra_orcs.jpg";
 
     that.initDeck = function () {
 
-        deck = [
-            new Card('Grognack', 'to1'/*, 0, 1, false, 4, 7, 0*/),
-            new Card('Fighter', 'to2'/*, 1, 1, true, 1, 1, 1*/),
-            new Card('Fighter', 'to3'/*, 1, 1, true, 1, 1, 1*/),
-            new Card('Fighter', 'to4'/*, 1, 1, true, 1, 1, 1*/),
-            new Card('Fighter', 'to5'/*, 1, 1, true, 1, 1, 1*/)]
-
+        that.deck = [
+            /* new Card(name, id, src_x, src_y) */
+            new Card('Fighter', 'to03', 1101, 0, that.player_name),
+            new Card('Fighter', 'to04', 1101, 0, that.player_name),
+            new Card('Fighter', 'to05', 1101, 0, that.player_name),
+            new Card('Fighter', 'to06', 1101, 0, that.player_name),
+            new Card('Shaman', 'to08', 1468, 0, that.player_name),
+            new Card('Shaman', 'to09', 1468, 0, that.player_name),
+            new Card('Shaman', 'to10', 1468, 0, that.player_name),
+            new Card('Shaman', 'to11', 1468, 0, that.player_name),
+            new Card('Shaman', 'to12', 1468, 0, that.player_name),
+            new Card('Smasher', 'to14', 1835, 0, that.player_name),
+            new Card('Smasher', 'to15', 1835, 0, that.player_name),
+            new Card('Smasher', 'to16', 1835, 0, that.player_name),
+            new Card('Smasher', 'to17', 1835, 0, that.player_name),
+            new Card('Smasher', 'to18', 1835, 0, that.player_name),
+            new Card('Blagog', 'to19', 0, 0, that.player_name),
+            new Card('Krung', 'to20', 367, 0, that.player_name),
+            new Card('Ragnor', 'to21', 734, 0, that.player_name),
+            new Card('Wall', 'to23', 1468, 239, that.player_name),
+            new Card('Wall', 'to24', 1468, 239, that.player_name),
+            new Card('Freeze', 'to26', 0, 239, that.player_name),
+            new Card('Freeze', 'to27', 0, 239, that.player_name),
+            new Card('Freeze', 'to28', 0, 239, that.player_name),
+            new Card('Ice Wall', 'to29', 367, 239, that.player_name),
+            new Card('Ice Wall', 'to30', 367, 239, that.player_name),
+            new Card('Ice Wall', 'to31', 367, 239, that.player_name),
+            new Card('Reinforcements', 'to32', 734, 239, that.player_name),
+            new Card('Reinforcements', 'to33', 734, 239, that.player_name),
+            new Card('A Hero Is Born', 'to34', 1835, 239, that.player_name)
+        ]
     }
 
     that.getDeck = function () {
-        return deck;
+        return that.deck;
     }
 
     that.getStartCards = function () {
 
         return [
-            [new Card('Fighter', 'to6'), 2, 6],
-            [new Card('Fighter', 'to7'), 2, 7],
-            [new Card('Fighter', 'to8'), 5, 4]
+            [new Card('Fighter', 'to01', 1101, 0, that.player_name), 5, 4],
+            [new Card('Fighter', 'to02', 1101, 0, that.player_name), 2, 6],
+            [new Card('Shaman', 'to07', 1468, 0, that.player_name), 4, 6],
+            [new Card('Smasher', 'to13', 1835, 0, that.player_name), 1, 5],
+            [new Card('Wall', 'to22', 1468, 239, that.player_name), 3, 5],
+            [new Card('Grognack', 'to25', 1101, 239, that.player_name), 3, 7]
         ]
     }
 
 }
-
