@@ -564,7 +564,8 @@ var Board = function () {
                                 var dest_x = null;
                                 var dest_y = null;
                                 [dest_x, dest_y] = rotate180(i, j);
-                                socket.emit('move_card', { room_name: room_name, card_id: that.matrix[card_i][card_j].id, dest_x: dest_x, dest_y: dest_y })
+                                var id = that.matrix[card_i][card_j].id;
+                                socket.emit('move_card', { room_name: room_name, card_id: id, dest_x: dest_x, dest_y: dest_y })
 
                                 //finally move card
                                 that.moveCard(that.matrix[card_i][card_j].id, i, j);
@@ -998,7 +999,7 @@ var gameLoop = function () {
 
         } else {
 
-
+            board.drawPreviousMoves();
 
         }
 
