@@ -566,7 +566,7 @@ var Board = function () {
                                 [dest_x, dest_y] = rotate180(i, j);
                                 alert(dest_x);
                                 alert(dest_y);
-                                //socket.emit('move_card', { room_name: room_name, card_id: that.matrix[card_i][card_j].id, dest_x: dest_x, dest_y: dest_y })
+                                socket.emit('move_card', { room_name: room_name, card_id: that.matrix[card_i][card_j].id, dest_x: dest_x, dest_y: dest_y })
                                 mouse_state = 2;
                                 return;
                             }
