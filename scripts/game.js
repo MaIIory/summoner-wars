@@ -123,9 +123,8 @@ socket.on('start_play', function (data) {
 //incoming move card event
 socket.on('move_card', function (data) {
 
-    that.moveCard(data.card_id, dest_x, dest_y);
-
-
+    if (your_turn === false)
+        that.moveCard(data.card_id, dest_x, dest_y);
 })
 
 
