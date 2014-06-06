@@ -248,4 +248,12 @@ io.sockets.on('connection', function (socket) {
 
     });
 
+    //move card event
+    socket.on('move_card', function (data) {
+
+        // sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('move_card', { data : data });
+    });
+
+
 });

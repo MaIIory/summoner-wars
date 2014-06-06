@@ -120,6 +120,14 @@ socket.on('start_play', function (data) {
     state = 3; //play in progress
 })
 
+//incoming move card event
+socket.on('move_card', function (data) {
+
+    that.moveCard(data.card_id, dest_x, dest_y);
+
+
+})
+
 
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
@@ -368,7 +376,7 @@ var Board = function () {
 
         }
 
-        //draw increased card
+        //draw card in big picture
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
@@ -552,46 +560,12 @@ var Board = function () {
 
                             if (mouse_state === 1) {
 
-                                /*
-                                //decrease number of left moves
-                                that.matrix[card_i][card_j].moves_left = that.matrix[card_i][card_j].moves_left - (Math.abs(card_i - i) + Math.abs(card_j - j));
-                                mouse_state = 2;
-
-                                //store previous moves
-                                //firsly store base position
-                                that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j];
-
-                                //if necessary store coordinates laying beetwen
-                                if (Math.abs(card_j - j) === 2) {
-                                    that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [i, j + ((card_j - j) / Math.abs(card_j - j))];
-                                }
-                                else if (Math.abs(card_i - i) === 2) {
-                                    that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [i + ((card_i - i) / Math.abs(card_i - i)), j];
-                                }
-                                else if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
-                                    if (that.matrix[card_i - (card_i - i)][card_j] === null)
-                                        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i - (card_i - i), card_j];
-                                    else if (that.matrix[card_i][card_j - (card_j - j)] === null)
-                                        that.matrix[card_i][card_j].previous_moves[that.matrix[card_i][card_j].previous_moves.length] = [card_i, card_j - (card_j - j)];
-                                    else
-                                        alert('ERROR51')
-                                }
-
-                                //move card to selected destination
-                                //TODO DEL that.matrix[parseInt((((mouse_y - that.s_y) / that.square_h)))][parseInt((((mouse_x - that.s_x) / that.square_w)))] = that.matrix[card_i][card_j];
-                                that.matrix[i][j] = that.matrix[card_i][card_j];
-                                that.matrix[card_i][card_j] = null;
-                                return;
-                                */
                                 that.moveCard(that.matrix[card_i][card_j].id, i, j);
+                                //send ready event
+                                socket.emit('move_card', { room_name: room_name, card_id: that.matrix[card_i][card_j].id, dest_x: i, dest_y: j })
                                 mouse_state = 2;
                                 return;
-
-
                             }
-
-
-
                         }
                     }
 
