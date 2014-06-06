@@ -220,7 +220,7 @@ var Board = function () {
         }
     }
 
-    that.moveCard = function (id, dest_x, dest_y) {
+    that.moveCard = function (id, dest_x, dest_y) { 
         
 
         //get selected card coordinates
