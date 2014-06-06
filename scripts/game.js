@@ -122,7 +122,7 @@ socket.on('start_play', function (data) {
 
 //incoming move card event
 socket.on('move_card', function (data) { 
-    alert('dziala')
+
     board.moveCard(data.card_id, data.dest_x, data.dest_y);
 })
 
@@ -221,7 +221,7 @@ var Board = function () {
     }
 
     that.moveCard = function (id, dest_x, dest_y) {
-
+        alert('asdasd')
         //get selected card coordinates
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
