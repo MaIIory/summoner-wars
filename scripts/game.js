@@ -123,8 +123,8 @@ socket.on('start_play', function (data) {
 //incoming move card event
 socket.on('move_card', function (data) {
 
-    if (your_turn === false)
-        that.moveCard(data.card_id, dest_x, dest_y);
+    //if (your_turn === false)
+    //    that.moveCard(data.card_id, dest_x, dest_y);
 })
 
 
@@ -564,7 +564,7 @@ var Board = function () {
                                 var dest_x = null;
                                 var dest_y = null;
                                 [dest_x, dest_y] = rotate180(i, j);
-                                socket.emit('move_card', { room_name: 'xxx', card_id: that.matrix[card_i][card_j].id, dest_x: dest_x, dest_y: dest_y })
+                                socket.emit('move_card', { room_name: room_name })
                                 mouse_state = 2;
                                 return;
                             }
