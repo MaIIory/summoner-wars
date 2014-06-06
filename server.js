@@ -252,7 +252,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('move_card', function (data) {
 
         // sending to all clients in 'game' room(channel) except sender
-        io.sockets.in(data.room_name).emit('move_card', { data : data });
+        io.sockets.in(data.room_name).emit('move_card', { data: data });
     });
 
 
