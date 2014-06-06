@@ -562,7 +562,7 @@ var Board = function () {
 
                                 that.moveCard(that.matrix[card_i][card_j].id, i, j);
                                 //send ready event
-                                socket.emit('move_card', { room_name: room_name, card_id: that.matrix[card_i][card_j].id, dest_x: rotate180(i, j)[0], dest_y: rotate180(i, j)[1] })
+                                //socket.emit('move_card', { room_name: room_name, card_id: that.matrix[card_i][card_j].id, dest_x: rotate180(i, j)[0], dest_y: rotate180(i, j)[1] })
                                 mouse_state = 2;
                                 return;
                             }
