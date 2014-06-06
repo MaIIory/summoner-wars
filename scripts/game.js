@@ -222,7 +222,7 @@ var Board = function () {
 
     that.moveCard = function (id, dest_x, dest_y) {
         
-        alert(id)
+
         //get selected card coordinates
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
