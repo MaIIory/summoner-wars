@@ -121,7 +121,7 @@ socket.on('start_play', function (data) {
 })
 
 //incoming move card event
-socket.on('move_card', function (data) {
+socket.on('move_card', function (data) { 
     alert('dziala')
     board.moveCard(data.card_id, data.dest_x, data.dest_y);
 })
