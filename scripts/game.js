@@ -122,7 +122,7 @@ socket.on('start_play', function (data) {
 
 //incoming move card event
 socket.on('move_card', function (data) {
-    that.moveCard(data.card_id, dest_x, dest_y);
+    board.moveCard(data.card_id, data.dest_x, data.dest_y);
 })
 
 
