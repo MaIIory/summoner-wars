@@ -565,6 +565,8 @@ var Board = function () {
                                 var dest_y = null;
                                 [dest_x, dest_y] = rotate180(i, j);
                                 var id = that.matrix[card_i][card_j].id;
+                                alert(dest_x)
+                                alert(dest_y)
                                 socket.emit('move_card', { room_name: room_name, card_id: id, dest_x: dest_y, dest_y: dest_x })
 
                                 //finally move card
