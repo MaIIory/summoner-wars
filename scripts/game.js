@@ -563,7 +563,7 @@ var Board = function () {
                                 //send move card event
                                 var dest_x = null;
                                 var dest_y = null;
-                                [dest_x, dest_y] = rotate180(j, i);
+                                [dest_y, dest_x] = rotate180(j, i);
                                 var id = that.matrix[card_i][card_j].id;
                                 alert(i)
                                 alert(j)
