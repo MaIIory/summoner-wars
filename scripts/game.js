@@ -384,7 +384,12 @@ var Board = function () {
                 if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
                     ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
                     ctx.fillRect(12, 12, width - 22, height - 22);
-                    ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+                    //TODO REM ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+                    //check card owner in order to load proper faction image
+                    if (that.matrix[i][j].owner === player.name)
+                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, that.square_w, that.square_h);
+                    else if (that.matrix[i][j].owner === opponent.name) {
+                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, that.square_w, that.square_h);
                 }
             }
         }

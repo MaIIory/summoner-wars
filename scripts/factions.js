@@ -54,7 +54,7 @@ var PheonixElves = function (player_name) {
             [new Card('Warrior', 'pe13', 650, 0, that.player_name), 0, 6],
             [new Card('Guardian', 'pe07', 520, 0, that.player_name), 1, 5],
             [new Card('Wall', 'pe32', 780, 0, that.player_name), 2, 5],
-            [new Card('Prince Elien', 'pe31', 640, 85, that.player_name), 2, 7],
+            [new Card('Prince Elien', 'pe31', 650, 85, that.player_name), 2, 7],
             [new Card('Archer', 'pe01', 390, 0, that.player_name), 3, 7],
             [new Card('Archer', 'pe02', 390, 0, that.player_name), 5, 6]
         ]
