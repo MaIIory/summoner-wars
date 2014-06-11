@@ -6,8 +6,8 @@ var PheonixElves = function (player_name) {
 
     that.board_image = new Image();
     that.board_image.src = "/img/phoenix_elves_board_cards.jpg";
-    that.image = new Image(); //background image
-    that.image.src = "/img/phoenix_elves.jpg";
+    //that.image = new Image(); //background image
+    //that.image.src = "/img/phoenix_elves.jpg";
 
     that.initDeck = function () {
 
@@ -70,8 +70,8 @@ var TundraOrcs = function (player_name) {
 
     that.board_image = new Image();
     that.board_image.src = "/img/tundra_orcs_board_cards.jpg";
-    that.image = new Image(); //background image
-    that.image.src = "/img/tundra_orcs.jpg";
+    //that.image = new Image(); //background image
+    //that.image.src = "/img/tundra_orcs.jpg";
 
     that.initDeck = function () {
 
