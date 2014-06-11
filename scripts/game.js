@@ -156,6 +156,8 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     //image source and draw data
     that.src_x = x;
     that.src_y = y;
+    that.board_w = 130;
+    that.board_h = 85;
     that.height = 239;
     that.width = 367;
     that.hover = false;
@@ -345,10 +347,10 @@ var Board = function () {
                     //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
                         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-                        ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h,
                             that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     else if (that.matrix[i][j].owner === opponent.name) {
-                        ctx.drawImage(opponent.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height,
+                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h,
                             that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                     else {
