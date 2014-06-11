@@ -388,7 +388,7 @@ var Board = function () {
                     //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
                         ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, that.square_w, that.square_h);
-                    else if (that.matrix[i][j].owner === opponent.name) {
+                    else if (that.matrix[i][j].owner === opponent.name) 
                         ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, that.square_w, that.square_h);
                 }
             }
