@@ -82,7 +82,9 @@ canvas.addEventListener('mouseup', function (evt) {
 }, false);
 
 socket.on('start_play', function (data) {
-    //TODO prepare board = set page handler
+
+    //set proper page handler
+    page_handler = new PlaygroundHandler();
 
     //create new oppponent instance and determine faction
     if (player.name != data.first_player_name) {
@@ -836,7 +838,26 @@ var PlaygroundHandler = function () {
     //set context
     var that = this;
 
+    that.image = new Image();
+    that.image.src = "/img/playground_handler.png";
+
+    //phase button settings
+    that.btn_phase_wh = 200; //button width and height
+    that.btn_phase_frame = 0; //0 - not hovered, 1 - hovered
+
+    //playground handler contains inside handlers for all phases
     that.move_phase_handler = new MovePhaseHandler();
+
+    //methond definitions
+    that.traceMouse = function () {
+
+    }
+
+    that.draw = function () {
+
+        //draw end phase button
+        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, 830, 560, that.btn_phase_wh, that.btn_phase_wh);
+    }
 }
 
 //Phase Handlers Definitions (parts of the page handlers)
@@ -1010,7 +1031,7 @@ var gameLoop = function () {
 
         }
 
-
+        page_handler.draw();
         board.checkMouseActivity();
         board.draw();
 
