@@ -856,7 +856,7 @@ var PlaygroundHandler = function () {
     that.draw = function () {
 
         //draw end phase button
-        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, 830, 560, that.btn_phase_wh, that.btn_phase_wh);
+        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, 860, 610, that.btn_phase_wh / 2, that.btn_phase_wh / 2);
     }
 }
 
