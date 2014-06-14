@@ -839,7 +839,7 @@ var PlaygroundHandler = function () {
     var that = this;
 
     that.image = new Image();
-    that.image.src = "/img/playground_handler.png";
+    that.image.src = "/img/playground_handler.png"; 
 
     //phase button settings
     that.btn_phase_wh = 200; //button width and height
