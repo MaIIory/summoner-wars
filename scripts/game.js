@@ -845,6 +845,8 @@ var PlaygroundHandler = function () {
     that.btn_phase_wh = 200; //button width and height
     that.btn_phase_frame = 0; //0 - not hovered, 1 - hovered
     that.btn_phase_hover = false;
+    that.btn_phase_x = 810;
+    that.btn_phase_y = 560;
 
     //playground handler contains inside handlers for all phases
     that.move_phase_handler = new MovePhaseHandler();
@@ -852,13 +854,26 @@ var PlaygroundHandler = function () {
     //method definitions
     that.checkHover = function () {
 
+        //check phase button hover
+        if ((mouse_x > that.btn_phase_x) &&
+            (mouse_x < that.btn_phase_x + that.btn_phase_wh) &&
+            (mouse_y > that.btn_phase_y) &&
+            (mouse_y < that.btn_phase_y + that.btn_phase_wh)) {
+            that.btn_phase_frame = 1;
+            that.btn_phase_hover = true;
+        }
+        else {
+            that.btn_phase_frame = 0;
+            that.btn_phase_hover = false;
+        }
 
     }
 
     that.draw = function () {
 
         //draw end phase button
-        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, 810, 560, that.btn_phase_wh, that.btn_phase_wh);
+        
+        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
     }
 }
 
