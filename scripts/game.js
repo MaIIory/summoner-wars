@@ -844,19 +844,21 @@ var PlaygroundHandler = function () {
     //phase button settings
     that.btn_phase_wh = 200; //button width and height
     that.btn_phase_frame = 0; //0 - not hovered, 1 - hovered
+    that.btn_phase_hover = false;
 
     //playground handler contains inside handlers for all phases
     that.move_phase_handler = new MovePhaseHandler();
 
-    //methond definitions
-    that.traceMouse = function () {
+    //method definitions
+    that.checkHover = function () {
+
 
     }
 
     that.draw = function () {
 
         //draw end phase button
-        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, 860, 610, that.btn_phase_wh / 2, that.btn_phase_wh / 2);
+        ctx.drawImage(that.image, 0, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_wh, that.btn_phase_wh, 810, 560, that.btn_phase_wh, that.btn_phase_wh);
     }
 }
 
