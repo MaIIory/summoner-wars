@@ -1035,6 +1035,7 @@ var gameLoop = function () {
 
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
+                page_handler.checkHover();
 
             } else if (game_phase === 4) {
 
