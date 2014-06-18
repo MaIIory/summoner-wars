@@ -1050,11 +1050,16 @@ var gameLoop = function () {
 
             } else if (game_phase === 4) {
 
+                board.drawPreviousMoves();
+
             } else if (game_phase === 5) {
+
+                board.drawPreviousMoves();
 
             }
 
             page_handler.checkHover();
+            page_handler.checkMouseAction();
 
         } else {
 
