@@ -875,7 +875,18 @@ var PlaygroundHandler = function () {
         
         ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0 , that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
     }
+
+    that.checkMouseAction = function () {
+
+        if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
+            game_phase += 1;
+            mouse_state = 2;
+        }
+
+    }
 }
+
+
 
 //Phase Handlers Definitions (parts of the page handlers)
 
@@ -1035,13 +1046,15 @@ var gameLoop = function () {
 
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
-                page_handler.checkHover();
+                
 
             } else if (game_phase === 4) {
 
             } else if (game_phase === 5) {
 
             }
+
+            page_handler.checkHover();
 
         } else {
 
@@ -1054,8 +1067,9 @@ var gameLoop = function () {
         board.draw();
 
         //temporary printouts
-        ctx.fillText('your opponent: ' + opponent.name, 840, 600);
-        ctx.fillText('your turn: ' + your_turn, 840, 610);
+        ctx.fillText('your opponent: ' + opponent.name, 840, 500);
+        ctx.fillText('your turn: ' + your_turn, 840, 510);
+        ctx.fillText('game phase: ' + game_phase, 840, 520);
 
     }
 
