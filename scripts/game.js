@@ -128,6 +128,10 @@ socket.on('move_card', function (data) {
     board.moveCard(data.card_id, data.dest_x, data.dest_y);
 })
 
+//incoming step phase event
+socket.on('step_phase', function (data) {
+    game_phase += 1;
+})
 
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
@@ -880,6 +884,7 @@ var PlaygroundHandler = function () {
 
         if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
             game_phase += 1;
+            socket.emit('step_phase', { room_name: room_name });
             mouse_state = 2;
         }
 

@@ -255,5 +255,12 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('move_card', { card_id: data.card_id, dest_x: data.dest_x, dest_y: data.dest_y });
     });
 
+    //step game phase
+    socket.on('step_phase', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('move_card');
+    });
+
 
 });
