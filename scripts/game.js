@@ -129,7 +129,7 @@ socket.on('move_card', function (data) {
 })
 
 //incoming step phase event
-socket.on('step_phase', function (data) {
+socket.on('step_phase', function (data) { 
     game_phase += 1;
 })
 
