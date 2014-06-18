@@ -259,7 +259,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('step_phase', function (data) {
 
         //sending to all clients in 'game' room(channel) except sender
-        socket.broadcast.to(data.room_name).emit('move_card');
+        socket.broadcast.to(data.room_name).emit('step_phase');
     });
 
 
