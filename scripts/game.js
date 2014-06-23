@@ -565,7 +565,7 @@ var Board = function () {
                             }
                         }
 
-                        //highlight this tile of available
+                        //highlight this tile if available
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
@@ -637,10 +637,22 @@ var Board = function () {
                     //check if card is in horizontal range
                     if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
 
+
+                        //TODO check card between
+
+                        //highlight this tile if available
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
 
                     //check if card is in vertical range
                     if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
+
+                        //TODO check card between
+
+                        //highlight this tile if available
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                     }
                     
