@@ -592,6 +592,40 @@ var Board = function () {
             }
         }
     }
+
+    that.drawAvailAttacks = function () {
+
+        var card_i = null;
+        var card_j = null;
+
+        //get selected card coordinates
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+                    card_i = i;
+                    card_j = j;
+                }
+            }
+        }
+
+        //if there is no selected card break function
+        if ((card_i === null) || (card_j === null))
+            return;
+
+        //if draw in big picture is active break function
+        if (that.matrix[card_i][card_j].draw_big_picture)
+            return;
+
+        //if cards owner is not a player break function
+        if (that.matrix[card_i][card_j].owner != player.name)
+            return;
+
+        //Wall cant attacks
+        if (that.matrix[card_i][card_j].name != 'Wall') {
+
+        }
+    }
 }
 
 //Page Handlers Definitions
