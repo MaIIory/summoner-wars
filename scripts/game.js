@@ -1120,6 +1120,10 @@ var gameLoop = function () {
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
                 
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
                 board.checkMouseActivity();
                 board.draw();
                 
@@ -1139,9 +1143,8 @@ var gameLoop = function () {
 
             }
 
-            page_handler.draw();
-            page_handler.checkHover();
-            page_handler.checkMouseAction();
+            
+
 
         } else {
 
