@@ -635,7 +635,7 @@ var Board = function () {
                 if (that.matrix[i][j] != null) {
                     
                     //check if card is in horizontal range
-                    if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
+                    if ((Math.abs(card_i - i) <= that.matrix[i][j].range) && (card_j === j)) {
 
 
                         //TODO check card between
@@ -646,7 +646,7 @@ var Board = function () {
                     }
 
                     //check if card is in vertical range
-                    if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
+                    if ((Math.abs(card_j - j) <= that.matrix[i][j].range) && (card_i === i)) {
 
                         //TODO check card between
 
@@ -1115,7 +1115,12 @@ var gameLoop = function () {
 
             } else if (game_phase === 2) {
 
-            } else if (game_phase === 3) {
+            }
+            /* ========== */
+            /* MOVE PHASE */
+            /* ========== */
+            else if (game_phase === 3)
+            {
 
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
@@ -1127,8 +1132,12 @@ var gameLoop = function () {
                 board.checkMouseActivity();
                 board.draw();
                 
-
-            } else if (game_phase === 4) {
+            }
+            /* =========== */
+            /* ATACK PHASE */
+            /* =========== */
+            else if (game_phase === 4)
+            {
 
                 board.drawPreviousMoves();
                 board.draw();
