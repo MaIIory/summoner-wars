@@ -1119,19 +1119,19 @@ var gameLoop = function () {
 
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
-                page_handler.draw();
+                
                 board.checkMouseActivity();
                 board.draw();
                 
 
             } else if (game_phase === 4) {
 
-                page_handler.draw();
-                board.checkMouseActivity();
+                board.drawPreviousMoves();
                 board.draw();
 
-                board.drawPreviousMoves();
                 board.drawAvailAttacks();
+
+                board.checkMouseActivity();
 
             } else if (game_phase === 5) {
 
@@ -1139,6 +1139,7 @@ var gameLoop = function () {
 
             }
 
+            page_handler.draw();
             page_handler.checkHover();
             page_handler.checkMouseAction();
 
