@@ -1119,9 +1119,16 @@ var gameLoop = function () {
 
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
+                page_handler.draw();
+                board.checkMouseActivity();
+                board.draw();
                 
 
             } else if (game_phase === 4) {
+
+                page_handler.draw();
+                board.checkMouseActivity();
+                board.draw();
 
                 board.drawPreviousMoves();
                 board.drawAvailAttacks();
@@ -1139,11 +1146,13 @@ var gameLoop = function () {
 
             board.drawPreviousMoves();
 
+            page_handler.draw();
+            board.checkMouseActivity();
+            board.draw();
+
         }
 
-        page_handler.draw();
-        board.checkMouseActivity();
-        board.draw();
+
 
         //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
