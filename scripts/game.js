@@ -632,14 +632,18 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
-                //check if card is in horizontal range
-                if(Math.abs(card_i - i) <= that.matrix[i][j].range){
+                if (that.matrix[i][j] != null) {
+                    /*
+                    //check if card is in horizontal range
+                    if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
 
-                }
+                    }
 
-                //check if card is in vertical range
-                if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
-                    
+                    //check if card is in vertical range
+                    if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
+
+                    }
+                    */
                 }
             }
         }
