@@ -151,7 +151,7 @@ var Player = function (name) {
     //that.hand = [];
 }
 
-var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
+var Card = function (card_name, id, x, y, owner_name, range/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
     var that = this;
 
     //basic data
@@ -173,6 +173,13 @@ var Card = function (card_name, id, x, y, owner_name/*, type, ability, ability_m
     //move phase data
     that.moves_left = 2;
     that.previous_moves = []; //container for coordinates with previous moves in the same turn
+
+    //atack phase data
+    that.attacked = false; //indicate if card already attacked in this turn
+    /* range of card attacks
+       event cards has range 0, so wall cant attacks */
+    that.range = range; 
+
 
     /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
@@ -621,9 +628,20 @@ var Board = function () {
         if (that.matrix[card_i][card_j].owner != player.name)
             return;
 
-        //Wall cant attacks
-        if (that.matrix[card_i][card_j].name != 'Wall') {
+        //draw available attacks
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
 
+                //check if card is in horizontal range
+                if(Math.abs(card_i - i) <= that.matrix[i][j].range){
+
+                }
+
+                //check if card is in vertical range
+                if (Math.abs(card_i - i) <= that.matrix[i][j].range) {
+                    
+                }
+            }
         }
     }
 }
@@ -1090,6 +1108,7 @@ var gameLoop = function () {
             } else if (game_phase === 4) {
 
                 board.drawPreviousMoves();
+                board.drawAvailAttacks();
 
             } else if (game_phase === 5) {
 
