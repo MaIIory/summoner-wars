@@ -1135,6 +1135,10 @@ var gameLoop = function () {
 
                 board.drawAvailAttacks();
 
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
                 board.checkMouseActivity();
 
             } else if (game_phase === 5) {
