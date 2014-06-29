@@ -638,7 +638,7 @@ var Board = function () {
                     if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
 
 
-                        //check blocking card
+                        //check horizontal blocking card
                         for (var k = 1; k < Math.abs(card_i - i) ; k++) {
                             if(that.matrix[card_i - (k * ((card_i - i)/(card_i - i)))][j] != null){
                                 continue;
@@ -653,7 +653,12 @@ var Board = function () {
                     //check if card is in vertical range
                     if ((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range) && (card_i === i)) {
 
-                        //TODO check card between
+                        //check horizontal blocking card
+                        for (var k = 1; k < Math.abs(card_j - j) ; k++) {
+                            if (that.matrix[i][card_j - (k * ((card_j - j) / (card_j - j)))] != null) {
+                                continue;
+                            }
+                        }
 
                         //highlight this tile if available
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
