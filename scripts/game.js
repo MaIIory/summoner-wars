@@ -651,7 +651,7 @@ var Board = function () {
                     }
 
                     //check if card is in vertical range
-                    if ((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range) && (card_i === i)) {
+                    if (((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range)) && (card_i === i)) {
 
                         //check horizontal blocking card
                         for (var k = 1; k < Math.abs(card_j - j) ; k++) {
