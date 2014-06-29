@@ -632,7 +632,7 @@ var Board = function () {
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
-                if ((that.matrix[i][j] != null) && ((card_i != i) && (card_j != j))) {
+                if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j))) {
                     
                     //check if card is in horizontal range
                     if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
