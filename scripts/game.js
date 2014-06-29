@@ -638,7 +638,12 @@ var Board = function () {
                     if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
 
 
-                        //TODO check card between
+                        //check blocking card
+                        for (var k = 1; k < Math.abs(card_i - i) ; k++) {
+                            if(that.matrix[card_i - (k * ((card_i - i)/(card_i - i)))][j] != null){
+                                continue;
+                            }
+                        }
 
                         //highlight this tile if available
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)"; 
