@@ -657,7 +657,7 @@ var Board = function () {
                         for (var k = 1; k < Math.abs(card_j - j) ; k++) {
                             if (that.matrix[i][card_j - (k * ((card_j - j) / (card_j - j)))] != null) {
                                 continue;
-                            }
+                            } 
                         }
 
                         //highlight this tile if available
