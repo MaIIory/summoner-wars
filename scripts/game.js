@@ -635,7 +635,7 @@ var Board = function () {
                 if (that.matrix[i][j] != null) {
                     
                     //check if card is in horizontal range
-                    if ((Math.abs(card_i - i) <= that.matrix[i][j].range) && (card_j === j)) {
+                    if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
 
 
                         //TODO check card between
