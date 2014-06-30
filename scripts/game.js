@@ -123,13 +123,13 @@ socket.on('start_play', function (data) {
 })
 
 //incoming move card event
-socket.on('move_card', function (data) { 
+socket.on('move_card', function (data) {
 
     board.moveCard(data.card_id, data.dest_x, data.dest_y);
 })
 
 //incoming step phase event
-socket.on('step_phase', function (data) { 
+socket.on('step_phase', function (data) {
     game_phase += 1;
 })
 
@@ -178,7 +178,7 @@ var Card = function (card_name, id, x, y, owner_name, range/*, type, ability, ab
     that.attacked = false; //indicate if card already attacked in this turn
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
-    that.range = range; 
+    that.range = range;
 
 
     /* for future purpose
@@ -235,15 +235,15 @@ var Board = function () {
         }
     }
 
-    that.moveCard = function (id, dest_x, dest_y) { 
-        
+    that.moveCard = function (id, dest_x, dest_y) {
+
 
         //get selected card coordinates
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
-                
+
                 if ((that.matrix[i][j] != null) && (that.matrix[i][j].id === id)) {
-                    
+
                     card_i = i;
                     card_j = j;
                 }
@@ -401,7 +401,7 @@ var Board = function () {
                     //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
                         ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
-                    else if (that.matrix[i][j].owner === opponent.name) 
+                    else if (that.matrix[i][j].owner === opponent.name)
                         ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
                 }
             }
@@ -633,39 +633,44 @@ var Board = function () {
             for (var j = 0; j < that.matrix[i].length; j++) {
 
                 if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j))) {
-                    
+
+                    //indicator if this card may be attacked
+                    var attack_available = false;
+
                     //check if card is in horizontal range
                     if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
 
+                        attack_available = true;
 
                         //check horizontal blocking card
                         for (var k = 1; k < Math.abs(card_i - i) ; k++) {
-                            if(that.matrix[card_i - (k * ((card_i - i)/(card_i - i)))][j] != null){
-                                continue;
+                            if (that.matrix[card_i - (k * ((card_i - i) / (card_i - i)))][j] != null) {
+                                attack_available = false;
                             }
                         }
-
-                        //highlight this tile if available
-                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)"; 
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
 
                     //check if card is in vertical range
                     if (((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range)) && (card_i === i)) {
 
+                        attack_available = true;
+
                         //check horizontal blocking card
                         for (var k = 1; k < Math.abs(card_j - j) ; k++) {
                             if (that.matrix[i][card_j - (k * ((card_j - j) / (card_j - j)))] != null) {
-                                continue;
-                            } 
+                                attack_available = false;
+                            }
                         }
+                    }
 
-                        //highlight this tile if available
+                    //if card is in range and there are no blocking card handle attack
+                    if (attack_available) {
+
+                        //highlight this tile if attack available
                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
                     }
-                    
+
                 }
             }
         }
@@ -921,7 +926,7 @@ var PlaygroundHandler = function () {
     var that = this;
 
     that.image = new Image();
-    that.image.src = "/img/playground_handler.png"; 
+    that.image.src = "/img/playground_handler.png";
 
     //phase button settings
     that.btn_phase_wh = 200; //button width and height
@@ -954,8 +959,8 @@ var PlaygroundHandler = function () {
     that.draw = function () {
 
         //draw end phase button
-        
-        ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0 , that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
+
+        ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
     }
 
     that.checkMouseAction = function () {
@@ -1126,28 +1131,26 @@ var gameLoop = function () {
             } else if (game_phase === 2) {
 
             }
-            /* ========== */
-            /* MOVE PHASE */
-            /* ========== */
-            else if (game_phase === 3)
-            {
+                /* ========== */
+                /* MOVE PHASE */
+                /* ========== */
+            else if (game_phase === 3) {
 
                 board.drawAvailMoves();
                 board.drawPreviousMoves();
-                
+
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
                 page_handler.draw();
 
                 board.checkMouseActivity();
                 board.draw();
-                
+
             }
-            /* =========== */
-            /* ATACK PHASE */
-            /* =========== */
-            else if (game_phase === 4)
-            {
+                /* =========== */
+                /* ATACK PHASE */
+                /* =========== */
+            else if (game_phase === 4) {
 
                 board.drawPreviousMoves();
                 board.draw();
@@ -1166,7 +1169,7 @@ var gameLoop = function () {
 
             }
 
-            
+
 
 
         } else {
