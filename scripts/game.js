@@ -704,7 +704,7 @@ var Animation = function (type, attacking_card_id, hitted_card_id) {
 
         that.alpha -= 0.005;
         ctx.restore();
-
+         
     }
 
 
