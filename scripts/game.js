@@ -1227,7 +1227,7 @@ var gameLoop = function () {
 
         }
 
-        for (var i = 0; animations.length() ; i++) {
+        for (var i = 0; i < animations.length() ; i++) {
 
             animations[i].draw();
 
