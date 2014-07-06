@@ -702,7 +702,7 @@ var Animation = function (type, attacking_card_id, hitted_card_id) {
         if (that.type === 0)
             ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
 
-        that.alpha -= 0.001;
+        that.alpha -= 0.005;
         ctx.restore();
 
     }
