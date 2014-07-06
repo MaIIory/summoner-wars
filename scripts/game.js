@@ -1227,15 +1227,15 @@ var gameLoop = function () {
 
         }
 
-        for (var i = 0; i < animations.length() ; i++) {
+        //for (var i = 0; i < animations.length() ; i++) {
 
-            animations[i].draw();
+          //  animations[i].draw();
 
             //if (animations[i].alpha <= 0)
             //    animations.splice(i, 1);
 
             //i--;
-        }
+        //}
 
         //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
