@@ -48,6 +48,9 @@ var opponent = null;
 //board initialization
 var board = null;
 
+//global animation container
+var animations = [];
+
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
 
@@ -677,6 +680,39 @@ var Board = function () {
     }
 }
 
+var Animation = function (type, attacking_card_id, hitted_card_id) {
+
+    var that = this;
+    that.type = type;
+    that.img = new Image();
+    that.img.src = "/img/animation.png";
+
+    that.alpha = 1;
+
+    /* for education purpose
+       a = typeof a !== 'undefined' ? a : 42;
+   b = typeof b !== 'undefined' ? b : 'default_b';
+   */
+
+    that.draw = function () {
+
+        ctx.save();
+        ctx.globalAlpha = that.alpha;
+
+        if (that.type === 0)
+            ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
+
+        that.alpha -= 0.01;
+        ctx.restore();
+
+    }
+
+
+
+
+
+}
+
 //Page Handlers Definitions
 var MainMenu = function () {
 
@@ -965,9 +1001,18 @@ var PlaygroundHandler = function () {
 
     that.checkMouseAction = function () {
 
+        //check if phase stepping is requested
         if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
+
+            //step game phase
             game_phase += 1;
+            
+            //emit apropriate event
             socket.emit('step_phase', { room_name: room_name });
+
+            //add 'end phase' animation
+            animations.push(new Animation(0));
+
             mouse_state = 2;
         }
 
@@ -1182,7 +1227,15 @@ var gameLoop = function () {
 
         }
 
+        for (var i = 0; animations.length() ; i++) {
 
+            animations[i].draw();
+
+            if (animations[i].alpha <= 0)
+                animations.splice(i, 1);
+
+            i--;
+        }
 
         //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
