@@ -1231,10 +1231,10 @@ var gameLoop = function () {
 
             animations[i].draw();
 
-            if (animations[i].alpha <= 0)
-                animations.splice(i, 1);
+            //if (animations[i].alpha <= 0)
+            //    animations.splice(i, 1);
 
-            i--;
+            //i--;
         }
 
         //temporary printouts
