@@ -1006,7 +1006,7 @@ var PlaygroundHandler = function () {
 
             //step game phase
             game_phase += 1;
-            
+
             //emit apropriate event
             socket.emit('step_phase', { room_name: room_name });
 
@@ -1227,10 +1227,10 @@ var gameLoop = function () {
 
         }
 
-        for (var i = 0; i < animations.length() ; i++) {
+        for (var i = 0; i < animations.length; i++) {
 
-          //  animations[i].draw();
-            alert("ASD");
+            animations[i].draw();
+
             //if (animations[i].alpha <= 0)
             //    animations.splice(i, 1);
 
