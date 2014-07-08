@@ -687,9 +687,9 @@ var Board = function () {
                     if (mouse_state === 1) {
 
                         if (
-                            (mouse_x > (that.s_x + (j * that.square_w) + that.square_w)) &&
+                            (mouse_x > (that.s_x + (j * that.square_w))) &&
                             (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
-                            (mouse_y > (that.s_y + (i * that.square_h) + that.square_h)) &&
+                            (mouse_y > (that.s_y + (i * that.square_h))) &&
                             (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
                             ) {
 
