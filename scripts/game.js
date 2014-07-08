@@ -684,6 +684,21 @@ var Board = function () {
                         ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                    if (mouse_state === 1) {
+
+                        if (
+                            (mouse_x > (that.s_x + (j * that.square_w) + that.square_w)) &&
+                            (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
+                            (mouse_y > (that.s_y + (i * that.square_h) + that.square_h)) &&
+                            (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
+                            ) {
+
+                            alert("graAAA");
+                            mouse_state = 2;
+                        }
+
+                    }
+
 
                 }
             }
