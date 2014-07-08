@@ -673,6 +673,9 @@ var Board = function () {
                         }
                     }
 
+                    if (!attack_available)
+                        continue;
+
                     //if card is in range and there are no blocking card handle attack
                     if (attack_available) {
 
