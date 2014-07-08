@@ -683,582 +683,595 @@ var Board = function () {
                         ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                    if (mouse_state === 1) {
 
+                        if (
+                        (mouse_x > (that.s_x + (j * that.square_w))) &&
+                        (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
+                        (mouse_y > (that.s_y + (i * that.square_h))) &&
+                        (mouse_y > (that.s_y + (i * that.square_h) + that.square_h))
+                            ){
+
+                            alert("gra");
+                            mouse_state = 2;
+                        }
+                        
+
+                    }
                 }
             }
         }
     }
-}
 
-var Animation = function (type, animation_image, attacking_card_id, hitted_card_id) {
+    var Animation = function (type, animation_image, attacking_card_id, hitted_card_id) {
 
-    var that = this;
-    that.type = type;
-    that.img = animation_image;
+        var that = this;
+        that.type = type;
+        that.img = animation_image;
 
-    that.alpha = 1;
+        that.alpha = 1;
 
-    /* for education purpose
-       a = typeof a !== 'undefined' ? a : 42;
-   b = typeof b !== 'undefined' ? b : 'default_b';
-   */
+        /* for education purpose
+           a = typeof a !== 'undefined' ? a : 42;
+       b = typeof b !== 'undefined' ? b : 'default_b';
+       */
 
-    that.draw = function () {
+        that.draw = function () {
 
-        ctx.save();
-        ctx.globalAlpha = that.alpha;
+            ctx.save();
+            ctx.globalAlpha = that.alpha;
 
-        if (that.type === 0)
-            ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
+            if (that.type === 0)
+                ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
 
-        that.alpha -= 0.005;
-        ctx.restore();
+            that.alpha -= 0.005;
+            ctx.restore();
+
+        }
+
+
+
+
 
     }
 
+    //Page Handlers Definitions
+    var MainMenu = function () {
 
+        //Set context
+        var that = this;
 
+        //ATTRIBUTES
+        that.image = new Image(); //background image
+        that.image.src = "/img/main_menu.png";
 
+        //logo settings
+        that.logo_src_y = 240; //logo source y coordinate (x = 0)
+        that.logo_width = 600; //logo width
+        that.logo_height = 250; //logo height
 
-}
+        //button settings
+        that.b_width = 300; //button width
+        that.b_height = 60;  //button height
 
-//Page Handlers Definitions
-var MainMenu = function () {
-
-    //Set context
-    var that = this;
-
-    //ATTRIBUTES
-    that.image = new Image(); //background image
-    that.image.src = "/img/main_menu.png";
-
-    //logo settings
-    that.logo_src_y = 240; //logo source y coordinate (x = 0)
-    that.logo_width = 600; //logo width
-    that.logo_height = 250; //logo height
-
-    //button settings
-    that.b_width = 300; //button width
-    that.b_height = 60;  //button height
-
-    //buttons initialization 
-    that.buttons = [0, 0, 0, 0]; /* button table with hoover data
+        //buttons initialization 
+        that.buttons = [0, 0, 0, 0]; /* button table with hoover data
                                    0 - mouse out
                                    1 - mouse over */
 
-    that.checkHover = function () {
+        that.checkHover = function () {
 
-        for (var i = 0; i < that.buttons.length; i++) {
-            if ((mouse_y > (height / 2) + (i * (that.b_height + 20))) &&
-                (mouse_y < (height / 2) + ((i * (that.b_height + 20)) + that.b_height)) &&
-                (mouse_x > (width / 2) - (that.b_width / 2)) &&
-                (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
-                that.buttons[i] = 1; //mouse over 
+            for (var i = 0; i < that.buttons.length; i++) {
+                if ((mouse_y > (height / 2) + (i * (that.b_height + 20))) &&
+                    (mouse_y < (height / 2) + ((i * (that.b_height + 20)) + that.b_height)) &&
+                    (mouse_x > (width / 2) - (that.b_width / 2)) &&
+                    (mouse_x < ((width / 2) - (that.b_width / 2)) + that.b_width)) {
+                    that.buttons[i] = 1; //mouse over 
+                }
+                else {
+                    that.buttons[i] = 0; //mouse out 
+                }
+            }
+        }
+
+        that.draw = function () {
+
+            //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+
+            //draw buttons
+            for (var i = 0; i < that.buttons.length; i++) {
+                ctx.drawImage(that.image,
+                    that.buttons[i] * that.b_width,
+                    that.b_height * i,
+                    that.b_width,
+                    that.b_height,
+                    (width / 2) - (that.b_width / 2),
+                    (height / 2) + (i * (that.b_height + 20)),
+                    that.b_width,
+                    that.b_height);
+            }
+
+            //draw logo
+            ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
+
+        }
+
+        that.checkAction = function () {
+
+            if (that.buttons[0] && mouse_button_down)
+                return 1;
+            else if (that.buttons[1] && mouse_button_down)
+                null; //TODO draw options
+            else if (that.buttons[2] && mouse_button_down)
+                null; //TODO draw credits
+            else if (that.buttons[3] && mouse_button_down)
+                null; //TODO exit game
+
+        }
+
+        //TODO draw options
+        //TODO draw credits
+
+    }
+
+    var BriefingMenu = function () {
+
+        //Set context
+        var that = this;
+
+        //ATTRIBUTES
+        that.image = new Image(); //background image
+        that.image.src = "/img/briefing_menu.png";
+
+        //header settings
+        that.header_src_y = 1053;
+        that.header_w = 300;
+        that.header_h = 50;
+
+        //faction desciption container
+        that.faction_desc_src_y = 500;
+        that.faction_desc_w = 306;
+        that.faction_desc_h = 463;
+
+        //faction frame
+        that.faction_frame_src_y = 1103;
+        that.faction_frame_w = 320;
+        that.faction_frame_h = 490;
+
+        //faction image
+        that.faction_image_w = 320;
+        that.faction_image_h = 500;
+
+        //begin button settings
+        that.btn_begin_src_y = 993;
+        that.btn_begin_width = 300; // "Begin" button width
+        that.btn_begin_height = 60; // "Begin" button height
+        that.btn_begin_hoover = 0;  /* button table with hoover data
+                                   0 - mouse out
+                                   1 - mouse over */
+
+        //faction selection buttons initialization 
+        that.btn_sel_src_y = 963;
+        that.btn_sel_w = 30;
+        that.btn_sel_h = 30;
+        that.buttons = [0, 0]; /* button table with hoover data [left, right]
+                                   0 - mouse out
+                                   1 - mouse over */
+
+        that.checkHover = function () {
+
+            //check begin button hoover
+            if ((mouse_x > (width / 2) - (that.btn_begin_width / 2)) &&
+                (mouse_x < ((width / 2) - (that.btn_begin_width / 2)) + that.btn_begin_width) &&
+                (mouse_y > 675) &&
+                (mouse_y < 675 + that.btn_begin_height)) {
+
+                that.btn_begin_hoover = 1;
             }
             else {
-                that.buttons[i] = 0; //mouse out 
-            }
-        }
-    }
-
-    that.draw = function () {
-
-        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-
-        //draw buttons
-        for (var i = 0; i < that.buttons.length; i++) {
-            ctx.drawImage(that.image,
-                that.buttons[i] * that.b_width,
-                that.b_height * i,
-                that.b_width,
-                that.b_height,
-                (width / 2) - (that.b_width / 2),
-                (height / 2) + (i * (that.b_height + 20)),
-                that.b_width,
-                that.b_height);
-        }
-
-        //draw logo
-        ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
-
-    }
-
-    that.checkAction = function () {
-
-        if (that.buttons[0] && mouse_button_down)
-            return 1;
-        else if (that.buttons[1] && mouse_button_down)
-            null; //TODO draw options
-        else if (that.buttons[2] && mouse_button_down)
-            null; //TODO draw credits
-        else if (that.buttons[3] && mouse_button_down)
-            null; //TODO exit game
-
-    }
-
-    //TODO draw options
-    //TODO draw credits
-
-}
-
-var BriefingMenu = function () {
-
-    //Set context
-    var that = this;
-
-    //ATTRIBUTES
-    that.image = new Image(); //background image
-    that.image.src = "/img/briefing_menu.png";
-
-    //header settings
-    that.header_src_y = 1053;
-    that.header_w = 300;
-    that.header_h = 50;
-
-    //faction desciption container
-    that.faction_desc_src_y = 500;
-    that.faction_desc_w = 306;
-    that.faction_desc_h = 463;
-
-    //faction frame
-    that.faction_frame_src_y = 1103;
-    that.faction_frame_w = 320;
-    that.faction_frame_h = 490;
-
-    //faction image
-    that.faction_image_w = 320;
-    that.faction_image_h = 500;
-
-    //begin button settings
-    that.btn_begin_src_y = 993;
-    that.btn_begin_width = 300; // "Begin" button width
-    that.btn_begin_height = 60; // "Begin" button height
-    that.btn_begin_hoover = 0;  /* button table with hoover data
-                                   0 - mouse out
-                                   1 - mouse over */
-
-    //faction selection buttons initialization 
-    that.btn_sel_src_y = 963;
-    that.btn_sel_w = 30;
-    that.btn_sel_h = 30;
-    that.buttons = [0, 0]; /* button table with hoover data [left, right]
-                                   0 - mouse out
-                                   1 - mouse over */
-
-    that.checkHover = function () {
-
-        //check begin button hoover
-        if ((mouse_x > (width / 2) - (that.btn_begin_width / 2)) &&
-            (mouse_x < ((width / 2) - (that.btn_begin_width / 2)) + that.btn_begin_width) &&
-            (mouse_y > 675) &&
-            (mouse_y < 675 + that.btn_begin_height)) {
-
-            that.btn_begin_hoover = 1;
-        }
-        else {
-            that.btn_begin_hoover = 0;
-        }
-
-        //check faction selection buttons
-        //left
-        if ((mouse_x > 253 - (that.btn_sel_w / 2)) &&
-            (mouse_x < (253 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
-            (mouse_y > 575) &&
-            (mouse_y < 575 + that.btn_sel_h)) {
-
-            that.buttons[0] = 1;
-        }
-        else {
-            that.buttons[0] = 0;
-        }
-
-        //right
-        if ((mouse_x > 353 - (that.btn_sel_w / 2)) &&
-            (mouse_x < (353 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
-            (mouse_y > 575) &&
-            (mouse_y < 575 + that.btn_sel_h)) {
-
-            that.buttons[1] = 1;
-        }
-        else {
-            that.buttons[1] = 0;
-        }
-
-    }
-
-    that.draw = function (player) {
-
-        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-
-        //draw header
-        ctx.drawImage(that.image, 0, that.header_src_y, that.header_w, that.header_h,
-            150, 75, that.header_w, that.header_h);
-
-        //draw faction description
-        ctx.drawImage(that.image, player.selected_faction * that.faction_desc_w,
-            that.faction_desc_src_y, that.faction_desc_w, that.faction_desc_h,
-            150, 175, that.faction_desc_w, that.faction_desc_h);
-
-        //draw faction frame
-        ctx.drawImage(that.image, 0, that.faction_frame_src_y, that.faction_frame_w, that.faction_frame_h,
-            (width / 2) + 50, 150, that.faction_frame_w, that.faction_frame_h);
-
-        //draw faction image
-        ctx.drawImage(that.image, player.selected_faction * that.faction_image_w, 0, that.faction_image_w, that.faction_image_h,
-            (width / 2) + 50, 150, that.faction_image_w, that.faction_image_h);
-
-        //draw begin button
-        ctx.drawImage(that.image, that.btn_begin_hoover * that.btn_begin_width,
-            that.btn_begin_src_y, that.btn_begin_width, that.btn_begin_height,
-            (width / 2) - (that.btn_begin_width / 2), 675, that.btn_begin_width, that.btn_begin_height);
-
-        //draw selection buttons
-        //left
-        ctx.drawImage(that.image, that.buttons[0] * that.btn_sel_w, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
-            253 - (that.btn_sel_w / 2), 575, that.btn_sel_w, that.btn_sel_h);
-        //right
-        ctx.drawImage(that.image, (that.buttons[1] * that.btn_sel_w) + 60, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
-            353 - (that.btn_sel_w / 2), 575, that.btn_sel_w, that.btn_sel_h);
-
-    }
-
-    that.checkAction = function () {
-
-        if (that.btn_begin_hoover === 1 && mouse_button_down && !trigger_pulled) {
-            trigger_pulled = true;
-            return 1;
-        }
-
-        if (that.buttons[0] === 1 && mouse_button_down && !trigger_pulled) {
-            trigger_pulled = true;
-            return 2;
-        }
-        if (that.buttons[1] === 1 && mouse_button_down && !trigger_pulled) {
-            trigger_pulled = true;
-            return 3;
-        }
-        return 0;
-    }
-
-
-}
-
-var WaitingMenu = function () {
-
-    //Set context
-    var that = this;
-
-    //ATTRIBUTES
-    that.image = new Image(); //background image
-    that.image.src = "/img/waiting_menu.png";
-
-    //logo settings
-    that.img_width = 600; //logo width
-    that.img_height = 100; //logo height
-
-    that.draw = function () {
-
-        //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-        //draw logo
-        ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (that.img_height / 2), that.img_width, that.img_height);
-
-    }
-}
-
-var PlaygroundHandler = function () {
-
-    //set context
-    var that = this;
-
-    that.image = new Image();
-    that.image.src = "/img/playground_handler.png";
-
-    //phase button settings
-    that.btn_phase_wh = 200; //button width and height
-    that.btn_phase_frame = 0; //0 - not active, 1 - active not hovered, 1 - active hovered
-    that.btn_phase_hover = false;
-    that.btn_phase_x = 810;
-    that.btn_phase_y = 560;
-
-    //playground handler contains inside handlers for all phases
-    that.move_phase_handler = new MovePhaseHandler();
-
-    //method definitions
-    that.checkHover = function () {
-
-        //check phase button hover
-        if ((mouse_x > that.btn_phase_x) &&
-            (mouse_x < that.btn_phase_x + that.btn_phase_wh) &&
-            (mouse_y > that.btn_phase_y) &&
-            (mouse_y < that.btn_phase_y + that.btn_phase_wh)) {
-            that.btn_phase_frame = 2;
-            that.btn_phase_hover = true;
-        }
-        else {
-            that.btn_phase_frame = 1;
-            that.btn_phase_hover = false;
-        }
-
-    }
-
-    that.draw = function () {
-
-        //draw end phase button
-
-        ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
-    }
-
-    that.checkMouseAction = function () {
-
-        //check if phase stepping is requested
-        if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
-
-            //step game phase
-            game_phase += 1;
-
-            //emit apropriate event
-            socket.emit('step_phase', { room_name: room_name });
-
-            //add 'end phase' animation
-            animations.push(new Animation(0, anim_img));
-
-            mouse_state = 2;
-        }
-
-    }
-}
-
-
-
-//Phase Handlers Definitions (parts of the page handlers)
-
-var MovePhaseHandler = function () {
-
-    //set context
-    var that = this;
-
-}
-
-/***************************FUNCTIONS**************************/
-//-----------------------------------------------------------/
-
-var initGame = function () {
-    page_handler = new MainMenu();
-    player = new Player(player_login);
-    board = new Board();
-}
-
-var Clear = function () {
-
-    //in state 3 (play in progress) background is draw with board
-    //to save memmory background is marged with board to one picture
-    //if (state === 3)
-    //    ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
-    //else
-    ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
-
-
-    //ctx.fillStyle = 'black'; //set active color 
-    //ctx.fillRect(0, 0, width, height);
-    ctx.fillStyle = 'white'; //set active color    
-    ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
-    ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
-    ctx.fillText('Game state: ' + state, 50, 70);
-    ctx.fillText('Room name: ' + room_name, 50, 90);
-    ctx.fillText('Player login: ' + player_login, 50, 100);
-    ctx.fillText('mouse state: ' + mouse_state, 50, 110);
-
-}
-
-var rotate180 = function (x, y) {
-    c_x = 3;
-    c_y = 4;
-
-    return [c_x - (x - c_x) - 1, c_y - (y - c_y) - 1]
-}
-
-/************************Main game loop************************/
-//-----------------------------------------------------------//
-var gameLoop = function () {
-
-    Clear();
-
-    if (state === 0) {
-        /* ========= */
-        /* main menu */
-        /* ========= */
-        page_handler.checkHover();
-        page_handler.draw();
-
-        var result = page_handler.checkAction();
-
-        //start briefing
-        if (result === 1) {
-
-            //change page handler to briefing menu
-            page_handler = new BriefingMenu();
-
-            //change game state to briefing
-            state = 1;
-        }
-    }
-
-    else if (state === 1) {
-        /* ================== */
-        /* faction selection */
-        /* ================== */
-        page_handler.checkHover();
-        page_handler.draw(player);
-
-        var result = page_handler.checkAction();
-
-        //start game button
-        if (result === 1) {
-
-            state = 2; //waiting for other players
-
-            //init faction object
-            if (player.selected_faction === 0) {
-                player.faction = new PheonixElves(player.name);
-            }
-            else if (player.selected_faction === 1) {
-                player.faction = new TundraOrcs(player.name);
+                that.btn_begin_hoover = 0;
             }
 
-            //init player deck
-            player.faction.initDeck();
+            //check faction selection buttons
+            //left
+            if ((mouse_x > 253 - (that.btn_sel_w / 2)) &&
+                (mouse_x < (253 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
+                (mouse_y > 575) &&
+                (mouse_y < 575 + that.btn_sel_h)) {
 
-            //add start cards to board
-            var start_cards = player.faction.getStartCards();
-            for (var i = 0; i < start_cards.length; i++) {
-                board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
+                that.buttons[0] = 1;
+            }
+            else {
+                that.buttons[0] = 0;
             }
 
-            //send ready event
-            socket.emit('player_ready_to_play', {
-                room_name: room_name, player_login: player_login, player_faction: player.selected_faction
-            })
+            //right
+            if ((mouse_x > 353 - (that.btn_sel_w / 2)) &&
+                (mouse_x < (353 - (that.btn_sel_w / 2)) + that.btn_sel_w) &&
+                (mouse_y > 575) &&
+                (mouse_y < 575 + that.btn_sel_h)) {
 
-            //change page handler
-            page_handler = new WaitingMenu();
+                that.buttons[1] = 1;
+            }
+            else {
+                that.buttons[1] = 0;
+            }
 
-            // << select faction button
-        } else if (result === 2) {
+        }
 
-            if (player.selected_faction === 0)
-                player.selected_faction++;
-            else
-                player.selected_faction--;
+        that.draw = function (player) {
 
-            // select faction button >>
-        } else if (result === 3) {
+            //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
 
-            if (player.selected_faction === 1)
-                player.selected_faction--;
-            else
-                player.selected_faction++;
+            //draw header
+            ctx.drawImage(that.image, 0, that.header_src_y, that.header_w, that.header_h,
+                150, 75, that.header_w, that.header_h);
+
+            //draw faction description
+            ctx.drawImage(that.image, player.selected_faction * that.faction_desc_w,
+                that.faction_desc_src_y, that.faction_desc_w, that.faction_desc_h,
+                150, 175, that.faction_desc_w, that.faction_desc_h);
+
+            //draw faction frame
+            ctx.drawImage(that.image, 0, that.faction_frame_src_y, that.faction_frame_w, that.faction_frame_h,
+                (width / 2) + 50, 150, that.faction_frame_w, that.faction_frame_h);
+
+            //draw faction image
+            ctx.drawImage(that.image, player.selected_faction * that.faction_image_w, 0, that.faction_image_w, that.faction_image_h,
+                (width / 2) + 50, 150, that.faction_image_w, that.faction_image_h);
+
+            //draw begin button
+            ctx.drawImage(that.image, that.btn_begin_hoover * that.btn_begin_width,
+                that.btn_begin_src_y, that.btn_begin_width, that.btn_begin_height,
+                (width / 2) - (that.btn_begin_width / 2), 675, that.btn_begin_width, that.btn_begin_height);
+
+            //draw selection buttons
+            //left
+            ctx.drawImage(that.image, that.buttons[0] * that.btn_sel_w, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
+                253 - (that.btn_sel_w / 2), 575, that.btn_sel_w, that.btn_sel_h);
+            //right
+            ctx.drawImage(that.image, (that.buttons[1] * that.btn_sel_w) + 60, that.btn_sel_src_y, that.btn_sel_w, that.btn_sel_h,
+                353 - (that.btn_sel_w / 2), 575, that.btn_sel_w, that.btn_sel_h);
+
+        }
+
+        that.checkAction = function () {
+
+            if (that.btn_begin_hoover === 1 && mouse_button_down && !trigger_pulled) {
+                trigger_pulled = true;
+                return 1;
+            }
+
+            if (that.buttons[0] === 1 && mouse_button_down && !trigger_pulled) {
+                trigger_pulled = true;
+                return 2;
+            }
+            if (that.buttons[1] === 1 && mouse_button_down && !trigger_pulled) {
+                trigger_pulled = true;
+                return 3;
+            }
+            return 0;
+        }
+
+
+    }
+
+    var WaitingMenu = function () {
+
+        //Set context
+        var that = this;
+
+        //ATTRIBUTES
+        that.image = new Image(); //background image
+        that.image.src = "/img/waiting_menu.png";
+
+        //logo settings
+        that.img_width = 600; //logo width
+        that.img_height = 100; //logo height
+
+        that.draw = function () {
+
+            //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+            //draw logo
+            ctx.drawImage(that.image, 0, 0, that.img_width, that.img_height, (width / 2) - (that.img_width / 2), (height / 2) - (that.img_height / 2), that.img_width, that.img_height);
+
         }
     }
 
-    else if (state === 2) {
-        /* ======================== */
-        /* waiting for both players */
-        /* ======================== */
+    var PlaygroundHandler = function () {
 
-        /* page handler and state will be changed */
-        /* after receiving 'start play' event     */
-        page_handler.draw();
+        //set context
+        var that = this;
 
-        //TODO mogla by to byc jakas animacja, co?
+        that.image = new Image();
+        that.image.src = "/img/playground_handler.png";
+
+        //phase button settings
+        that.btn_phase_wh = 200; //button width and height
+        that.btn_phase_frame = 0; //0 - not active, 1 - active not hovered, 1 - active hovered
+        that.btn_phase_hover = false;
+        that.btn_phase_x = 810;
+        that.btn_phase_y = 560;
+
+        //playground handler contains inside handlers for all phases
+        that.move_phase_handler = new MovePhaseHandler();
+
+        //method definitions
+        that.checkHover = function () {
+
+            //check phase button hover
+            if ((mouse_x > that.btn_phase_x) &&
+                (mouse_x < that.btn_phase_x + that.btn_phase_wh) &&
+                (mouse_y > that.btn_phase_y) &&
+                (mouse_y < that.btn_phase_y + that.btn_phase_wh)) {
+                that.btn_phase_frame = 2;
+                that.btn_phase_hover = true;
+            }
+            else {
+                that.btn_phase_frame = 1;
+                that.btn_phase_hover = false;
+            }
+
+        }
+
+        that.draw = function () {
+
+            //draw end phase button
+
+            ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
+        }
+
+        that.checkMouseAction = function () {
+
+            //check if phase stepping is requested
+            if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
+
+                //step game phase
+                game_phase += 1;
+
+                //emit apropriate event
+                socket.emit('step_phase', { room_name: room_name });
+
+                //add 'end phase' animation
+                animations.push(new Animation(0, anim_img));
+
+                mouse_state = 2;
+            }
+
+        }
     }
-    else if (state === 3) {
-        /* ========== */
-        /* playground */
-        /* ========== */
-
-        if (your_turn) {
-
-            if (game_phase === 0) {
-
-            } else if (game_phase === 1) {
-
-            } else if (game_phase === 2) {
-
-            }
-                /* ========== */
-                /* MOVE PHASE */
-                /* ========== */
-            else if (game_phase === 3) {
-
-                board.drawAvailMoves();
-                board.drawPreviousMoves();
-
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
-
-                board.checkMouseActivity();
-                board.draw();
-
-            }
-                /* =========== */
-                /* ATACK PHASE */
-                /* =========== */
-            else if (game_phase === 4) {
-
-                board.drawPreviousMoves();
-                board.draw();
-
-                board.drawAvailAttacks();
-
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
-
-                board.checkMouseActivity();
-
-            } else if (game_phase === 5) {
-
-                board.drawPreviousMoves();
-
-            }
 
 
 
+    //Phase Handlers Definitions (parts of the page handlers)
 
-        } else {
+    var MovePhaseHandler = function () {
 
-            board.drawPreviousMoves();
+        //set context
+        var that = this;
 
+    }
+
+    /***************************FUNCTIONS**************************/
+    //-----------------------------------------------------------/
+
+    var initGame = function () {
+        page_handler = new MainMenu();
+        player = new Player(player_login);
+        board = new Board();
+    }
+
+    var Clear = function () {
+
+        //in state 3 (play in progress) background is draw with board
+        //to save memmory background is marged with board to one picture
+        //if (state === 3)
+        //    ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
+        //else
+        ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
+
+
+        //ctx.fillStyle = 'black'; //set active color 
+        //ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = 'white'; //set active color    
+        ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
+        ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
+        ctx.fillText('Game state: ' + state, 50, 70);
+        ctx.fillText('Room name: ' + room_name, 50, 90);
+        ctx.fillText('Player login: ' + player_login, 50, 100);
+        ctx.fillText('mouse state: ' + mouse_state, 50, 110);
+
+    }
+
+    var rotate180 = function (x, y) {
+        c_x = 3;
+        c_y = 4;
+
+        return [c_x - (x - c_x) - 1, c_y - (y - c_y) - 1]
+    }
+
+    /************************Main game loop************************/
+    //-----------------------------------------------------------//
+    var gameLoop = function () {
+
+        Clear();
+
+        if (state === 0) {
+            /* ========= */
+            /* main menu */
+            /* ========= */
+            page_handler.checkHover();
             page_handler.draw();
-            board.checkMouseActivity();
-            board.draw();
 
-        }
+            var result = page_handler.checkAction();
 
-        for (var i = 0; i < animations.length; i++) {
+            //start briefing
+            if (result === 1) {
 
-            animations[i].draw();
+                //change page handler to briefing menu
+                page_handler = new BriefingMenu();
 
-            if (animations[i].alpha <= 0) {
-                animations.splice(i, 1);
-                i--;
+                //change game state to briefing
+                state = 1;
             }
         }
 
-        //temporary printouts
-        ctx.fillText('your opponent: ' + opponent.name, 840, 500);
-        ctx.fillText('your turn: ' + your_turn, 840, 510);
-        ctx.fillText('game phase: ' + game_phase, 840, 520);
+        else if (state === 1) {
+            /* ================== */
+            /* faction selection */
+            /* ================== */
+            page_handler.checkHover();
+            page_handler.draw(player);
 
+            var result = page_handler.checkAction();
+
+            //start game button
+            if (result === 1) {
+
+                state = 2; //waiting for other players
+
+                //init faction object
+                if (player.selected_faction === 0) {
+                    player.faction = new PheonixElves(player.name);
+                }
+                else if (player.selected_faction === 1) {
+                    player.faction = new TundraOrcs(player.name);
+                }
+
+                //init player deck
+                player.faction.initDeck();
+
+                //add start cards to board
+                var start_cards = player.faction.getStartCards();
+                for (var i = 0; i < start_cards.length; i++) {
+                    board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
+                }
+
+                //send ready event
+                socket.emit('player_ready_to_play', {
+                    room_name: room_name, player_login: player_login, player_faction: player.selected_faction
+                })
+
+                //change page handler
+                page_handler = new WaitingMenu();
+
+                // << select faction button
+            } else if (result === 2) {
+
+                if (player.selected_faction === 0)
+                    player.selected_faction++;
+                else
+                    player.selected_faction--;
+
+                // select faction button >>
+            } else if (result === 3) {
+
+                if (player.selected_faction === 1)
+                    player.selected_faction--;
+                else
+                    player.selected_faction++;
+            }
+        }
+
+        else if (state === 2) {
+            /* ======================== */
+            /* waiting for both players */
+            /* ======================== */
+
+            /* page handler and state will be changed */
+            /* after receiving 'start play' event     */
+            page_handler.draw();
+
+            //TODO mogla by to byc jakas animacja, co?
+        }
+        else if (state === 3) {
+            /* ========== */
+            /* playground */
+            /* ========== */
+
+            if (your_turn) {
+
+                if (game_phase === 0) {
+
+                } else if (game_phase === 1) {
+
+                } else if (game_phase === 2) {
+
+                }
+                    /* ========== */
+                    /* MOVE PHASE */
+                    /* ========== */
+                else if (game_phase === 3) {
+
+                    board.drawAvailMoves();
+                    board.drawPreviousMoves();
+
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.draw();
+
+                    board.checkMouseActivity();
+                    board.draw();
+
+                }
+                    /* =========== */
+                    /* ATACK PHASE */
+                    /* =========== */
+                else if (game_phase === 4) {
+
+                    board.drawPreviousMoves();
+                    board.draw();
+
+                    board.drawAvailAttacks();
+
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.draw();
+
+                    board.checkMouseActivity();
+
+                } else if (game_phase === 5) {
+
+                    board.drawPreviousMoves();
+
+                }
+
+
+
+
+            } else {
+
+                board.drawPreviousMoves();
+
+                page_handler.draw();
+                board.checkMouseActivity();
+                board.draw();
+
+            }
+
+            for (var i = 0; i < animations.length; i++) {
+
+                animations[i].draw();
+
+                if (animations[i].alpha <= 0) {
+                    animations.splice(i, 1);
+                    i--;
+                }
+            }
+
+            //temporary printouts
+            ctx.fillText('your opponent: ' + opponent.name, 840, 500);
+            ctx.fillText('your turn: ' + your_turn, 840, 510);
+            ctx.fillText('game phase: ' + game_phase, 840, 520);
+
+        }
+
+
+
+
+        requestAnimFrame(gameLoop);
     }
 
 
-
-
-    requestAnimFrame(gameLoop);
-}
-
-
-initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
-gameLoop();
+    initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
+    gameLoop();
