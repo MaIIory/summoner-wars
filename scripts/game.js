@@ -50,6 +50,8 @@ var board = null;
 
 //global animation container
 var animations = [];
+var anim_img = new Image();
+anim_img.src = "/img/animation.png";
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
@@ -680,12 +682,11 @@ var Board = function () {
     }
 }
 
-var Animation = function (type, attacking_card_id, hitted_card_id) {
+var Animation = function (type, animation_image, attacking_card_id, hitted_card_id) {
 
     var that = this;
     that.type = type;
-    that.img = new Image();
-    that.img.src = "/img/animation.png";
+    that.img = animation_image;
 
     that.alpha = 1;
 
@@ -1011,7 +1012,7 @@ var PlaygroundHandler = function () {
             socket.emit('step_phase', { room_name: room_name });
 
             //add 'end phase' animation
-            animations.push(new Animation(0));
+            animations.push(new Animation(0, anim_img));
 
             mouse_state = 2;
         }
