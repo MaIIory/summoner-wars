@@ -124,6 +124,11 @@ socket.on('start_play', function (data) {
     if (((player.name === data.first_player_name) && (data.starting_player === 0)) || ((player.name === data.second_player_name) && (data.starting_player === 1)))
         your_turn = true;
 
+    background_image = background_image_with_board;
+
+    //release memory
+    background_image_with_board = null;
+
     state = 3; //play in progress
 })
 
@@ -1044,10 +1049,10 @@ var Clear = function () {
 
     //in state 3 (play in progress) background is draw with board
     //to save memmory background is marged with board to one picture
-    if (state === 3)
-        ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
-    else
-        ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
+    //if (state === 3)
+    //    ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
+    //else
+    ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
 
 
     //ctx.fillStyle = 'black'; //set active color 
