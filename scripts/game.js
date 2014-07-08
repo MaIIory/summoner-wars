@@ -697,7 +697,7 @@ var Board = function () {
                         }
                         
 
-                    }
+                    } 
                 }
             }
         }
