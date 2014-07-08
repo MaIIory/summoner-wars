@@ -677,7 +677,10 @@ var Board = function () {
                     if (attack_available) {
 
                         //highlight this tile if attack available
-                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                        if (that.matrix[i][j].owner === player_login)
+                            ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                        else
+                            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
 
@@ -710,7 +713,7 @@ var Animation = function (type, animation_image, attacking_card_id, hitted_card_
 
         that.alpha -= 0.005;
         ctx.restore();
-         
+
     }
 
 
@@ -1199,7 +1202,7 @@ var gameLoop = function () {
 
             }
                 /* =========== */
-                /* ATACK PHASE */ 
+                /* ATACK PHASE */
                 /* =========== */
             else if (game_phase === 4) {
 
