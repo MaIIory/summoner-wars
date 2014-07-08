@@ -676,16 +676,13 @@ var Board = function () {
                     if (!attack_available)
                         continue;
 
-                    //if card is in range and there are no blocking card handle attack
-                    if (attack_available) {
+                    //highlight this tile if attack available
+                    if (that.matrix[i][j].owner === player_login)
+                        ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                    else
+                        ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                        //highlight this tile if attack available
-                        if (that.matrix[i][j].owner === player_login)
-                            ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-                        else
-                            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                    }
 
                 }
             }
