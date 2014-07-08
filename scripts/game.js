@@ -1199,7 +1199,7 @@ var gameLoop = function () {
 
             }
                 /* =========== */
-                /* ATACK PHASE */
+                /* ATACK PHASE */ 
                 /* =========== */
             else if (game_phase === 4) {
 
