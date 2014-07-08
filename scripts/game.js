@@ -683,6 +683,7 @@ var Board = function () {
                         ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                    /*
                     if (mouse_state === 1) {
 
                         if (
@@ -698,6 +699,7 @@ var Board = function () {
                         
 
                     } 
+                    */
                 }
             }
         }
