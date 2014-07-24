@@ -707,7 +707,7 @@ var Board = function () {
                             mouse_state = 2;
 
                             //add 'nb of hits' animation
-                            animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
+                            //animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
 
                         }
 
