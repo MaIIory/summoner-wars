@@ -161,7 +161,7 @@ var Player = function (name) {
     //that.hand = [];
 }
 
-var Card = function (card_name, id, x, y, owner_name, range/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
+var Card = function (card_name, id, x, y, owner_name, range, attack/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
     var that = this;
 
     //basic data
@@ -189,7 +189,7 @@ var Card = function (card_name, id, x, y, owner_name, range/*, type, ability, ab
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
     that.range = range;
-
+    that.attack = attack; //attack strength
 
     /* for future purpose
     that.type = type; // 0: Summon, 1: Unit, 2:Ability
@@ -693,7 +693,12 @@ var Board = function () {
                             (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
                             ) {
 
-                            alert("graAAA");
+                            var hits = 0;
+                            for (var k = 0; k < that.matrix[i][j].attack; k++) {
+                                if (Math.floor((Math.random() * 6) + 1) > 2)
+                                    hits++;
+                            }
+                            alert(hits);
                             mouse_state = 2;
                         }
 
