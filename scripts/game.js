@@ -733,7 +733,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
    b = typeof b !== 'undefined' ? b : 'default_b';
    */
 
-    that.draw = function () {
+    that.draw = function () { 
 
         ctx.save();
         ctx.globalAlpha = that.alpha;
