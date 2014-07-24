@@ -694,7 +694,7 @@ var Board = function () {
                             ) {
 
                             var hits = 0;
-                            for (var k = 0; k < that.matrix[i][j].attack; k++) {
+                            for (var k = 0; k < that.matrix[card_i][card_j].attack; k++) {
                                 if (Math.floor((Math.random() * 6) + 1) > 2)
                                     hits++;
                             }
