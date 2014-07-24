@@ -1120,7 +1120,7 @@ var gameLoop = function () {
     }
 
     else if (state === 1) {
-        /* ================== */
+        /* ================== */ 
         /* faction selection */
         /* ================== */
         page_handler.checkHover();
