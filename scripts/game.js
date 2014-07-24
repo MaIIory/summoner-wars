@@ -707,7 +707,7 @@ var Board = function () {
                             mouse_state = 2;
 
                             //add 'nb of hits' animation
-                            //animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
+                            animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
 
                         }
 
@@ -720,7 +720,7 @@ var Board = function () {
     }
 }
 
-var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id, ) {
+var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
 
     var that = this;
     that.type = type;
@@ -742,12 +742,12 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
         else if (that.type === 1) {
             //TODO animation for attacking and being attacking card
-            /*
+            
             ctx.drawImage(that.img, 50 * hits, 80, 50, 80, 362, 334, 50, 80);
             ctx.drawImage(that.img, 350, 80, 50, 80, 412, 334, 50, 80);
             ctx.drawImage(that.img, 50 * shoots, 80, 50, 80, 462, 334, 50, 80);
             ctx.drawImage(that.img, 400, 80, 150, 80, 512, 334, 150, 80);
-            */
+            
         }
 
         that.alpha -= 0.005;
