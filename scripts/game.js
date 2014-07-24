@@ -638,6 +638,10 @@ var Board = function () {
         if (that.matrix[card_i][card_j].owner != player.name)
             return;
 
+        //if card already attacked break function
+        if (that.matrix[card_i][card_j].attacked)
+            return;
+
         //draw available attacks
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
@@ -698,8 +702,10 @@ var Board = function () {
                                 if (Math.floor((Math.random() * 6) + 1) > 2)
                                     hits++;
                             }
-                            alert(hits);
+                            
+                            that.matrix[card_i][card_j].attacked = true;
                             mouse_state = 2;
+                            alert(hits);
                         }
 
                     }
