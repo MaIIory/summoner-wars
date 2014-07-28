@@ -705,6 +705,7 @@ var Board = function () {
 
                             //add 'nb of hits' animation
                             animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
+                            animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
 
                         }
 
@@ -722,6 +723,8 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
     var that = this;
     that.type = type;
     that.img = animation_image;
+    that.attacking_card_id = attacking_card_id;
+    that.hitted_card_id = hitted_card_id;
 
     that.alpha = 1;
 
@@ -744,7 +747,44 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.drawImage(that.img, 350, 80, 50, 80, 412, 334, 50, 80);
             ctx.drawImage(that.img, 50 * shoots, 80, 50, 80, 462, 334, 50, 80);
             ctx.drawImage(that.img, 400, 80, 150, 80, 512, 334, 150, 80);
-            
+        }
+        else if (that.type === 2) {
+
+            var attacking_card_x = null;
+            var attacking_card_y = null;
+
+            var hitted_card_x = null;
+            var hitted_card_y = null;
+
+            for (var i = 0; i < board.matrix.length; i++) {
+                for (var j = 0; i < board.matrix[i].length; j++) {
+
+                    if (board.matrix[i][j] != null) {
+
+                        if (board.matrix[i][j].id === that.attacking_card_id) {
+                            attacking_card_x = i;
+                            attacking_card_y = j;
+                        }
+
+                        if (board.matrix[i][j].id === that.hitted_card_id) {
+                            hitted_card_x = i;
+                            hitted_card_y = j;
+                        }
+
+                    }
+                }
+            }
+
+            //TODO remove this after tests
+            if (attacking_card_x === null || attacking_card_y === null || hitted_card_x === null || hitted_card_y === null) {
+                alert("Blad 5007")
+            }
+
+            ctx.fillStyle = "rgba(216, 25, 100, 0.4)";
+            ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
+            ctx.fillStyle = "rgba(116, 25, 110, 0.4)";
+            ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
+
         }
 
         that.alpha -= 0.005;
