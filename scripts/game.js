@@ -781,9 +781,9 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
                 alert("Blad 5007");
             }
 
-            ctx.fillStyle = "rgba(216, 25, 100, 0.4)";
-            ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
             ctx.fillStyle = "rgba(116, 25, 110, 0.4)";
+            ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
+            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
             ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
             
         }
