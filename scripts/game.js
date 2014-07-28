@@ -750,6 +750,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
         }
         else if (that.type === 2) {
 
+            /*
             var attacking_card_x = null;
             var attacking_card_y = null;
 
@@ -784,7 +785,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
             ctx.fillStyle = "rgba(116, 25, 110, 0.4)";
             ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
-
+            */
         }
 
         that.alpha -= 0.005;
