@@ -37,10 +37,10 @@ var page_handler = null;
 var mouse_x = 0;
 var mouse_y = 0;
 var mouse_button_down = false;
-var trigger_pulled = false;
 var mouse_state = 0; /* 0 - standby
                         1 - clicked
                         2 - used */
+
 //players settings
 var player = null;
 var opponent = null;
@@ -76,13 +76,10 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('mousedown', function (evt) {
     mouse_button_down = true;
-    if (mouse_state === 0)
-        mouse_state = 1;
 }, false);
 
 canvas.addEventListener('mouseup', function (evt) {
     mouse_button_down = false;
-    trigger_pulled = false;
     mouse_state = 0;
 }, false);
 
@@ -824,14 +821,22 @@ var MainMenu = function () {
 
     that.checkAction = function () {
 
-        if (that.buttons[0] && mouse_button_down)
+        if (that.buttons[0] && mouse_state === 1) {
+            mouse_state = 2;
             return 1;
-        else if (that.buttons[1] && mouse_button_down)
+        }
+        else if (that.buttons[1] && mouse_state === 1) {
+            mouse_state = 2;
             null; //TODO draw options
-        else if (that.buttons[2] && mouse_button_down)
+        }
+        else if (that.buttons[2] && mouse_state === 1) {
+            mouse_state = 2;
             null; //TODO draw credits
-        else if (that.buttons[3] && mouse_button_down)
+        }
+        else if (that.buttons[3] && mouse_state === 1) {
+            mouse_state = 2;
             null; //TODO exit game
+        }
 
     }
 
@@ -963,17 +968,17 @@ var BriefingMenu = function () {
 
     that.checkAction = function () {
 
-        if (that.btn_begin_hoover === 1 && mouse_button_down && !trigger_pulled) {
-            trigger_pulled = true;
+        if (that.btn_begin_hoover === 1 && mouse_state === 1) {
+            mouse_state = 2;
             return 1;
         }
 
-        if (that.buttons[0] === 1 && mouse_button_down && !trigger_pulled) {
-            trigger_pulled = true;
+        if (that.buttons[0] === 1 && mouse_state === 1) {
+            mouse_state = 2;
             return 2;
         }
-        if (that.buttons[1] === 1 && mouse_button_down && !trigger_pulled) {
-            trigger_pulled = true;
+        if (that.buttons[1] === 1 && mouse_state === 1) {
+            mouse_state = 2;
             return 3;
         }
         return 0;
@@ -1121,6 +1126,10 @@ var rotate180 = function (x, y) {
 var gameLoop = function () {
 
     Clear();
+
+    if (mouse_button_down && mouse_state === 0)
+        mouse_state = 1;
+        
 
     if (state === 0) {
         /* ========= */
