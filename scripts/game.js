@@ -785,6 +785,32 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
             ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
             ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
+
+            //one of the above dimensions should be equal to zero
+            var hor_diff = hitted_card_x - attacking_card_x; //horizontal difference
+            var ver_diff = hitted_card_y - attacking_card_y; //vertical difference
+
+            //angle indicates how much plan should be rotated
+            var angle = 0; 
+
+            if (0 > hor_diff)
+                angle = 180;
+            else if (ver_diff > 0)
+                angle = 90;
+            else if (0 > ver_diff)
+                angle = 270;
+
+            //arrow length
+            var arrow_len = 0;
+
+            if(ver_diff != 0)
+                arrow_len = Math.abs(ver_diff);
+            else if(hor_diff != 0)
+                arrow_len = Math.abs(hor_diff);
+
+            if (arrow_len === 0)
+                alert("Setting arrow length does not work!");
+
             
         }
 
