@@ -814,14 +814,13 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             var tmp_img = new Image();
             tmp_img.src = "/img/arrow" + String(arrow_len) + ".png";
 
-            ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
+            //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
 
-            //Draw tank body
-            //ctx.save(); //store context coordination settings
-            //ctx.translate(that.X, that.Y); //change rotation point to the middle of the tank
-            //ctx.rotate(that.tank_dir); //rotate context according to tank direction
-            //ctx.drawImage(that.body_image, 0, 0, that.width, that.height, -that.width / 2, -that.height / 2, that.width, that.height);
-            //ctx.restore(); //load stored context settings
+            ctx.save(); //store context coordination settings
+            ctx.translate(attacking_card_x + (board.square_w / 2), attacking_card_y + (board.square_h / 2)); //change rotation point to the middle of the tank
+            ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
+            ctx.drawImage(that.tmp_img, 0, 0, 260, 85, (board.square_w / 2) * (- 1), (board.square_h / 2) * (- 1), 260, 85);
+            ctx.restore(); //load stored context settings
         }
 
         that.alpha -= 0.005;
