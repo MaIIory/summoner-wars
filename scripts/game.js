@@ -814,6 +814,8 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             var tmp_img = new Image();
             tmp_img.src = "/img/arrow" + String(arrow_len) + ".png";
 
+            ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
+
             //Draw tank body
             //ctx.save(); //store context coordination settings
             //ctx.translate(that.X, that.Y); //change rotation point to the middle of the tank
