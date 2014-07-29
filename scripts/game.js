@@ -817,7 +817,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
 
             ctx.save(); //store context coordination settings
-            ctx.translate(board.s_x + (attacking_card_x * board.square_w) + (board.square_w / 2), board.s_y + (attacking_card_y * board.square_h) + (board.square_h / 2)); //change rotation point to the middle of the tank
+            ctx.translate(board.s_x + (attacking_card_y * board.square_w) + (board.square_w / 2), board.s_y + (attacking_card_x * board.square_h) + (board.square_h / 2)); //change rotation point to the middle of the tank
             ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
             ctx.drawImage(tmp_img, 0, 0, 260, 85, (board.square_w / 2) * (- 1), (board.square_h / 2) * (- 1), 260, 85);
             ctx.restore(); //load stored context settings
