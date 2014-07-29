@@ -811,7 +811,15 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             if (arrow_len === 0)
                 alert("Setting arrow length does not work!");
 
-            
+            var tmp_img = new Image();
+            tmp_img.src = "/img/arrow" + String(arrow_len) + ".png";
+
+            //Draw tank body
+            //ctx.save(); //store context coordination settings
+            //ctx.translate(that.X, that.Y); //change rotation point to the middle of the tank
+            //ctx.rotate(that.tank_dir); //rotate context according to tank direction
+            //ctx.drawImage(that.body_image, 0, 0, that.width, that.height, -that.width / 2, -that.height / 2, that.width, that.height);
+            //ctx.restore(); //load stored context settings
         }
 
         that.alpha -= 0.005;
