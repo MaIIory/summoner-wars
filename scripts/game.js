@@ -787,8 +787,8 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
 
             //one of the above dimensions should be equal to zero
-            var hor_diff = hitted_card_x - attacking_card_x; //horizontal difference
-            var ver_diff = hitted_card_y - attacking_card_y; //vertical difference
+            var ver_diff = hitted_card_x - attacking_card_x; //horizontal difference
+            var hor_diff = hitted_card_y - attacking_card_y; //vertical difference
 
             //angle indicates how much plan should be rotated
             var angle = 0; 
