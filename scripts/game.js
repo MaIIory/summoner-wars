@@ -797,8 +797,6 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
                 angle = 180;
             else if (ver_diff > 0)
                 angle = 90;
-            else if (0 > ver_diff)
-                angle = 270;
 
             //arrow length
             var arrow_len = 0;
@@ -812,7 +810,15 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
                 alert("Setting arrow length does not work!");
 
             var tmp_img = new Image();
-            tmp_img.src = "/img/arrow" + String(arrow_len) + ".png";
+            
+            //select proper image
+            if (ver_diff > 0) {
+                tmp_img.src = "/img/ver_arrow" + String(arrow_len) + ".png";
+            }
+            else if (hor_diff > 0) {
+                tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
+
+            }
 
             //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
 
