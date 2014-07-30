@@ -835,9 +835,9 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.restore(); //load stored context settings
         }
 
-        cnt++;
+        that.cnt++;
 
-        if(cnt > 200)
+        if(that.cnt > 200)
             that.alpha -= 0.01;
         ctx.restore();
 
