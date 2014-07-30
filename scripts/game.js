@@ -796,7 +796,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             if (0 > hor_diff)
                 angle = 180;
             else if (ver_diff > 0)
-                angle = 90;
+                angle = 180;
 
             //arrow length
             var arrow_len = 0;
@@ -812,10 +812,10 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             var tmp_img = new Image();
             
             //select proper image
-            if (ver_diff > 0) {
+            if (Math.abs(ver_diff) > 0) {
                 tmp_img.src = "/img/ver_arrow" + String(arrow_len) + ".png";
             }
-            else if (hor_diff > 0) {
+            else if (Math.abs(hor_diff) > 0) {
                 tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
 
             }
