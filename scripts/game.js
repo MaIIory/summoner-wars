@@ -830,7 +830,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             if(hor_diff != 0)
                 ctx.drawImage(tmp_img, 0, 0, 260, 85, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 260, 85);
             else
-                ctx.drawImage(tmp_img, 0, 0, 170, 130, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 170, 130);
+                ctx.drawImage(tmp_img, 0, 0, 170, 130, (board.square_h / 2) * (-1), (board.square_w / 2) * (-1), 170, 130);
             ctx.restore(); //load stored context settings
         }
 
