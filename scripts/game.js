@@ -812,12 +812,12 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             var tmp_img = new Image();
             
             //select proper image
-            if (ver_diff != 0) {
+            //if (ver_diff != 0) {
                 tmp_img.src = "/img/ver_arrow" + String(arrow_len) + ".png";
-            }
-            else{
-                tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
-            }
+            //}
+            //else{
+            //    tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
+            //}
 
             //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
 
