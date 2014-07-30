@@ -727,6 +727,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
     that.hitted_card_id = hitted_card_id;
 
     that.alpha = 1;
+    that.cnt = 0;
 
     /* for education purpose
        a = typeof a !== 'undefined' ? a : 42;
@@ -834,7 +835,10 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.restore(); //load stored context settings
         }
 
-        that.alpha -= 0.005;
+        cnt++;
+
+        if(cnt > 200)
+            that.alpha -= 0.01;
         ctx.restore();
 
     }
