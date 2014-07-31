@@ -704,8 +704,9 @@ var Board = function () {
                             mouse_state = 2;
 
                             //add 'nb of hits' animation
-                            animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
                             animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
+                            animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
+                            
 
                         }
 
@@ -742,7 +743,6 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
         if (that.type === 0)
             ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
         else if (that.type === 1) {
-            //TODO animation for attacking and being attacking card
             
             ctx.drawImage(that.img, 50 * hits, 80, 50, 80, 362, 334, 50, 80);
             ctx.drawImage(that.img, 350, 80, 50, 80, 412, 334, 50, 80);
@@ -782,7 +782,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
                 alert("Blad 5007");
             }
 
-            ctx.fillStyle = "rgba(116, 25, 110, 0.4)";
+            ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
             ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
             ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
             ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
