@@ -829,9 +829,9 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
             ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
 
             if(hor_diff != 0)
-                ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * board.square_w), 85, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 260, 85);
+                ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * board.square_w), 85, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 130 + (arrow_len * board.square_w), 85);
             else
-                ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * board.square_h), 130, (board.square_h / 2) * (-1), (board.square_w / 2) * (-1), 170, 130);
+                ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * board.square_h), 130, (board.square_h / 2) * (-1), (board.square_w / 2) * (-1), 85 + (arrow_len * board.square_h), 130);
             ctx.restore(); //load stored context settings
         }
 
