@@ -382,11 +382,6 @@ var Board = function () {
                         $('#dialog').dialog('open');
                     }
 
-                    //draw wounds
-                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k * that.hor_diff_between),
-                            that.s_y + (i * that.square_h) + that.wounds_s_y + (k * that.ver_diff_between), that.wounds_w, that.wounds_h);
-                    }
 
                     if (that.matrix[i][j].hover)
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
@@ -420,6 +415,12 @@ var Board = function () {
                         ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
                     else if (that.matrix[i][j].owner === opponent.name)
                         ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+
+                    //draw wounds
+                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k * that.hor_diff_between),
+                            that.s_y + (i * that.square_h) + that.wounds_s_y + (k * that.ver_diff_between), that.wounds_w, that.wounds_h);
+                    }
                 }
             }
         }
