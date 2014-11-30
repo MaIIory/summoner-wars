@@ -213,14 +213,14 @@ var Board = function () {
     that.board_graphics.src = "/img/board_graphics.png";
 
     //wounds data
-    that.wounds_src_x = 0;
+    that.wounds_src_x = 18;
     that.wounds_src_y = 85;
-    that.wounds_s_x = 84;
-    that.wounds_s_y = 61;
-    that.wounds_w = 18;
-    that.wounds_h = 16;
-    that.hor_diff_between = 19;
-    that.ver_diff_between = 20;
+    that.wounds_s_x = 30;
+    that.wounds_s_y = 21;
+    that.wounds_w = 7;
+    that.wounds_h = 7;
+    that.hor_diff_between = 6;
+    that.ver_diff_between = 7;
 
     //init board
     that.matrix =
@@ -383,6 +383,13 @@ var Board = function () {
                     }
 
 
+                    //draw wounds
+                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k%3 * that.hor_diff_between),
+                            that.s_y + (i * that.square_h) + that.wounds_s_y + (Math.floor(k/3) * that.ver_diff_between), that.wounds_w, that.wounds_h);
+                    }
+
+
                     if (that.matrix[i][j].hover)
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
@@ -416,11 +423,6 @@ var Board = function () {
                     else if (that.matrix[i][j].owner === opponent.name)
                         ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
 
-                    //draw wounds
-                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k * that.hor_diff_between),
-                            that.s_y + (i * that.square_h) + that.wounds_s_y + (k * that.ver_diff_between), that.wounds_w, that.wounds_h);
-                    }
                 }
             }
         }
