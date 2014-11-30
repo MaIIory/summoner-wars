@@ -19,7 +19,7 @@ background_image_with_board.src = "/img/board.jpg";
 var state = 0; /* 0 - main menu
                   1 - briefing (faction selection)
                   2 - waiting for other players 
-                  3 - play in progress */
+                  3 - game in progress */
 
 var game_phase = 3; /* 0 - draw phase
                        1 - summon phase
@@ -158,7 +158,7 @@ var Player = function (name) {
     //that.hand = [];
 }
 
-var Card = function (card_name, id, x, y, owner_name, range, attack/*, type, ability, ability_mandatory, atack, life_points, cost*/) {
+var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     var that = this;
 
     //basic data
@@ -182,20 +182,14 @@ var Card = function (card_name, id, x, y, owner_name, range, attack/*, type, abi
     that.previous_moves = []; //container for coordinates with previous moves in the same turn
 
     //atack phase data
+    that.lives = lives;
+    that.wounds = 0; //received wounds
     that.attacked = false; //indicate if card already attacked in this turn
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
     that.range = range;
     that.attack = attack; //attack strength
 
-    /* for future purpose
-    that.type = type; // 0: Summon, 1: Unit, 2:Ability
-    that.ability = ability;
-    that.ability_mandatory = ability_mandatory;
-    that.atack = atack;
-    that.life_points = life_points;
-    that.cost = cost;
-    */
     that.draw = function (image) {
 
     }
@@ -319,7 +313,7 @@ var Board = function () {
 
                         that.matrix[i][j].hover = true;
 
-                        //check if player wish to to select card
+                        //check if player wish to select this card
                         if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                             that.matrix[i][j].selected = true;
                         }
@@ -378,6 +372,8 @@ var Board = function () {
                         $('#dialog').dialog('open');
                     }
 
+                    //draw wounds
+
                     if (that.matrix[i][j].hover)
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
@@ -420,9 +416,9 @@ var Board = function () {
         //TODO This function should be optimized - draw methods should be closed in one internal method
         /* selected card moves path should be drawn at the
         end in order to show whole path */
+        card_selected = null; //indidcate if any card is selected
         sel_card_x = null;
         sel_card_y = null;
-        card_selected = null; //indidcate if any card is selected
 
         for (var card_i = 0; card_i < that.matrix.length; card_i++) {
             for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
@@ -607,7 +603,7 @@ var Board = function () {
         }
     }
 
-    that.drawAvailAttacks = function () {
+    that.drawAndHandleAvailAttacks = function () {
 
         var card_i = null;
         var card_j = null;
@@ -678,7 +674,7 @@ var Board = function () {
                         continue;
 
 
-                    //highlight this tile if attack available
+                    //highlight this tile if attack available (different color for owners card)
                     if (that.matrix[i][j].owner === player_login)
                         ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
                     else
@@ -720,6 +716,10 @@ var Board = function () {
 }
 
 var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
+
+    /* 0 - 'End Phase' animation: only 'type' argument required
+       1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
+       2 - 'arrows' animation: all arguments are required
 
     var that = this;
     that.type = type;
@@ -1348,8 +1348,9 @@ var gameLoop = function () {
                 board.drawPreviousMoves();
                 board.draw();
 
-                board.drawAvailAttacks();
+                board.drawAndHandleAvailAttacks();
 
+                //Phase button handling
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
                 page_handler.draw();
