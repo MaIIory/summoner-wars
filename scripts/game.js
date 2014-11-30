@@ -383,7 +383,7 @@ var Board = function () {
                     }
 
                     //draw wounds
-                    for (var k = 0; k < that.matrix[i][j].wounds.length; k++) {
+                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
                         ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k * that.hor_diff_between),
                             that.s_y + (i * that.square_h) + that.wounds_s_y + (k * that.ver_diff_between), that.wounds_w, that.wounds_h);
                     }
