@@ -384,352 +384,353 @@ var Board = function () {
 
 
                     //draw wounds
-                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k%3 * that.hor_diff_between),
-                            that.s_y + (i * that.square_h) + that.wounds_s_y + (Math.floor(k/3) * that.ver_diff_between), that.wounds_w, that.wounds_h);
-                    }
-
-
-                    if (that.matrix[i][j].hover)
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                    //draw eyeglass for selected card
-                    if (that.matrix[i][j].selected) {
-                        if (((mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
-                        (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 15) &&
-                        (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
-                        (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) ||
-                            that.matrix[i][j].draw_big_picture)
-                            ctx.drawImage(that.board_graphics, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        else
-                            ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                    }
-                }
-            }
-
-        }
-
-        //draw card in big picture
-        for (var i = 0; i < that.matrix.length; i++) {
-            for (var j = 0; j < that.matrix[i].length; j++) {
-                if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
-                    ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
-                    ctx.fillRect(12, 12, width - 22, height - 22);
-                    //TODO REM ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
-                    //check card owner in order to load proper faction image
-                    if (that.matrix[i][j].owner === player.name)
-                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
-                    else if (that.matrix[i][j].owner === opponent.name)
-                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
-
-                }
-            }
-        }
-    }
-
-    that.drawPreviousMoves = function () {
-
-        //TODO This function should be optimized - draw methods should be closed in one internal method
-        /* selected card moves path should be drawn at the
-        end in order to show whole path */
-        card_selected = null; //indidcate if any card is selected
-        sel_card_x = null;
-        sel_card_y = null;
-
-        for (var card_i = 0; card_i < that.matrix.length; card_i++) {
-            for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
-
-                //draw previous moves
-                if (that.matrix[card_i][card_j] != null) {
-
-                    //selected cards moves should be draw at the end
-                    if (that.matrix[card_i][card_j].selected != true) {
-
-
-                        for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
-
-                            if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
-                                /* This is last move - draw line from last position to current position */
-                                ctx.strokeStyle = '#003300';  // Purple path
-                                if (that.matrix[card_i][card_j].selected)
-                                    ctx.strokeStyle = '#000000';  // Purple path
-                                ctx.lineWidth = "5";
-                                ctx.beginPath();
-                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                                ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
-                                ctx.stroke();
-                            } else {
-                                ctx.strokeStyle = '#003300';  // Purple path
-                                if (that.matrix[card_i][card_j].selected)
-                                    ctx.strokeStyle = '#000000';  // Purple path
-                                ctx.lineWidth = "5";
-                                ctx.beginPath();
-                                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
-                                ctx.stroke();
-                            }
-
-                            ctx.beginPath();
-                            ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
-                                that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
-                            ctx.fillStyle = 'green';
-                            ctx.fill();
-                            ctx.lineWidth = 4;
-                            ctx.strokeStyle = '#003300';
-                            ctx.stroke();
-
-                        }
-                    }
-                    else {
-                        //selected data should be store for further actions
-                        sel_card_x = card_i;
-                        sel_card_y = card_j;
-                        card_selected = true;
-                    }
-                }
-            }
-        }
-        //if any card is selected its moves should be draw at the end (now)
-        if (card_selected) {
-
-            card_i = sel_card_x;
-            card_j = sel_card_y;
-
-            for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
-
-                if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
-                    /* This is last move - draw line from last position to current position */
-                    ctx.strokeStyle = '#003300';  // Purple path
-                    ctx.lineWidth = "5";
-                    ctx.beginPath();
-                    ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                    ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
-                    ctx.stroke();
-                } else {
-                    ctx.strokeStyle = '#003300';  // Purple path
-                    ctx.lineWidth = "5";
-                    ctx.beginPath();
-                    ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
-                    ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
-                    ctx.stroke();
-                }
-
-                ctx.beginPath();
-                ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
-                    that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
-                ctx.fillStyle = 'orange';
-                ctx.fill();
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = '#003300';
-                ctx.stroke();
-
-            }
-        }
-
-    }
-
-    that.drawAvailMoves = function () {
-
-
-        var card_i = null;
-        var card_j = null;
-
-        //get selected card coordinates
-        for (var i = 0; i < that.matrix.length; i++) {
-            for (var j = 0; j < that.matrix[i].length; j++) {
-
-                if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
-                    card_i = i;
-                    card_j = j;
-                }
-            }
-        }
-
-        //if there is no selected card break function
-        if ((card_i === null) || (card_j === null))
-            return;
-
-        //if draw in big picture is active break function
-        if (that.matrix[card_i][card_j].draw_big_picture)
-            return;
-
-        //if cards owner is not a player break function
-        if (that.matrix[card_i][card_j].owner != player.name)
-            return;
-
-        //draw available places
-        for (var i = 0; i < that.matrix.length; i++) {
-            for (var j = 0; j < that.matrix[i].length; j++) {
-
-                //Wall cant moves 
-                if (that.matrix[card_i][card_j].name != 'Wall') {
-
-
-                    if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
-
-                        //check if there is no blocking card in row
-                        if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
-                            continue;
-                        }
-
-                        //check if there is no blocking card in column
-                        if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
-                            continue;
-                        }
-
-                        //check if there is no blocking card diagonally
-                        if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
-                            if ((that.matrix[card_i - (card_i - i)][card_j] != null) && (that.matrix[card_i][card_j - (card_j - j)] != null)) {
-                                continue;
-                            }
-                        }
-
-                        //highlight this tile if available
-                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                        if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
-                            (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
-                            ((i != card_i) || (j != card_j)) &&
-                            (that.matrix[i][j] === null)) {
-
-                            //hover available tiles
-                            ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
-                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                            if (mouse_state === 1) {
-
-                                //send move card event
-                                var dest_x = null;
-                                var dest_y = null;
-                                [dest_y, dest_x] = rotate180(j, i);
-                                var id = that.matrix[card_i][card_j].id;
-                                socket.emit('move_card', { room_name: room_name, card_id: id, dest_x: dest_x, dest_y: dest_y })
-
-                                //finally move card
-                                that.moveCard(that.matrix[card_i][card_j].id, i, j);
-                                mouse_state = 2;
-                                return;
-                            }
+                    if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
+                        for (var k = 0; k < that.matrix[i][j].wounds; k++) {
+                            ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k%3 * that.hor_diff_between),
+                                that.s_y + (i * that.square_h) + that.wounds_s_y + (Math.floor(k/3) * that.ver_diff_between), that.wounds_w, that.wounds_h);
                         }
                     }
 
-                }
-            }
-        }
-    }
-
-    that.drawAndHandleAvailAttacks = function () {
-
-        var card_i = null;
-        var card_j = null;
-
-        //get selected card coordinates
-        for (var i = 0; i < that.matrix.length; i++) {
-            for (var j = 0; j < that.matrix[i].length; j++) {
-
-                if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
-                    card_i = i;
-                    card_j = j;
-                }
-            }
-        }
-
-        //if there is no selected card break function
-        if ((card_i === null) || (card_j === null))
-            return;
-
-        //if draw in big picture is active break function
-        if (that.matrix[card_i][card_j].draw_big_picture)
-            return;
-
-        //if cards owner is not a player break function
-        if (that.matrix[card_i][card_j].owner != player.name)
-            return;
-
-        //if card already attacked break function
-        if (that.matrix[card_i][card_j].attacked)
-            return;
-
-        //draw available attacks
-        for (var i = 0; i < that.matrix.length; i++) {
-            for (var j = 0; j < that.matrix[i].length; j++) {
-
-                if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j))) {
-
-                    //indicator if this card may be attacked
-                    var attack_available = false;
-
-                    //check if card is in horizontal range
-                    if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
-
-                        attack_available = true;
-
-                        //check horizontal blocking card
-                        for (var k = 1; k < Math.abs(card_i - i) ; k++) {
-                            if (that.matrix[card_i - (k * ((card_i - i) / (card_i - i)))][j] != null) {
-                                attack_available = false;
-                            }
-                        }
-                    }
-
-                    //check if card is in vertical range
-                    if (((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range)) && (card_i === i)) {
-
-                        attack_available = true;
-
-                        //check horizontal blocking card
-                        for (var k = 1; k < Math.abs(card_j - j) ; k++) {
-                            if (that.matrix[i][card_j - (k * ((card_j - j) / (card_j - j)))] != null) {
-                                attack_available = false;
-                            }
-                        }
-                    }
-
-                    if (!attack_available)
-                        continue;
-
-
-                    //highlight this tile if attack available (different color for owners card)
-                    if (that.matrix[i][j].owner === player_login)
-                        ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-                    else
-                        ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                if (that.matrix[i][j].hover)
                     ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                    if (mouse_state === 1) {
-
-                        if (
-                            (mouse_x > (that.s_x + (j * that.square_w))) &&
-                            (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
-                            (mouse_y > (that.s_y + (i * that.square_h))) &&
-                            (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
-                            ) {
-
-                            var hits = 0;
-                            for (var k = 0; k < that.matrix[card_i][card_j].attack; k++) {
-                                if (Math.floor((Math.random() * 6) + 1) > 2)
-                                    hits++;
-                            }
-                            
-                            that.matrix[card_i][card_j].attacked = true;
-                            mouse_state = 2;
-
-                            //add 'nb of hits' animation
-                            animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
-                            animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
-                            
-
-                        }
-
-                    }
-
+                //draw eyeglass for selected card
+                if (that.matrix[i][j].selected) {
+                    if (((mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
+                    (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 15) &&
+                    (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
+                    (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) ||
+                        that.matrix[i][j].draw_big_picture)
+                        ctx.drawImage(that.board_graphics, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    else
+                        ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                 }
             }
         }
+
     }
+
+    //draw card in big picture
+    for (var i = 0; i < that.matrix.length; i++) {
+        for (var j = 0; j < that.matrix[i].length; j++) {
+            if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
+                ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
+                ctx.fillRect(12, 12, width - 22, height - 22);
+                //TODO REM ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+                //check card owner in order to load proper faction image
+                if (that.matrix[i][j].owner === player.name)
+                    ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+                else if (that.matrix[i][j].owner === opponent.name)
+                    ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+
+            }
+        }
+    }
+}
+
+that.drawPreviousMoves = function () {
+
+    //TODO This function should be optimized - draw methods should be closed in one internal method
+    /* selected card moves path should be drawn at the
+    end in order to show whole path */
+    card_selected = null; //indidcate if any card is selected
+    sel_card_x = null;
+    sel_card_y = null;
+
+    for (var card_i = 0; card_i < that.matrix.length; card_i++) {
+        for (var card_j = 0; card_j < that.matrix[card_i].length; card_j++) {
+
+            //draw previous moves
+            if (that.matrix[card_i][card_j] != null) {
+
+                //selected cards moves should be draw at the end
+                if (that.matrix[card_i][card_j].selected != true) {
+
+
+                    for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
+
+                        if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
+                            /* This is last move - draw line from last position to current position */
+                            ctx.strokeStyle = '#003300';  // Purple path
+                            if (that.matrix[card_i][card_j].selected)
+                                ctx.strokeStyle = '#000000';  // Purple path
+                            ctx.lineWidth = "5";
+                            ctx.beginPath();
+                            ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                            ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
+                            ctx.stroke();
+                        } else {
+                            ctx.strokeStyle = '#003300';  // Purple path
+                            if (that.matrix[card_i][card_j].selected)
+                                ctx.strokeStyle = '#000000';  // Purple path
+                            ctx.lineWidth = "5";
+                            ctx.beginPath();
+                            ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                            ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
+                            ctx.stroke();
+                        }
+
+                        ctx.beginPath();
+                        ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                            that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
+                        ctx.fillStyle = 'green';
+                        ctx.fill();
+                        ctx.lineWidth = 4;
+                        ctx.strokeStyle = '#003300';
+                        ctx.stroke();
+
+                    }
+                }
+                else {
+                    //selected data should be store for further actions
+                    sel_card_x = card_i;
+                    sel_card_y = card_j;
+                    card_selected = true;
+                }
+            }
+        }
+    }
+    //if any card is selected its moves should be draw at the end (now)
+    if (card_selected) {
+
+        card_i = sel_card_x;
+        card_j = sel_card_y;
+
+        for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
+
+            if ((k + 1) === that.matrix[card_i][card_j].previous_moves.length) {
+                /* This is last move - draw line from last position to current position */
+                ctx.strokeStyle = '#003300';  // Purple path
+                ctx.lineWidth = "5";
+                ctx.beginPath();
+                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                ctx.lineTo(that.s_x + (card_j * that.square_w) + (that.square_w / 2), that.s_y + (card_i * that.square_h) + (that.square_h / 2));
+                ctx.stroke();
+            } else {
+                ctx.strokeStyle = '#003300';  // Purple path
+                ctx.lineWidth = "5";
+                ctx.beginPath();
+                ctx.moveTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2));
+                ctx.lineTo(that.s_x + (that.matrix[card_i][card_j].previous_moves[k + 1][1] * that.square_w) + (that.square_w / 2), that.s_y + (that.matrix[card_i][card_j].previous_moves[k + 1][0] * that.square_h) + (that.square_h / 2));
+                ctx.stroke();
+            }
+
+            ctx.beginPath();
+            ctx.arc(that.s_x + (that.matrix[card_i][card_j].previous_moves[k][1] * that.square_w) + (that.square_w / 2),
+                that.s_y + (that.matrix[card_i][card_j].previous_moves[k][0] * that.square_h) + (that.square_h / 2), 10, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'orange';
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#003300';
+            ctx.stroke();
+
+        }
+    }
+
+}
+
+that.drawAvailMoves = function () {
+
+
+    var card_i = null;
+    var card_j = null;
+
+    //get selected card coordinates
+    for (var i = 0; i < that.matrix.length; i++) {
+        for (var j = 0; j < that.matrix[i].length; j++) {
+
+            if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+                card_i = i;
+                card_j = j;
+            }
+        }
+    }
+
+    //if there is no selected card break function
+    if ((card_i === null) || (card_j === null))
+        return;
+
+    //if draw in big picture is active break function
+    if (that.matrix[card_i][card_j].draw_big_picture)
+        return;
+
+    //if cards owner is not a player break function
+    if (that.matrix[card_i][card_j].owner != player.name)
+        return;
+
+    //draw available places
+    for (var i = 0; i < that.matrix.length; i++) {
+        for (var j = 0; j < that.matrix[i].length; j++) {
+
+            //Wall cant moves 
+            if (that.matrix[card_i][card_j].name != 'Wall') {
+
+
+                if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
+
+                    //check if there is no blocking card in row
+                    if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
+                        continue;
+                    }
+
+                    //check if there is no blocking card in column
+                    if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
+                        continue;
+                    }
+
+                    //check if there is no blocking card diagonally
+                    if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
+                        if ((that.matrix[card_i - (card_i - i)][card_j] != null) && (that.matrix[card_i][card_j - (card_j - j)] != null)) {
+                            continue;
+                        }
+                    }
+
+                    //highlight this tile if available
+                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                    if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                        (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
+                        ((i != card_i) || (j != card_j)) &&
+                        (that.matrix[i][j] === null)) {
+
+                        //hover available tiles
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                        if (mouse_state === 1) {
+
+                            //send move card event
+                            var dest_x = null;
+                            var dest_y = null;
+                            [dest_y, dest_x] = rotate180(j, i);
+                            var id = that.matrix[card_i][card_j].id;
+                            socket.emit('move_card', { room_name: room_name, card_id: id, dest_x: dest_x, dest_y: dest_y })
+
+                            //finally move card
+                            that.moveCard(that.matrix[card_i][card_j].id, i, j);
+                            mouse_state = 2;
+                            return;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+that.drawAndHandleAvailAttacks = function () {
+
+    var card_i = null;
+    var card_j = null;
+
+    //get selected card coordinates
+    for (var i = 0; i < that.matrix.length; i++) {
+        for (var j = 0; j < that.matrix[i].length; j++) {
+
+            if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+                card_i = i;
+                card_j = j;
+            }
+        }
+    }
+
+    //if there is no selected card break function
+    if ((card_i === null) || (card_j === null))
+        return;
+
+    //if draw in big picture is active break function
+    if (that.matrix[card_i][card_j].draw_big_picture)
+        return;
+
+    //if cards owner is not a player break function
+    if (that.matrix[card_i][card_j].owner != player.name)
+        return;
+
+    //if card already attacked break function
+    if (that.matrix[card_i][card_j].attacked)
+        return;
+
+    //draw available attacks
+    for (var i = 0; i < that.matrix.length; i++) {
+        for (var j = 0; j < that.matrix[i].length; j++) {
+
+            if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j))) {
+
+                //indicator if this card may be attacked
+                var attack_available = false;
+
+                //check if card is in horizontal range
+                if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
+
+                    attack_available = true;
+
+                    //check horizontal blocking card
+                    for (var k = 1; k < Math.abs(card_i - i) ; k++) {
+                        if (that.matrix[card_i - (k * ((card_i - i) / (card_i - i)))][j] != null) {
+                            attack_available = false;
+                        }
+                    }
+                }
+
+                //check if card is in vertical range
+                if (((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range)) && (card_i === i)) {
+
+                    attack_available = true;
+
+                    //check horizontal blocking card
+                    for (var k = 1; k < Math.abs(card_j - j) ; k++) {
+                        if (that.matrix[i][card_j - (k * ((card_j - j) / (card_j - j)))] != null) {
+                            attack_available = false;
+                        }
+                    }
+                }
+
+                if (!attack_available)
+                    continue;
+
+
+                //highlight this tile if attack available (different color for owners card)
+                if (that.matrix[i][j].owner === player_login)
+                    ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                else
+                    ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                if (mouse_state === 1) {
+
+                    if (
+                        (mouse_x > (that.s_x + (j * that.square_w))) &&
+                        (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
+                        (mouse_y > (that.s_y + (i * that.square_h))) &&
+                        (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
+                        ) {
+
+                        var hits = 0;
+                        for (var k = 0; k < that.matrix[card_i][card_j].attack; k++) {
+                            if (Math.floor((Math.random() * 6) + 1) > 2)
+                                hits++;
+                        }
+                            
+                        that.matrix[card_i][card_j].attacked = true;
+                        mouse_state = 2;
+
+                        //add 'nb of hits' animation
+                        animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
+                        animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
+                            
+
+                    }
+
+                }
+
+
+            }
+        }
+    }
+}
 }
 
 var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
