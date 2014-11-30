@@ -183,7 +183,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
 
     //atack phase data
     that.lives = lives;
-    that.wounds = 0; //received wounds
+    that.wounds = 4; //received wounds
     that.attacked = false; //indicate if card already attacked in this turn
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
@@ -210,7 +210,17 @@ var Board = function () {
     that.background_image.src = "/img/board.jpg";
 
     that.board_graphics = new Image();
-    that.board_graphics.src = "/img/eye_glass.png";
+    that.board_graphics.src = "/img/board_graphics.png";
+
+    //wounds data
+    that.wounds_src_x = 0;
+    that.wounds_src_y = 85;
+    that.wounds_s_x = 84;
+    that.wounds_s_y = 61;
+    that.wounds_w = 18;
+    that.wounds_h = 16;
+    that.hor_diff_between = 19;
+    that.ver_diff_between = 20;
 
     //init board
     that.matrix =
@@ -373,6 +383,10 @@ var Board = function () {
                     }
 
                     //draw wounds
+                    for (var i = 0; that.matrix[i][j].wounds.length; i++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (j * that.hor_diff_between),
+                            that.s_y + (i * that.square_h) + that.wounds_s_y + (i * that.ver_diff_between), that.wounds_w, that.wounds_h);
+                    }
 
                     if (that.matrix[i][j].hover)
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
