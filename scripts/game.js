@@ -383,9 +383,9 @@ var Board = function () {
                     }
 
                     //draw wounds
-                    for (var i = 0; that.matrix[i][j].wounds.length; i++) {
-                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (j * that.hor_diff_between),
-                            that.s_y + (i * that.square_h) + that.wounds_s_y + (i * that.ver_diff_between), that.wounds_w, that.wounds_h);
+                    for (var k = 0; k < that.matrix[i][j].wounds.length; k++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k * that.hor_diff_between),
+                            that.s_y + (i * that.square_h) + that.wounds_s_y + (k * that.ver_diff_between), that.wounds_w, that.wounds_h);
                     }
 
                     if (that.matrix[i][j].hover)
