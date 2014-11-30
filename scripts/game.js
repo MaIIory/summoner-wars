@@ -209,8 +209,8 @@ var Board = function () {
     that.background_image = new Image(); //background image
     that.background_image.src = "/img/board.jpg";
 
-    that.tmp_img = new Image();
-    that.tmp_img.src = "/img/eye_glass.png";
+    that.board_graphics = new Image();
+    that.board_graphics.src = "/img/eye_glass.png";
 
     //init board
     that.matrix =
@@ -384,9 +384,9 @@ var Board = function () {
                         (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
                         (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) ||
                             that.matrix[i][j].draw_big_picture)
-                            ctx.drawImage(that.tmp_img, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                            ctx.drawImage(that.board_graphics, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                         else
-                            ctx.drawImage(that.tmp_img, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                            ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                     }
                 }
@@ -720,6 +720,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
     /* 0 - 'End Phase' animation: only 'type' argument required
        1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
        2 - 'arrows' animation: all arguments are required
+    */
 
     var that = this;
     that.type = type;
