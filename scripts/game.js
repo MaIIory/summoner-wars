@@ -828,19 +828,7 @@ var Board = function () {
                         that.matrix[card_i][card_j].attacked = true;
                         mouse_state = 2;
 
-                        //add wounds to hited card
-                        that.matrix[i][j].wounds += hits;
-
-                        //add 'nb of hits' animation
-                        animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
-                        animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
-
-                        if (that.matrix[i][j].wounds >= that.matrix[i][j].lives) {
-                            that.matrix[i][j].wounds = that.matrix[i][j].lives; //only for displaying purpose
-                            that.matrix[i][j].dying = true;
-                            that.matrix[i][j].hover = false;
-                            that.matrix[i][j].selected = false;
-                        }
+                        that.resolveAttack(hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id);
 
                         socket.emit('resolve_attack', {
                             room_name: room_name,
@@ -849,12 +837,8 @@ var Board = function () {
                             attacking_card_id: that.matrix[card_i][card_j].id,
                             hitted_card_id: that.matrix[i][j].id
                         });
-
                     }
-
                 }
-
-
             }
         }
     }
