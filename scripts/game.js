@@ -183,7 +183,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
 
     //atack phase data
     that.lives = lives;
-    that.wounds = 9; //received wounds
+    that.wounds = 3; //received wounds
     that.attacked = false; //indicate if card already attacked in this turn
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
@@ -452,12 +452,12 @@ var Board = function () {
                     }
                 } else if (that.matrix[i][j].name === 'Wall') {
                     for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 37), 402, that.wounds_big_w, that.wounds_big_h);
+                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 37), 398, that.wounds_big_w, that.wounds_big_h);
                     }
-
                 } else if (that.matrix[i][j].name === 'Ice Wall') {
-
-
+                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 370 + (k * 37), 398, that.wounds_big_w, that.wounds_big_h);
+                    }
                 }
 
             }
