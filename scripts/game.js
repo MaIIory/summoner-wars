@@ -183,7 +183,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
 
     //atack phase data
     that.lives = lives;
-    that.wounds = 3; //received wounds
+    that.wounds = 9; //received wounds
     that.attacked = false; //indicate if card already attacked in this turn
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
