@@ -150,9 +150,9 @@ var Player = function (name) {
     that.selected_faction = 0; //0 - Phoenics Elves by default, 1 - Tundra Orcs
     that.faction = null;
     that.moves_left = 2;  //in first turn player has 2 moves
+    that.magic_pile = [];
 
     //TODO dane ponizej moga wchodzic w sklad faction
-    //that.magic_pile = [];
     //that.deck = [];
     //that.discard_pile = [];
     //that.hand = [];
