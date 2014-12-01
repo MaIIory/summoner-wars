@@ -183,7 +183,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
 
     //atack phase data
     that.lives = lives;
-    that.wounds = 9; //received wounds
+    that.wounds = 0; //received wounds
     that.attacked = false; //indicate if card already attacked in this turn
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
@@ -736,7 +736,9 @@ that.drawAndHandleAvailAttacks = function () {
                             if (Math.floor((Math.random() * 6) + 1) > 2)
                                 hits++;
                         }
-                            
+                        
+                        that.matrix[i][j].wounds += hits;
+
                         that.matrix[card_i][card_j].attacked = true;
                         mouse_state = 2;
 
@@ -744,6 +746,7 @@ that.drawAndHandleAvailAttacks = function () {
                         animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
                         animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
                             
+                        //TODO send event
 
                     }
 
