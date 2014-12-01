@@ -600,7 +600,7 @@ that.drawAvailMoves = function () {
         for (var j = 0; j < that.matrix[i].length; j++) {
 
             //Wall cant moves 
-            if (that.matrix[card_i][card_j].name != 'Wall' || that.matrix[card_i][card_j].name != 'Ice Wall') {
+            if (that.matrix[card_i][card_j].name != 'Wall' && that.matrix[card_i][card_j].name != 'Ice Wall') {
 
 
                 if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
