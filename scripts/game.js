@@ -984,7 +984,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
 
         that.cnt++;
 
-        if(that.cnt > 130)
+        if(that.cnt > 110)
             that.alpha -= 0.01;
         ctx.restore();
 
