@@ -341,7 +341,7 @@ var Board = function () {
         animations.push(new Animation(1, anim_img, hits, attack_strangth));
     }
 
-    that.unselectAll() = function () {
+    that.unselectAll = function () {
 
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
