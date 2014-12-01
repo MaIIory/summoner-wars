@@ -442,6 +442,12 @@ var Board = function () {
                         if (that.matrix[i][j].cnt > 130)
                             that.matrix[i][j].alpha -= 0.01;
                         ctx.restore();
+
+                        if (that.matrix[i][j].alpha <= 0) {
+                            that.matrix[i][j] = null;
+                            continue;
+                        }
+
                     }
                 }
         }
