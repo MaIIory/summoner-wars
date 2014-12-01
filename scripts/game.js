@@ -142,6 +142,9 @@ socket.on('resolve_attack', function (data) {
 //incoming step phase event
 socket.on('step_phase', function (data) {
     game_phase += 1;
+
+    //add 'end phase' animation
+    animations.push(new Animation(0, anim_img));
 })
 
 /***************************CLASSES****************************/
@@ -336,6 +339,21 @@ var Board = function () {
         //add 'nb of hits' animation
         animations.push(new Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
         animations.push(new Animation(1, anim_img, hits, attack_strangth));
+    }
+
+    that.unselectAll() = function () {
+
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+
+                if ((that.matrix[i][j] != null) && that.matrix[i][j].selected) {
+
+                    that.matrix[i][j].selected = false;
+                    return;
+                }
+            }
+        }
+
     }
 
     that.checkMouseActivity = function () {
@@ -1281,6 +1299,9 @@ var PlaygroundHandler = function () {
 
             //step game phase
             game_phase += 1;
+
+            //unselect card if any
+            board.unselectAll();
 
             //emit apropriate event
             socket.emit('step_phase', { room_name: room_name });
