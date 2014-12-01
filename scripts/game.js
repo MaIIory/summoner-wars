@@ -131,8 +131,12 @@ socket.on('start_play', function (data) {
 
 //incoming move card event
 socket.on('move_card', function (data) {
-
     board.moveCard(data.card_id, data.dest_x, data.dest_y);
+})
+
+//incoming resolve attack event
+socket.on('resolve attack', function (data) {
+    board.resolveAttack(data.hits, data.attack_strangth, data.attacking_card_id, data.hitted_card_id);
 })
 
 //incoming step phase event
@@ -299,6 +303,39 @@ var Board = function () {
         that.matrix[dest_x][dest_y] = that.matrix[card_i][card_j];
         that.matrix[card_i][card_j] = null;
 
+    }
+
+    that.resolveAttack = function (hits, attack_strangth, attacking_card_id, hitted_card_id) {
+
+        //hitted card coordinates
+        var hit_card_i = null;
+        var hit_card_j = null;
+
+        //get hitted cards coordinates
+        for (var i = 0; i < that.matrix.length; i++) {
+            for (var j = 0; j < that.matrix[i].length; j++) {
+
+                if ((that.matrix[i][j] != null) && (that.matrix[i][j].id === hitted_card_id)) {
+
+                    hit_card_i = i;
+                    hit_card_j = j;
+                }
+            }
+        }
+
+        //add wounds to hited card
+        that.matrix[hit_card_i][hit_card_j].wounds += hits;
+
+        if (that.matrix[hit_card_i][hit_card_j].wounds >= that.matrix[hit_card_i][hit_card_j].lives) {
+            that.matrix[hit_card_i][hit_card_j].wounds = that.matrix[hit_card_i][hit_card_j].lives; //only for displaying purpose
+            that.matrix[hit_card_i][hit_card_j].dying = true;
+            that.matrix[hit_card_i][hit_card_j].hover = false;
+            that.matrix[hit_card_i][hit_card_j].selected = false;
+        }
+
+        //add 'nb of hits' animation
+        animations.push(new Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
+        animations.push(new Animation(1, anim_img, hits, attack_strangth));
     }
 
     that.checkMouseActivity = function () {
@@ -488,7 +525,7 @@ var Board = function () {
     }
 }
 
-that.drawPreviousMoves = function () {
+    that.drawPreviousMoves = function () {
 
     //TODO This function should be optimized - draw methods should be closed in one internal method
     /* selected card moves path should be drawn at the
@@ -599,7 +636,7 @@ that.drawPreviousMoves = function () {
 
 }
 
-that.drawAvailMoves = function () {
+    that.drawAvailMoves = function () {
 
 
     var card_i = null;
@@ -690,7 +727,7 @@ that.drawAvailMoves = function () {
     }
 }
 
-that.drawAndHandleAvailAttacks = function () {
+    that.drawAndHandleAvailAttacks = function () {
 
     var card_i = null;
     var card_j = null;
@@ -788,8 +825,15 @@ that.drawAndHandleAvailAttacks = function () {
                                 hits++;
                         }
                         
+                        that.matrix[card_i][card_j].attacked = true;
+                        mouse_state = 2;
+
                         //add wounds to hited card
                         that.matrix[i][j].wounds += hits;
+
+                        //add 'nb of hits' animation
+                        animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
+                        animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
 
                         if (that.matrix[i][j].wounds >= that.matrix[i][j].lives) {
                             that.matrix[i][j].wounds = that.matrix[i][j].lives; //only for displaying purpose
@@ -798,16 +842,13 @@ that.drawAndHandleAvailAttacks = function () {
                             that.matrix[i][j].selected = false;
                         }
 
-                        that.matrix[card_i][card_j].attacked = true;
-                        mouse_state = 2;
-
-
-
-                        //add 'nb of hits' animation
-                        animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
-                        animations.push(new Animation(1, anim_img, hits, that.matrix[card_i][card_j].attack));
-                            
-                        //TODO send event
+                        socket.emit('resolve_attack', {
+                            room_name: room_name,
+                            hits: hits,
+                            attack_strangth: that.matrix[card_i][card_j].attack,
+                            attacking_card_id: that.matrix[card_i][card_j].id,
+                            hitted_card_id: that.matrix[i][j].id
+                        });
 
                     }
 
