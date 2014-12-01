@@ -451,8 +451,9 @@ var Board = function () {
                             200 + that.wounds_big_s_y + (Math.floor(k / 3) * that.ver_big_diff_between), that.wounds_big_w, that.wounds_big_h);
                     }
                 } else if (that.matrix[i][j].name === 'Wall') {
-                    ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 101), 402, that.wounds_big_w, that.wounds_big_h);
-
+                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 101), 402, that.wounds_big_w, that.wounds_big_h);
+                    }
 
                 } else if (that.matrix[i][j].name === 'Ice Wall') {
 
