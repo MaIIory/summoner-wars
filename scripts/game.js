@@ -504,8 +504,13 @@ that.drawPreviousMoves = function () {
             if (that.matrix[card_i][card_j] != null) {
 
                 //selected cards moves should be draw at the end
-                if (that.matrix[card_i][card_j].selected != true) {
+                if (!that.matrix[card_i][card_j].selected) {
 
+                    //handles dying cards
+                    if (that.matrix[i][j].dying) {
+                        ctx.save();
+                        ctx.globalAlpha = that.matrix[i][j].alpha;
+                    }
 
                     for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
 
@@ -539,6 +544,11 @@ that.drawPreviousMoves = function () {
                         ctx.strokeStyle = '#003300';
                         ctx.stroke();
 
+                    }
+
+                    //handles dying cards
+                    if (that.matrix[i][j].dying) {
+                        ctx.restore();
                     }
                 }
                 else {
