@@ -401,8 +401,9 @@ var Board = function () {
                         }
                     } else if (that.matrix[i][j].name === 'Wall') {
                         for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                            ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + 9 + (k%3 * 13),
+                            ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + 9 + (k % 3 * 13),
                                 that.s_y + (i * that.square_h) + 72, that.wounds_w, that.wounds_h);
+                        }
                     }
 
                 if (that.matrix[i][j].hover)
