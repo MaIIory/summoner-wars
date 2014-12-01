@@ -361,7 +361,7 @@ var Board = function () {
                         }
                     }
 
-                }
+                } 
             }
         }
         if (mouse_state === 1)
@@ -381,7 +381,7 @@ var Board = function () {
                 if (that.matrix[i][j] != null) {
 
                     //handles dying cards
-                    if(that.matrix[i][j].dying) {
+                    if (that.matrix[i][j].dying) {
                         ctx.save();
                         ctx.globalAlpha = that.matrix[i][j].alpha;
                     }
@@ -404,8 +404,8 @@ var Board = function () {
                     //draw wounds on board
                     if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                         for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                            ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k%3 * that.hor_diff_between),
-                                that.s_y + (i * that.square_h) + that.wounds_s_y + (Math.floor(k/3) * that.ver_diff_between), that.wounds_w, that.wounds_h);
+                            ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k % 3 * that.hor_diff_between),
+                                that.s_y + (i * that.square_h) + that.wounds_s_y + (Math.floor(k / 3) * that.ver_diff_between), that.wounds_w, that.wounds_h);
                         }
                     } else if (that.matrix[i][j].name === 'Wall') {
                         for (var k = 0; k < that.matrix[i][j].wounds; k++) {
@@ -419,29 +419,30 @@ var Board = function () {
                         }
                     }
 
-                if (that.matrix[i][j].hover)
-                    ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    if (that.matrix[i][j].hover)
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                //draw eyeglass for selected card
-                if (that.matrix[i][j].selected) {
-                    if (((mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
-                    (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 15) &&
-                    (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
-                    (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) ||
-                        that.matrix[i][j].draw_big_picture)
-                        ctx.drawImage(that.board_graphics, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                    else
-                        ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    //draw eyeglass for selected card
+                    if (that.matrix[i][j].selected) {
+                        if (((mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
+                        (mouse_x < ((that.s_x + (j * that.square_w) + (that.square_w / 2))) + 15) &&
+                        (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
+                        (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) ||
+                            that.matrix[i][j].draw_big_picture)
+                            ctx.drawImage(that.board_graphics, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        else
+                            ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
-                }
+                    }
 
-                //handles dying cards
-                if(that.matrix[i][j].dying) {
+                    //handles dying cards
+                    if (that.matrix[i][j].dying) {
 
-                    that.matrix[i][j].cnt++;
-                    if(that.matrix[i][j].cnt > 130)
-                        that.matrix[i][j].alpha -= 0.01;
-                    ctx.restore();
+                        that.matrix[i][j].cnt++;
+                        if (that.matrix[i][j].cnt > 130)
+                            that.matrix[i][j].alpha -= 0.01;
+                        ctx.restore();
+                    }
                 }
         }
 
