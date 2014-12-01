@@ -226,7 +226,7 @@ var Board = function () {
     that.wounds_big_src_x = 0;
     that.wounds_big_src_y = 85;
     that.wounds_big_s_x = 84;
-    that.wounds_big_s_y = 21;
+    that.wounds_big_s_y = 61;
     that.wounds_big_w = 18;
     that.wounds_big_h = 16;
     that.hor_big_diff_between = 19;
@@ -434,7 +434,7 @@ var Board = function () {
                 else if (that.matrix[i][j].owner === opponent.name)
                     ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
 
-                //draw wounds on board
+                //draw wound
                 if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                     for (var k = 0; k < that.matrix[i][j].wounds; k++) {
                         ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 329 + that.wounds_big_s_x + (k % 3 * that.hor_big_diff_between),
