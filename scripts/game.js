@@ -191,6 +191,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.attack = attack; //attack strength
     that.dying = false; //indicator if card is going to die
     that.alpha = 1; //when card is dying alpha should be decremented
+    that.cnt = 0; //for delay 
 
     that.draw = function (image) {
 
@@ -379,6 +380,11 @@ var Board = function () {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if (that.matrix[i][j] != null) {
 
+                    //handles dying cards
+                    if(that.matrix[i][j].dying) {
+                        ctx.save();
+                        ctx.globalAlpha = that.matrix[i][j].alpha;
+                    }
 
                     //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
@@ -428,7 +434,15 @@ var Board = function () {
                         ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                 }
-            }
+
+                //handles dying cards
+                if(that.matrix[i][j].dying) {
+
+                    that.matrix[i][j].cnt++;
+                    if(that.matrix[i][j].cnt > 130)
+                        that.matrix[i][j].alpha -= 0.01;
+                    ctx.restore();
+                }
         }
 
     }
@@ -912,7 +926,7 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
 
         that.cnt++;
 
-        if(that.cnt > 200)
+        if(that.cnt > 130)
             that.alpha -= 0.01;
         ctx.restore();
 
