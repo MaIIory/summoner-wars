@@ -507,9 +507,9 @@ that.drawPreviousMoves = function () {
                 if (!that.matrix[card_i][card_j].selected) {
 
                     //handles dying cards
-                    if (that.matrix[i][j].dying) {
+                    if (that.matrix[card_i][card_j].dying) {
                         ctx.save();
-                        ctx.globalAlpha = that.matrix[i][j].alpha;
+                        ctx.globalAlpha = that.matrix[card_i][card_j].alpha;
                     }
 
                     for (var k = 0; k < that.matrix[card_i][card_j].previous_moves.length; k++) {
@@ -547,7 +547,7 @@ that.drawPreviousMoves = function () {
                     }
 
                     //handles dying cards
-                    if (that.matrix[i][j].dying) {
+                    if (that.matrix[card_i][card_j].dying) {
                         ctx.restore();
                     }
                 }
