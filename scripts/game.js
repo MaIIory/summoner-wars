@@ -189,6 +189,8 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
        event cards has range 0, so wall cant attacks */
     that.range = range;
     that.attack = attack; //attack strength
+    that.dying = false; //indicator if card is going to die
+    that.alpha = 1; //when card is dying alpha should be decremented
 
     that.draw = function (image) {
 
@@ -307,7 +309,7 @@ var Board = function () {
            - in case of click on card change "selection indicator" in Card object
         */
 
-        //check if user want to deselect focused card
+        //check if user want to unselect focused card
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
                 if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
@@ -323,7 +325,7 @@ var Board = function () {
         //rest functonality described above
         for (var i = 0; i < that.matrix.length; i++) {
             for (var j = 0; j < that.matrix[i].length; j++) {
-                if (that.matrix[i][j] != null) {
+                if (that.matrix[i][j] != null && !that.matrix[i][j].dying) {
 
                     //check if mouse is over card
                     if ((mouse_x > that.s_x + (j * that.square_w)) &&
@@ -689,6 +691,10 @@ that.drawAndHandleAvailAttacks = function () {
     if (that.matrix[card_i][card_j].attacked)
         return;
 
+    //if card is dying break function
+    if (that.matrix[card_i][card_j].dying)
+        return;
+
     //draw available attacks
     for (var i = 0; i < that.matrix.length; i++) {
         for (var j = 0; j < that.matrix[i].length; j++) {
@@ -751,10 +757,18 @@ that.drawAndHandleAvailAttacks = function () {
                                 hits++;
                         }
                         
+                        //add wounds to hited card
                         that.matrix[i][j].wounds += hits;
+
+                        if (that.matrix[i][j].wounds >= that.matrix[i][j].lives) {
+                            that.matrix[i][j].wounds = that.matrix[i][j].lives; //only for displaying purpose
+                            that.matrix[i][j].dying = true;
+                        }
 
                         that.matrix[card_i][card_j].attacked = true;
                         mouse_state = 2;
+
+
 
                         //add 'nb of hits' animation
                         animations.push(new Animation(2, anim_img, hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id));
