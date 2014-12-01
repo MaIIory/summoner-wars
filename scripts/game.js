@@ -212,15 +212,25 @@ var Board = function () {
     that.board_graphics = new Image();
     that.board_graphics.src = "/img/board_graphics.png";
 
-    //wounds data
+    //wounds data - small icon
     that.wounds_src_x = 18;
-    that.wounds_src_y = 85;
+    that.wounds_src_y = 85; 
     that.wounds_s_x = 30;
     that.wounds_s_y = 21;
     that.wounds_w = 7;
     that.wounds_h = 7;
     that.hor_diff_between = 6;
     that.ver_diff_between = 7;
+
+    //wounds data - 'draw in big picture' icon
+    that.wounds_big_src_x = 0;
+    that.wounds_big_src_y = 85;
+    that.wounds_big_s_x = 84;
+    that.wounds_big_s_y = 21;
+    that.wounds_big_w = 18;
+    that.wounds_big_h = 16;
+    that.hor_big_diff_between = 19;
+    that.ver_big_diff_between = 20;
 
     //init board
     that.matrix =
@@ -383,7 +393,7 @@ var Board = function () {
                     }
 
 
-                    //draw wounds
+                    //draw wounds on board
                     if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                         for (var k = 0; k < that.matrix[i][j].wounds; k++) {
                             ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k%3 * that.hor_diff_between),
@@ -423,6 +433,14 @@ var Board = function () {
                     ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
                 else if (that.matrix[i][j].owner === opponent.name)
                     ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+
+                //draw wounds on board
+                if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
+                    for (var k = 0; k < that.matrix[i][j].wounds; k++) {
+                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 329 + that.wounds_big_s_x + (k % 3 * that.hor_big_diff_between),
+                            200 + that.wounds_big_s_y + (Math.floor(k / 3) * that.ver_big_diff_between), that.wounds_big_w, that.wounds_big_h);
+                    }
+                }
 
             }
         }
