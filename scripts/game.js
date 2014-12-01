@@ -452,7 +452,7 @@ var Board = function () {
                     }
                 } else if (that.matrix[i][j].name === 'Wall') {
                     for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 38), 402, that.wounds_big_w, that.wounds_big_h);
+                        ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 36), 402, that.wounds_big_w, that.wounds_big_h);
                     }
 
                 } else if (that.matrix[i][j].name === 'Ice Wall') {
