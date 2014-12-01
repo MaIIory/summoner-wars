@@ -115,7 +115,7 @@ var TundraOrcs = function (player_name) {
             [new Card('Fighter', 'to02', 390, 0, that.player_name, 1, 1, 1), 2, 6],
             [new Card('Shaman', 'to07', 520, 0, that.player_name, 3, 2, 2), 4, 6],
             [new Card('Smasher', 'to13', 650, 0, that.player_name, 1, 2, 4), 1, 5],
-            [new Card('Wall', 'to22', 520, 85, that.player_name, 0, 0, 9), 3, 5],
+            [new Card('Ice Wall', 'to22', 520, 85, that.player_name, 0, 0, 9), 3, 5],
             [new Card('Grognack', 'to25', 650, 85, that.player_name, 1, 4, 7), 3, 7]
         ]
     }
