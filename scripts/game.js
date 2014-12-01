@@ -450,6 +450,13 @@ var Board = function () {
                         ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 329 + that.wounds_big_s_x + (k % 3 * that.hor_big_diff_between),
                             200 + that.wounds_big_s_y + (Math.floor(k / 3) * that.ver_big_diff_between), that.wounds_big_w, that.wounds_big_h);
                     }
+                } else if (that.matrix[i][j].name === 'Wall') {
+                    ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 101), 402, that.wounds_big_w, that.wounds_big_h);
+
+
+                } else if (that.matrix[i][j].name === 'Ice Wall') {
+
+
                 }
 
             }
@@ -592,7 +599,7 @@ that.drawAvailMoves = function () {
         for (var j = 0; j < that.matrix[i].length; j++) {
 
             //Wall cant moves 
-            if (that.matrix[card_i][card_j].name != 'Wall') {
+            if (that.matrix[card_i][card_j].name != 'Wall' || that.matrix[card_i][card_j].name != 'Ice Wall') {
 
 
                 if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
