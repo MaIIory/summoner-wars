@@ -258,7 +258,6 @@ io.sockets.on('connection', function (socket) {
     socket.on('resolve_attack', function (data) {
         // sending to all clients in 'game' room(channel) except sender
         socket.broadcast.to(data.room_name).emit('resolve_attack', {
-            room_name: data.room_name,
             hits: data.hits,
             attack_strangth: data.attack_strangth,
             attacking_card_id: data.attacking_card_id,

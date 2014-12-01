@@ -135,7 +135,7 @@ socket.on('move_card', function (data) {
 })
 
 //incoming resolve attack event
-socket.on('resolve attack', function (data) {
+socket.on('resolve_attack', function (data) {
     board.resolveAttack(data.hits, data.attack_strangth, data.attacking_card_id, data.hitted_card_id);
 })
 
