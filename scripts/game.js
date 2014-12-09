@@ -447,7 +447,7 @@ var Board = function () {
                         ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
                             that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     else if (that.matrix[i][j].owner === opponent.name) {
-                        ctx.drawImage(opponent.faction.board_image, tthat.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
+                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
                             that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                     else {
@@ -1492,7 +1492,7 @@ var gameLoop = function () {
                 page_handler.draw();
 
                 board.checkMouseActivity();
-                //board.draw();
+                board.draw();
 
             }
                 /* =========== */
@@ -1527,7 +1527,7 @@ var gameLoop = function () {
 
             page_handler.draw();
             board.checkMouseActivity();
-            //board.draw();
+            board.draw();
 
         }
 
