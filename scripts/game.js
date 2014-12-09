@@ -444,10 +444,10 @@ var Board = function () {
                     //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
                         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
+                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, (2 * that.matrix[i][j].height) + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
                             that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     else if (that.matrix[i][j].owner === opponent.name) {
-                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
+                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, (2 * that.matrix[i][j].height) + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
                             that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                     else {
@@ -520,10 +520,10 @@ var Board = function () {
                 //check card owner in order to load proper faction image
                 if (that.matrix[i][j].owner === player.name)
                     ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
-                        that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+                        that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
                 else if (that.matrix[i][j].owner === opponent.name)
                     ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
-                        that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+                        that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
 
                 //draw wounds
                 if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
