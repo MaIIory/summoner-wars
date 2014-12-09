@@ -1492,7 +1492,7 @@ var gameLoop = function () {
                 page_handler.draw();
 
                 board.checkMouseActivity();
-                board.draw();
+                //board.draw();
 
             }
                 /* =========== */
