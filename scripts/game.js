@@ -174,8 +174,8 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.owner = owner_name;
 
     //image source and draw data
-    that.src_x = x;
-    that.src_y = y;
+    that.pos_x = x;
+    that.pos_y = y;
     that.board_w = 130;
     that.board_h = 85;
     that.height = 239;
@@ -444,11 +444,11 @@ var Board = function () {
                     //check card owner in order to load proper faction image
                     if (that.matrix[i][j].owner === player.name)
                         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
-                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h,
-                            that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
+                            that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     else if (that.matrix[i][j].owner === opponent.name) {
-                        ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h,
-                            that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        ctx.drawImage(opponent.faction.board_image, tthat.matrix[i][j].pos_x * that.matrix[i][j].board_w, that.matrix[i][j].height + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
+                            that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                     else {
                         $("#dialog").text("Error: Card owner not found!");
@@ -474,6 +474,7 @@ var Board = function () {
                         }
                     }
 
+                    //draw hover
                     if (that.matrix[i][j].hover)
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
@@ -515,14 +516,16 @@ var Board = function () {
             if (that.matrix[i][j] != null && that.matrix[i][j].draw_big_picture) {
                 ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
                 ctx.fillRect(12, 12, width - 22, height - 22);
-                //TODO REM ctx.drawImage(player.faction.image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+
                 //check card owner in order to load proper faction image
                 if (that.matrix[i][j].owner === player.name)
-                    ctx.drawImage(player.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+                    ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
+                        that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
                 else if (that.matrix[i][j].owner === opponent.name)
-                    ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].src_x, that.matrix[i][j].src_y, that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
+                    ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
+                        that.matrix[i][j].board_w, that.matrix[i][j].board_h, 329, 200, 367, 239);
 
-                //draw wound
+                //draw wounds
                 if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                     for (var k = 0; k < that.matrix[i][j].wounds; k++) {
                         ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 329 + that.wounds_big_s_x + (k % 3 * that.hor_big_diff_between),
