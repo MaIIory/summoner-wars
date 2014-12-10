@@ -1544,4 +1544,3 @@ var gameLoop = function () {
 
 initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
 gameLoop();
-}
