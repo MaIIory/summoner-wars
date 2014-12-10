@@ -216,8 +216,8 @@ var Board = function () {
     that.square_h = 85;
 
     //load board image
-    that.background_image = new Image(); //background image
-    that.background_image.src = "/img/board.jpg";
+    //REM that.background_image = new Image(); //background image
+    //REM that.background_image.src = "/img/board.jpg";
 
     that.board_graphics = new Image();
     that.board_graphics.src = "/img/board_graphics.png";
@@ -426,9 +426,6 @@ var Board = function () {
 
     that.draw = function () {
 
-        // TODO uncomment this line when rest of the game will be finished
-        //and modify Clear() function 
-        //ctx.drawImage(that.background_image, 0, 0, width, height, 0, 0, width, height);
         ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
 
         for (var i = 0; i < that.matrix.length; i++) {
@@ -1327,13 +1324,8 @@ var initGame = function () {
 
 var Clear = function () {
 
-    //in state 3 (play in progress) background is draw with board
-    //to save memmory background is marged with board to one picture
-    //if (state === 3)
-    //    ctx.drawImage(background_image_with_board, 0, 0, width, height, 0, 0, width, height);
-    //else
+    //draw background
     ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
-
 
     //ctx.fillStyle = 'black'; //set active color 
     //ctx.fillRect(0, 0, width, height);
