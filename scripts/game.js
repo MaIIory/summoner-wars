@@ -1267,9 +1267,6 @@ var PlaygroundHandler = function () {
     that.btn_phase_x = 810;
     that.btn_phase_y = 560;
 
-    //playground handler contains inside handlers for all phases
-    that.move_phase_handler = new MovePhaseHandler();
-
     //method definitions
     that.checkHover = function () {
 
@@ -1316,18 +1313,7 @@ var PlaygroundHandler = function () {
         }
 
     }
-}
 
-
-
-//Phase Handlers Definitions (parts of the page handlers)
-
-var MovePhaseHandler = function () {
-
-    //set context
-    var that = this;
-
-}
 
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
