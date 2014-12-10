@@ -726,6 +726,7 @@ var Board = function () {
                         ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
+                        //handle user input
                         if (mouse_state === 1) {
 
                             //send move card event
@@ -1313,7 +1314,7 @@ var PlaygroundHandler = function () {
         }
 
     }
-
+}
 
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
@@ -1422,7 +1423,7 @@ var gameLoop = function () {
             //change page handler
             page_handler = new WaitingMenu();
 
-            // << select faction button
+        // << select faction button
         } else if (result === 2) {
 
             if (player.selected_faction === 0)
@@ -1430,7 +1431,7 @@ var gameLoop = function () {
             else
                 player.selected_faction--;
 
-            // select faction button >>
+        // select faction button >>
         } else if (result === 3) {
 
             if (player.selected_faction === 1)
@@ -1543,3 +1544,4 @@ var gameLoop = function () {
 
 initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
 gameLoop();
+}
