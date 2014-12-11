@@ -116,7 +116,12 @@ socket.on('start_play', function (data) {
         board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
     }
 
-    //determine who start 
+    start_cards = player.faction.getStartCards();
+    for (var i = 0; i < start_cards.length; i++) {
+        board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
+    }
+
+    //determine which player starts 
     //data.starting_player: 0 - first player, 1 - second player
     if (((player.name === data.first_player_name) && (data.starting_player === 0)) || ((player.name === data.second_player_name) && (data.starting_player === 1)))
         your_turn = true;
@@ -214,10 +219,6 @@ var Board = function () {
 
     that.square_w = 130;
     that.square_h = 85;
-
-    //load board image
-    //REM that.background_image = new Image(); //background image
-    //REM that.background_image.src = "/img/board.jpg";
 
     that.board_graphics = new Image();
     that.board_graphics.src = "/img/board_graphics.png";
@@ -654,7 +655,7 @@ var Board = function () {
 
 }
 
-    that.drawAvailMoves = function () {
+    that.drawAndHandleAvailMoves = function () {
 
 
     var card_i = null;
@@ -866,7 +867,8 @@ var Board = function () {
 
 var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
 
-    /* 0 - 'End Phase' animation: only 'type' argument required
+    /* types definitions:
+       0 - 'End Phase' animation: only 'type' argument required
        1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
        2 - 'arrows' animation: all arguments are required
     */
@@ -992,10 +994,6 @@ var Animation = function (type, animation_image, hits, shoots, attacking_card_id
         ctx.restore();
 
     }
-
-
-
-
 
 }
 
@@ -1401,11 +1399,15 @@ var gameLoop = function () {
             //init player deck
             player.faction.initDeck();
 
+            /* REM -  content moved
+
             //add start cards to board
             var start_cards = player.faction.getStartCards();
             for (var i = 0; i < start_cards.length; i++) {
                 board.addCard(start_cards[i][0], start_cards[i][1], start_cards[i][2]);
             }
+
+            */
 
             //send ready event
             socket.emit('player_ready_to_play', {
@@ -1463,7 +1465,7 @@ var gameLoop = function () {
                 /* ========== */
             else if (game_phase === 3) {
 
-                board.drawAvailMoves();
+                board.drawAndHandleAvailMoves();
                 board.drawPreviousMoves();
 
                 page_handler.checkHover();
