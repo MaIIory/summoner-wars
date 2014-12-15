@@ -40,18 +40,10 @@ var mouse_button_down = false;
 var mouse_state = 0; /* 0 - standby
                         1 - clicked
                         2 - used */
-
 //players settings
 var player = null;
 var opponent = null;
 
-/* REMOVE
-//board initialization
-//var board = null;
-*/
-
-//global animation container
-var animations = [];
 var anim_img = new Image();
 anim_img.src = "/img/animation.png";
 
@@ -152,7 +144,7 @@ socket.on('step_phase', function (data) {
     game_phase += 1;
 
     //add 'end phase' animation
-    animations.push(new Animation(0, anim_img));
+    page_handler.animations.push(new Animation(0, anim_img));
 })
 
 /***************************CLASSES****************************/
@@ -214,137 +206,6 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
 }
 
 
-var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
-
-    /* types definitions:
-       0 - 'End Phase' animation: only 'type' argument required
-       1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
-       2 - 'arrows' animation: all arguments are required
-    */
-
-    var that = this;
-    that.type = type;
-    that.img = animation_image;
-    that.attacking_card_id = attacking_card_id;
-    that.hitted_card_id = hitted_card_id;
-
-    that.alpha = 1;
-    that.cnt = 0;
-
-    /* for education purpose
-       a = typeof a !== 'undefined' ? a : 42;
-   b = typeof b !== 'undefined' ? b : 'default_b';
-   */
-
-    that.draw = function () { 
-
-        ctx.save();
-        ctx.globalAlpha = that.alpha;
-
-        if (that.type === 0)
-            ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
-        else if (that.type === 1) {
-            
-            ctx.drawImage(that.img, 50 * hits, 80, 50, 80, 362, 334, 50, 80);
-            ctx.drawImage(that.img, 350, 80, 50, 80, 412, 334, 50, 80);
-            ctx.drawImage(that.img, 50 * shoots, 80, 50, 80, 462, 334, 50, 80);
-            ctx.drawImage(that.img, 400, 80, 150, 80, 512, 334, 150, 80);
-        }
-        else if (that.type === 2) {
-
-            
-            var attacking_card_x = null;
-            var attacking_card_y = null;
-
-            var hitted_card_x = null;
-            var hitted_card_y = null;
-
-            for (var i = 0; i < board.matrix.length; i++) {
-                for (var j = 0; j < board.matrix[i].length; j++) {
-
-                    if (board.matrix[i][j] != null) {
-
-                        if (board.matrix[i][j].id === that.attacking_card_id) {
-                            attacking_card_x = i;
-                            attacking_card_y = j;
-                        }
-
-                        if (board.matrix[i][j].id === that.hitted_card_id) {
-                            hitted_card_x = i;
-                            hitted_card_y = j;
-                        }
-
-                    }
-                }
-            }
-
-            //TODO remove this after tests
-            if (attacking_card_x === null || attacking_card_y === null || hitted_card_x === null || hitted_card_y === null) {
-                alert("Blad 5007");
-            }
-
-            ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-            ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
-            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
-            ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
-
-            //one of the above dimensions should be equal to zero
-            var ver_diff = hitted_card_x - attacking_card_x; //horizontal difference
-            var hor_diff = hitted_card_y - attacking_card_y; //vertical difference
-
-            //angle indicates how much plan should be rotated
-            var angle = 0; 
-
-            if (0 > hor_diff)
-                angle = 180;
-            else if (ver_diff < 0)
-                angle = 270;
-            else if (ver_diff > 0)
-                angle = 90;
-
-            //arrow length
-            var arrow_len = 0;
-
-            if(ver_diff != 0)
-                arrow_len = Math.abs(ver_diff);
-            else if(hor_diff != 0)
-                arrow_len = Math.abs(hor_diff);
-
-            if (arrow_len === 0)
-                alert("Setting arrow length does not work!");
-
-            var tmp_img = new Image();
-            
-            //select proper image
-            if (ver_diff != 0) {
-                tmp_img.src = "/img/ver_arrow" + String(arrow_len) + ".png";
-            }
-            else{
-                tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
-            }
-
-            //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
-
-            ctx.save(); //store context coordination settings
-            ctx.translate(board.s_x + (attacking_card_y * board.square_w) + (board.square_w / 2), board.s_y + (attacking_card_x * board.square_h) + (board.square_h / 2)); //change rotation point to the middle of the tank
-            ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
-
-            if(hor_diff != 0)
-                ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * board.square_w), 85, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 130 + (arrow_len * board.square_w), 85);
-            else
-                ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * board.square_h), 130, (board.square_h / 2) * (-1), (board.square_w / 2) * (-1), 85 + (arrow_len * board.square_h), 130);
-            ctx.restore(); //load stored context settings
-        }
-
-        that.cnt++;
-
-        if(that.cnt > 110)
-            that.alpha -= 0.01;
-        ctx.restore();
-
-    }
-
-}
 
 //Page Handlers Definitions
 var MainMenu = function () {
@@ -1268,6 +1129,139 @@ var PlaygroundHandler = function () {
         }
     }
 
+    var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
+
+        /* types definitions:
+           0 - 'End Phase' animation: only 'type' argument required
+           1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
+           2 - 'arrows' animation: all arguments are required
+        */
+
+        var that = this;
+        that.type = type;
+        that.img = animation_image;
+        that.attacking_card_id = attacking_card_id;
+        that.hitted_card_id = hitted_card_id;
+
+        that.alpha = 1;
+        that.cnt = 0;
+
+        /* for education purpose
+           a = typeof a !== 'undefined' ? a : 42;
+       b = typeof b !== 'undefined' ? b : 'default_b';
+       */
+
+        that.draw = function () {
+
+            ctx.save();
+            ctx.globalAlpha = that.alpha;
+
+            if (that.type === 0)
+                ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
+            else if (that.type === 1) {
+
+                ctx.drawImage(that.img, 50 * hits, 80, 50, 80, 362, 334, 50, 80);
+                ctx.drawImage(that.img, 350, 80, 50, 80, 412, 334, 50, 80);
+                ctx.drawImage(that.img, 50 * shoots, 80, 50, 80, 462, 334, 50, 80);
+                ctx.drawImage(that.img, 400, 80, 150, 80, 512, 334, 150, 80);
+            }
+            else if (that.type === 2) {
+
+
+                var attacking_card_x = null;
+                var attacking_card_y = null;
+
+                var hitted_card_x = null;
+                var hitted_card_y = null;
+
+                for (var i = 0; i < board.matrix.length; i++) {
+                    for (var j = 0; j < board.matrix[i].length; j++) {
+
+                        if (board.matrix[i][j] != null) {
+
+                            if (board.matrix[i][j].id === that.attacking_card_id) {
+                                attacking_card_x = i;
+                                attacking_card_y = j;
+                            }
+
+                            if (board.matrix[i][j].id === that.hitted_card_id) {
+                                hitted_card_x = i;
+                                hitted_card_y = j;
+                            }
+
+                        }
+                    }
+                }
+
+                //TODO remove this after tests
+                if (attacking_card_x === null || attacking_card_y === null || hitted_card_x === null || hitted_card_y === null) {
+                    alert("Blad 5007");
+                }
+
+                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
+                ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
+
+                //one of the above dimensions should be equal to zero
+                var ver_diff = hitted_card_x - attacking_card_x; //horizontal difference
+                var hor_diff = hitted_card_y - attacking_card_y; //vertical difference
+
+                //angle indicates how much plan should be rotated
+                var angle = 0;
+
+                if (0 > hor_diff)
+                    angle = 180;
+                else if (ver_diff < 0)
+                    angle = 270;
+                else if (ver_diff > 0)
+                    angle = 90;
+
+                //arrow length
+                var arrow_len = 0;
+
+                if (ver_diff != 0)
+                    arrow_len = Math.abs(ver_diff);
+                else if (hor_diff != 0)
+                    arrow_len = Math.abs(hor_diff);
+
+                if (arrow_len === 0)
+                    alert("Setting arrow length does not work!");
+
+                var tmp_img = new Image();
+
+                //select proper image
+                if (ver_diff != 0) {
+                    tmp_img.src = "/img/ver_arrow" + String(arrow_len) + ".png";
+                }
+                else {
+                    tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
+                }
+
+                //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
+
+                ctx.save(); //store context coordination settings
+                ctx.translate(board.s_x + (attacking_card_y * board.square_w) + (board.square_w / 2), board.s_y + (attacking_card_x * board.square_h) + (board.square_h / 2)); //change rotation point to the middle of the tank
+                ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
+
+                if (hor_diff != 0)
+                    ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * board.square_w), 85, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 130 + (arrow_len * board.square_w), 85);
+                else
+                    ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * board.square_h), 130, (board.square_h / 2) * (-1), (board.square_w / 2) * (-1), 85 + (arrow_len * board.square_h), 130);
+                ctx.restore(); //load stored context settings
+            }
+
+            that.cnt++;
+
+            if (that.cnt > 110)
+                that.alpha -= 0.01;
+            ctx.restore();
+
+        }
+
+    }
+
+    that.animations = [];
     that.board = new Board();
 
     //method definitions
@@ -1512,12 +1506,12 @@ var gameLoop = function () {
         }
 
         //draw animation in queue
-        for (var i = 0; i < animations.length; i++) {
+        for (var i = 0; i < page_handler.animations.length; i++) {
 
-            animations[i].draw();
+            page_handler.animations[i].draw();
 
-            if (animations[i].alpha <= 0) {
-                animations.splice(i, 1);
+            if (page_handler.animations[i].alpha <= 0) {
+                page_handler.animations.splice(i, 1);
                 i--;
             }
         }
@@ -1528,9 +1522,6 @@ var gameLoop = function () {
         ctx.fillText('game phase: ' + game_phase, 840, 520);
 
     }
-
-
-
 
     requestAnimFrame(gameLoop);
 }
