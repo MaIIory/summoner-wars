@@ -1510,6 +1510,7 @@ var gameLoop = function () {
 
         }
 
+        /*
         //draw animation in queue
         for (var i = 0; i < page_handler.animations.length; i++) {
 
@@ -1520,11 +1521,13 @@ var gameLoop = function () {
                 i--;
             }
         }
+        */
 
         //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
         ctx.fillText('your turn: ' + your_turn, 840, 510);
         ctx.fillText('game phase: ' + game_phase, 840, 520);
+
 
     }
 
