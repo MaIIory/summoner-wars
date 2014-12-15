@@ -1304,7 +1304,7 @@ var PlaygroundHandler = function () {
             socket.emit('step_phase', { room_name: room_name });
 
             //add 'end phase' animation
-            animations.push(new Animation(0, anim_img));
+            that.animations.push(new Animation(0, anim_img));
 
             mouse_state = 2;
         }
