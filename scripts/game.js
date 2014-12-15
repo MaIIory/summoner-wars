@@ -1151,7 +1151,7 @@ var PlaygroundHandler = function () {
         }
 
         that.drawAndHandleAvailAttacks = function () {
-
+             
             var card_i = null;
             var card_j = null;
 
