@@ -1179,17 +1179,17 @@ var PlaygroundHandler = function () {
                 var hitted_card_x = null;
                 var hitted_card_y = null;
 
-                for (var i = 0; i < board.matrix.length; i++) {
-                    for (var j = 0; j < board.matrix[i].length; j++) {
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
 
-                        if (board.matrix[i][j] != null) {
+                        if (parent.board.matrix[i][j] != null) {
 
-                            if (board.matrix[i][j].id === that.attacking_card_id) {
+                            if (parent.board.matrix[i][j].id === that.attacking_card_id) {
                                 attacking_card_x = i;
                                 attacking_card_y = j;
                             }
 
-                            if (board.matrix[i][j].id === that.hitted_card_id) {
+                            if (parent.board.matrix[i][j].id === that.hitted_card_id) {
                                 hitted_card_x = i;
                                 hitted_card_y = j;
                             }
@@ -1204,9 +1204,9 @@ var PlaygroundHandler = function () {
                 }
 
                 ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-                ctx.fillRect(board.s_x + (attacking_card_y * board.square_w), board.s_y + (attacking_card_x * board.square_h), board.square_w, board.square_h);
+                ctx.fillRect(parent.board.s_x + (attacking_card_y * parent.board.square_w), parent.board.s_y + (attacking_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
-                ctx.fillRect(board.s_x + (hitted_card_y * board.square_w), board.s_y + (hitted_card_x * board.square_h), board.square_w, board.square_h);
+                ctx.fillRect(parent.board.s_x + (hitted_card_y * parent.board.square_w), parent.board.s_y + (hitted_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
 
                 //one of the above dimensions should be equal to zero
                 var ver_diff = hitted_card_x - attacking_card_x; //horizontal difference
@@ -1246,13 +1246,13 @@ var PlaygroundHandler = function () {
                 //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
 
                 ctx.save(); //store context coordination settings
-                ctx.translate(board.s_x + (attacking_card_y * board.square_w) + (board.square_w / 2), board.s_y + (attacking_card_x * board.square_h) + (board.square_h / 2)); //change rotation point to the middle of the tank
+                ctx.translate(parent.board.s_x + (attacking_card_y * parent.board.square_w) + (parent.board.square_w / 2), parent.board.s_y + (attacking_card_x * parent.board.square_h) + (parent.board.square_h / 2)); //change rotation point to the middle of the tank
                 ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
 
                 if (hor_diff != 0)
-                    ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * board.square_w), 85, (board.square_w / 2) * (-1), (board.square_h / 2) * (-1), 130 + (arrow_len * board.square_w), 85);
+                    ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * parent.board.square_w), 85, (parent.board.square_w / 2) * (-1), (parent.board.square_h / 2) * (-1), 130 + (arrow_len * parent.board.square_w), 85);
                 else
-                    ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * board.square_h), 130, (board.square_h / 2) * (-1), (board.square_w / 2) * (-1), 85 + (arrow_len * board.square_h), 130);
+                    ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * parent.board.square_h), 130, (parent.board.square_h / 2) * (-1), (parent.board.square_w / 2) * (-1), 85 + (arrow_len * parent.board.square_h), 130);
                 ctx.restore(); //load stored context settings
             }
 
@@ -1510,7 +1510,7 @@ var gameLoop = function () {
 
         }
 
-        /*
+        
         //draw animation in queue
         for (var i = 0; i < page_handler.animations.length; i++) {
 
@@ -1521,7 +1521,7 @@ var gameLoop = function () {
                 i--;
             }
         }
-        */
+        
 
         //temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
