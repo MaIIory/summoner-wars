@@ -1304,7 +1304,7 @@ var PlaygroundHandler = function () {
             game_phase += 1;
 
             //unselect card if any
-            board.unselectAll();
+            that.board.unselectAll();
 
             //emit apropriate event
             socket.emit('step_phase', { room_name: room_name });
