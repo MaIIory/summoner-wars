@@ -1134,7 +1134,7 @@ var PlaygroundHandler = function () {
         }
     }
 
-    var Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
+    this.Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
 
         /* types definitions:
            0 - 'End Phase' animation: only 'type' argument required
