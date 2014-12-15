@@ -473,12 +473,11 @@ var PlaygroundHandler = function () {
     that.btn_phase_x = 810;
     that.btn_phase_y = 560;
 
-    //parent pointer for inner classes
-    var parent = this;
     that.animations = [];
 
-
-
+    //parent pointer for inner classes
+    var parent = this;
+    
     //Inner classes
     var Board = function () {
 
@@ -608,8 +607,8 @@ var PlaygroundHandler = function () {
             }
 
             //add 'nb of hits' animation
-            //parent.animations.push(new Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
-            //parent.animations.push(new Animation(1, anim_img, hits, attack_strangth));
+            parent.animations.push(new Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
+            parent.animations.push(new Animation(1, anim_img, hits, attack_strangth));
         }
 
         that.unselectAll = function () {
