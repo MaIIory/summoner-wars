@@ -475,6 +475,9 @@ var PlaygroundHandler = function () {
 
     //parent pointer for inner classes
     var parent = this;
+    that.animations = [];
+
+
 
     //Inner classes
     var Board = function () {
@@ -1264,7 +1267,7 @@ var PlaygroundHandler = function () {
 
     }
 
-    that.animations = [];
+    
     that.board = new Board();
 
     //method definitions
