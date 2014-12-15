@@ -144,7 +144,7 @@ socket.on('step_phase', function (data) {
     game_phase += 1;
 
     //add 'end phase' animation
-    page_handler.animations.push(new Animation(0, anim_img));
+    page_handler.animations.push(new PlaygroundHandler.Animation(0, anim_img));
 })
 
 /***************************CLASSES****************************/
