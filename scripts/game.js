@@ -144,6 +144,7 @@ socket.on('step_phase', function (data) {
     game_phase += 1;
 
     //add 'end phase' animation
+    page_handler.animations = [];
     page_handler.animations.push(new page_handler.Animation(0, anim_img));
 })
 
@@ -606,7 +607,8 @@ var PlaygroundHandler = function () {
                 that.matrix[hit_card_i][hit_card_j].selected = false;
             }
 
-            //add 'nb of hits' animation
+            //add 'nb of hits' animation and clear container if any animation is hanging
+            parent.animations = [];
             parent.animations.push(new parent.Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
             parent.animations.push(new parent.Animation(1, anim_img, hits, attack_strangth));
         }
