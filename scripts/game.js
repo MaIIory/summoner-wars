@@ -602,8 +602,8 @@ var PlaygroundHandler = function () {
             }
 
             //add 'nb of hits' animation
-            animations.push(new Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
-            animations.push(new Animation(1, anim_img, hits, attack_strangth));
+            //animations.push(new Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
+            //animations.push(new Animation(1, anim_img, hits, attack_strangth));
         }
 
         that.unselectAll = function () {
