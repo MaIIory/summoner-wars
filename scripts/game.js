@@ -1058,7 +1058,7 @@ var PlaygroundHandler = function () {
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
 
-                    if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j))) {
+                    if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j)) && ((!that.matrix[i][j].dying))) {
 
                         //indicator if this card may be attacked
                         var attack_available = false;
