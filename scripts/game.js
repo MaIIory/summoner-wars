@@ -203,8 +203,6 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     }
 }
 
-
-
 //Page Handlers Definitions
 var MainMenu = function () {
 
@@ -488,8 +486,9 @@ var PlaygroundHandler = function () {
         that.square_h = 85;
 
         //image settings
-        that.sheet_origin = 0;
+        that.sheet_origin = 200; //indicates start 'y' point for board graphics in the parent sheet
 
+        //TODO DEL
         that.board_graphics = new Image();
         that.board_graphics.src = "/img/board_graphics.png";
 
@@ -728,17 +727,17 @@ var PlaygroundHandler = function () {
                         //draw wounds on board
                         if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                                ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k % 3 * that.hor_diff_between),
+                                ctx.drawImage(parent.image, that.wounds_src_x, that.sheet_origin + that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + that.wounds_s_x + (k % 3 * that.hor_diff_between),
                                     that.s_y + (i * that.square_h) + that.wounds_s_y + (Math.floor(k / 3) * that.ver_diff_between), that.wounds_w, that.wounds_h);
                             }
                         } else if (that.matrix[i][j].name === 'Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                                ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + 9 + (k * 13),
+                                ctx.drawImage(parent.image, that.wounds_src_x, that.sheet_origin + that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + 9 + (k * 13),
                                     that.s_y + (i * that.square_h) + 72, that.wounds_w, that.wounds_h);
                             }
                         } else if (that.matrix[i][j].name === 'Ice Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                                ctx.drawImage(that.board_graphics, that.wounds_src_x, that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + 14 + (k * 13),
+                                ctx.drawImage(parent.image, that.wounds_src_x, that.sheet_origin + that.wounds_src_y, that.wounds_w, that.wounds_h, that.s_x + (j * that.square_w) + 14 + (k * 13),
                                     that.s_y + (i * that.square_h) + 70, that.wounds_w, that.wounds_h);
                             }
                         }
@@ -754,9 +753,9 @@ var PlaygroundHandler = function () {
                             (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
                             (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) ||
                                 that.matrix[i][j].draw_big_picture)
-                                ctx.drawImage(that.board_graphics, 0, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                                ctx.drawImage(parent.image, 0, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                             else
-                                ctx.drawImage(that.board_graphics, 130, 0, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                                ctx.drawImage(parent.image, 130, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                         }
 
@@ -797,16 +796,16 @@ var PlaygroundHandler = function () {
                         //draw wounds
                         if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                                ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 329 + that.wounds_big_s_x + (k % 3 * that.hor_big_diff_between),
+                                ctx.drawImage(parent.image, that.wounds_big_src_x, that.sheet_origin + that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 329 + that.wounds_big_s_x + (k % 3 * that.hor_big_diff_between),
                                     200 + that.wounds_big_s_y + (Math.floor(k / 3) * that.ver_big_diff_between), that.wounds_big_w, that.wounds_big_h);
                             }
                         } else if (that.matrix[i][j].name === 'Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                                ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 37), 398, that.wounds_big_w, that.wounds_big_h);
+                                ctx.drawImage(parent.image, that.wounds_big_src_x, that.sheet_origin + that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 355 + (k * 37), 398, that.wounds_big_w, that.wounds_big_h);
                             }
                         } else if (that.matrix[i][j].name === 'Ice Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
-                                ctx.drawImage(that.board_graphics, that.wounds_big_src_x, that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 370 + (k * 37), 398, that.wounds_big_w, that.wounds_big_h);
+                                ctx.drawImage(parent.image, that.wounds_big_src_x, that.sheet_origin + that.wounds_big_src_y, that.wounds_big_w, that.wounds_big_h, 370 + (k * 37), 398, that.wounds_big_w, that.wounds_big_h);
                             }
                         }
 
