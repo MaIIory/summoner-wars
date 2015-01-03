@@ -1151,10 +1151,10 @@ var PlaygroundHandler = function () {
         that.type = type;
 
         //image settings
-        that.sheet_origin = 0;
+        that.sheet_origin = 301; //indicates start 'y' point for animation graphics in the sheet
+
         //TODO DEL
         that.img = animation_image;
-
 
         that.attacking_card_id = attacking_card_id;
         that.hitted_card_id = hitted_card_id;
@@ -1173,13 +1173,13 @@ var PlaygroundHandler = function () {
             ctx.globalAlpha = that.alpha;
 
             if (that.type === 0)
-                ctx.drawImage(parent.image, 0, 0, 350, 100, 337, 334, 350, 100);
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 350, 100, 337, 334, 350, 100);
             else if (that.type === 1) {
 
-                ctx.drawImage(parent.image, 50 * hits, 100, 50, 100, 362, 334, 50, 100);
-                ctx.drawImage(parent.image, 350, 100, 50, 100, 412, 334, 50, 100);
-                ctx.drawImage(parent.image, 50 * shoots, 100, 50, 100, 462, 334, 50, 100);
-                ctx.drawImage(parent.image, 400, 100, 150, 100, 512, 334, 150, 100);
+                ctx.drawImage(parent.image, 50 * hits, that.sheet_origin + 100, 50, 100, 362, 334, 50, 100);
+                ctx.drawImage(parent.image, 350, that.sheet_origin + 100, 50, 100, 412, 334, 50, 100);
+                ctx.drawImage(parent.image, 50 * shoots, that.sheet_origin + 100, 50, 100, 462, 334, 50, 100);
+                ctx.drawImage(parent.image, 400, that.sheet_origin + 100, 150, 100, 512, 334, 150, 100);
             }
             else if (that.type === 2) {
 
