@@ -44,9 +44,6 @@ var mouse_state = 0; /* 0 - standby
 var player = null;
 var opponent = null;
 
-var anim_img = new Image();
-anim_img.src = "/img/animation.png";
-
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
 
@@ -145,7 +142,7 @@ socket.on('step_phase', function (data) {
 
     //add 'end phase' animation
     page_handler.animations = [];
-    page_handler.animations.push(new page_handler.Animation(0, anim_img));
+    page_handler.animations.push(new page_handler.Animation(0));
 })
 
 /***************************CLASSES****************************/
@@ -612,8 +609,8 @@ var PlaygroundHandler = function () {
 
             //add 'nb of hits' animation and clear container if any animation is hanging
             parent.animations = [];
-            parent.animations.push(new parent.Animation(2, anim_img, hits, attack_strangth, attacking_card_id, hitted_card_id));
-            parent.animations.push(new parent.Animation(1, anim_img, hits, attack_strangth));
+            parent.animations.push(new parent.Animation(2, hits, attack_strangth, attacking_card_id, hitted_card_id));
+            parent.animations.push(new parent.Animation(1, hits, attack_strangth));
         }
 
         that.unselectAll = function () {
@@ -1139,7 +1136,7 @@ var PlaygroundHandler = function () {
         }
     }
 
-    this.Animation = function (type, animation_image, hits, shoots, attacking_card_id, hitted_card_id) {
+    this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
 
         /* types definitions:
            0 - 'End Phase' animation: only 'type' argument required
@@ -1300,7 +1297,6 @@ var PlaygroundHandler = function () {
     that.draw = function () {
 
         //draw end phase button
-
         ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
     }
 
@@ -1319,7 +1315,7 @@ var PlaygroundHandler = function () {
             socket.emit('step_phase', { room_name: room_name });
 
             //add 'end phase' animation
-            that.animations.push(new that.Animation(0, anim_img));
+            that.animations.push(new that.Animation(0));
 
             mouse_state = 2;
         }
