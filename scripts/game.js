@@ -488,10 +488,6 @@ var PlaygroundHandler = function () {
         //image settings
         that.sheet_origin = 200; //indicates start 'y' point for board graphics in the parent sheet
 
-        //TODO DEL
-        that.board_graphics = new Image();
-        that.board_graphics.src = "/img/board_graphics.png";
-
         //wounds data - small icon
         that.wounds_src_x = 18;
         that.wounds_src_y = 85;
