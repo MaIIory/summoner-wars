@@ -1152,6 +1152,8 @@ var PlaygroundHandler = function () {
 
         //image settings
         that.sheet_origin = 301; //indicates start 'y' point for animation graphics in the sheet
+        that.sheet_hor_arrows_origin = 501; //indicates start 'y' point for horizontal arrows
+        that.sheet_ver_arrows_origin = 841; //indicates start 'y' point for vertical arrows
 
         //TODO DEL
         that.img = animation_image;
@@ -1244,14 +1246,14 @@ var PlaygroundHandler = function () {
                 if (arrow_len === 0)
                     alert("Setting arrow length does not work!");
 
-                var tmp_img = new Image();
+                var tmp_sheet_arrow_origin = null;
 
                 //select proper image
                 if (ver_diff != 0) {
-                    tmp_img.src = "/img/ver_arrow" + String(arrow_len) + ".png";
+                    tmp_sheet_arrow_origin = that.sheet_ver_arrows_origin;
                 }
                 else {
-                    tmp_img.src = "/img/hor_arrow" + String(arrow_len) + ".png";
+                    tmp_sheet_arrow_origin = that.sheet_hor_arrows_origin;
                 }
 
                 //ctx.drawImage(tmp_img, 0, 0, 260, 85, 500, 500, 260, 85);
@@ -1260,10 +1262,20 @@ var PlaygroundHandler = function () {
                 ctx.translate(parent.board.s_x + (attacking_card_y * parent.board.square_w) + (parent.board.square_w / 2), parent.board.s_y + (attacking_card_x * parent.board.square_h) + (parent.board.square_h / 2)); //change rotation point to the middle of the tank
                 ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
 
+                //TODO DEL
+                /*
                 if (hor_diff != 0)
-                    ctx.drawImage(tmp_img, 0, 0, 130 + (arrow_len * parent.board.square_w), 85, (parent.board.square_w / 2) * (-1), (parent.board.square_h / 2) * (-1), 130 + (arrow_len * parent.board.square_w), 85);
+                    ctx.drawImage(parent.image, 0, 0, 130 + (arrow_len * parent.board.square_w), 85, (parent.board.square_w / 2) * (-1), (parent.board.square_h / 2) * (-1), 130 + (arrow_len * parent.board.square_w), 85);
                 else
-                    ctx.drawImage(tmp_img, 0, 0, 85 + (arrow_len * parent.board.square_h), 130, (parent.board.square_h / 2) * (-1), (parent.board.square_w / 2) * (-1), 85 + (arrow_len * parent.board.square_h), 130);
+                    ctx.drawImage(parent.image, 0, 0, 85 + (arrow_len * parent.board.square_h), 130, (parent.board.square_h / 2) * (-1), (parent.board.square_w / 2) * (-1), 85 + (arrow_len * parent.board.square_h), 130);
+                */
+
+                if (hor_diff != 0)
+                    ctx.drawImage(parent.image, 0, that.sheet_hor_arrows_origin + ((arrow_len - 1) * 85), 130 + (arrow_len * parent.board.square_w), 85, (parent.board.square_w / 2) * (-1), (parent.board.square_h / 2) * (-1), 130 + (arrow_len * parent.board.square_w), 85);
+                else
+                    ctx.drawImage(parent.image, 0, that.sheet_ver_arrows_origin + ((arrow_len - 1) * 130), 85 + (arrow_len * parent.board.square_h), 130, (parent.board.square_h / 2) * (-1), (parent.board.square_w / 2) * (-1), 85 + (arrow_len * parent.board.square_h), 130);
+
+
                 ctx.restore(); //load stored context settings
             }
 
