@@ -1173,13 +1173,13 @@ var PlaygroundHandler = function () {
             ctx.globalAlpha = that.alpha;
 
             if (that.type === 0)
-                ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
+                ctx.drawImage(parent.image, 0, 0, 350, 100, 337, 334, 350, 100);
             else if (that.type === 1) {
 
-                ctx.drawImage(that.img, 50 * hits, 100, 50, 100, 362, 334, 50, 100);
-                ctx.drawImage(that.img, 350, 100, 50, 100, 412, 334, 50, 100);
-                ctx.drawImage(that.img, 50 * shoots, 100, 50, 100, 462, 334, 50, 100);
-                ctx.drawImage(that.img, 400, 100, 150, 100, 512, 334, 150, 100);
+                ctx.drawImage(parent.image, 50 * hits, 100, 50, 100, 362, 334, 50, 100);
+                ctx.drawImage(parent.image, 350, 100, 50, 100, 412, 334, 50, 100);
+                ctx.drawImage(parent.image, 50 * shoots, 100, 50, 100, 462, 334, 50, 100);
+                ctx.drawImage(parent.image, 400, 100, 150, 100, 512, 334, 150, 100);
             }
             else if (that.type === 2) {
 
