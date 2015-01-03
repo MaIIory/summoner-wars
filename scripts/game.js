@@ -490,6 +490,9 @@ var PlaygroundHandler = function () {
         that.square_w = 130;
         that.square_h = 85;
 
+        //image settings
+        that.sheet_origin = 0;
+
         that.board_graphics = new Image();
         that.board_graphics.src = "/img/board_graphics.png";
 
@@ -1146,7 +1149,13 @@ var PlaygroundHandler = function () {
 
         var that = this;
         that.type = type;
+
+        //image settings
+        that.sheet_origin = 0;
+        //TODO DEL
         that.img = animation_image;
+
+
         that.attacking_card_id = attacking_card_id;
         that.hitted_card_id = hitted_card_id;
 
@@ -1167,10 +1176,10 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(that.img, 0, 0, 350, 100, 337, 334, 350, 100);
             else if (that.type === 1) {
 
-                ctx.drawImage(that.img, 50 * hits, 80, 50, 80, 362, 334, 50, 80);
-                ctx.drawImage(that.img, 350, 80, 50, 80, 412, 334, 50, 80);
-                ctx.drawImage(that.img, 50 * shoots, 80, 50, 80, 462, 334, 50, 80);
-                ctx.drawImage(that.img, 400, 80, 150, 80, 512, 334, 150, 80);
+                ctx.drawImage(that.img, 50 * hits, 100, 50, 100, 362, 334, 50, 100);
+                ctx.drawImage(that.img, 350, 100, 50, 100, 412, 334, 50, 100);
+                ctx.drawImage(that.img, 50 * shoots, 100, 50, 100, 462, 334, 50, 100);
+                ctx.drawImage(that.img, 400, 100, 150, 100, 512, 334, 150, 100);
             }
             else if (that.type === 2) {
 
