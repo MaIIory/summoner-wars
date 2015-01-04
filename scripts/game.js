@@ -468,6 +468,8 @@ var PlaygroundHandler = function () {
 
     that.animations = [];
 
+    that.draw_big_picture = false; //indicates if any card is drawn in big picture - in this case page handler should not be active 
+
     //parent pointer for inner classes
     var parent = this;
     
@@ -485,7 +487,7 @@ var PlaygroundHandler = function () {
         //image settings
         that.sheet_origin = 200; //indicates start 'y' point for board graphics in the parent sheet
 
-        //wounds data - small icon
+        //wounds data - small icons
         that.wounds_src_x = 18;
         that.wounds_src_y = 85;
         that.wounds_s_x = 30;
@@ -495,7 +497,7 @@ var PlaygroundHandler = function () {
         that.hor_diff_between = 6;
         that.ver_diff_between = 7;
 
-        //wounds data - 'draw in big picture' icon
+        //wounds data - 'draw in big picture' icons
         that.wounds_big_src_x = 0;
         that.wounds_big_src_y = 85;
         that.wounds_big_s_x = 84;
@@ -635,6 +637,7 @@ var PlaygroundHandler = function () {
                     if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
                         if ((mouse_state === 1)) {
                             that.matrix[i][j].draw_big_picture = false;
+                            parent.draw_big_picture = false;
                             mouse_state = 2;
                         }
                         return;
@@ -667,6 +670,7 @@ var PlaygroundHandler = function () {
                                 (mouse_y > ((that.s_y + (i * that.square_h) + (that.square_h / 2))) - 15) &&
                                 (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) {
                                 that.matrix[i][j].draw_big_picture = true;
+                                parent.draw_big_picture = true;
                             }
                         }
                         else {
@@ -677,6 +681,7 @@ var PlaygroundHandler = function () {
                             if (mouse_state === 1) {
                                 that.matrix[i][j].selected = false;
                                 that.matrix[i][j].draw_big_picture = false;
+                                parent.draw_big_picture = false;
                             }
                         }
 
@@ -1270,6 +1275,10 @@ var PlaygroundHandler = function () {
     //method definitions
     that.checkHover = function () {
 
+        //check if page handler is active
+        if (that.draw_big_picture === true)
+            return;
+
         //check phase button hover
         if ((mouse_x > that.btn_phase_x) &&
             (mouse_x < that.btn_phase_x + that.btn_phase_wh) &&
@@ -1314,6 +1323,10 @@ var PlaygroundHandler = function () {
     }
 
     that.checkMouseAction = function () {
+
+        //check if page handler is active
+        if (that.draw_big_picture === true)
+            return;
 
         //check if phase stepping is requested
         if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
@@ -1508,8 +1521,6 @@ var gameLoop = function () {
                 /* ============ */
 
                 page_handler.board.drawPreviousMoves();
-
-
                 page_handler.board.drawAndHandleAvailAttacks();
 
                 //Phase button handling
