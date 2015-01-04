@@ -1537,14 +1537,14 @@ var gameLoop = function () {
                 /* ATTACK PHASE */
                 /* ============ */
 
-                page_handler.board.drawPreviousMoves();
-                page_handler.board.draw();
-                page_handler.board.drawAndHandleAvailAttacks();
-
                 //Phase button handling
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
                 page_handler.draw();
+
+                page_handler.board.drawPreviousMoves();
+                page_handler.board.draw();
+                page_handler.board.drawAndHandleAvailAttacks();
                 page_handler.board.checkMouseActivity();
 
             } else if (game_phase === 5) {
