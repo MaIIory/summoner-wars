@@ -1335,9 +1335,8 @@ var PlaygroundHandler = function () {
             that.board.unselectAll();
 
             if (game_phase > 5) {
-
                 //emit apropriate event
-                socket.emit('end_turn', { room_name: room_name });
+                //socket.emit('end_turn', { room_name: room_name });
                 return;
             }
 
@@ -1539,7 +1538,6 @@ var gameLoop = function () {
                 /* ============ */
 
                 page_handler.board.drawPreviousMoves();
-                page_handler.board.draw();
                 page_handler.board.drawAndHandleAvailAttacks();
 
                 //Phase button handling
@@ -1547,6 +1545,7 @@ var gameLoop = function () {
                 page_handler.checkMouseAction();
                 page_handler.draw();
 
+                page_handler.board.draw();
                 page_handler.board.checkMouseActivity();
 
             } else if (game_phase === 5) {
