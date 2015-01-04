@@ -1,6 +1,7 @@
 var PheonixElves = function (player_name) {
 
     var that = this;
+    that.faction_name = "Pheonix Elves";
     that.player_name = player_name;
     that.deck = [];
 
@@ -68,6 +69,7 @@ var PheonixElves = function (player_name) {
 var TundraOrcs = function (player_name) {
 
     var that = this;
+    that.faction_name = "Tundra Orcs";
     that.player_name = player_name;
     that.deck = [];
 

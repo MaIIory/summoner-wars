@@ -1290,10 +1290,11 @@ var PlaygroundHandler = function () {
         ctx.save();
         ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
         ctx.font = '12pt Harrington';
-        ctx.fillText(player.name, 870, 65);
-        ctx.fillText(player.magic_pile.length, 870, 85);
-        ctx.fillText(player.name, 870, 105);
-        ctx.fillText(player.name, 870, 125);
+        ctx.fillText(player.name, 870, 60);
+        ctx.fillText(player.faction.name, 870, 80);
+        ctx.fillText("Magic: " + player.magic_pile.length, 870, 100);
+        ctx.fillText("Discard Pile: " + player.discard_pile.length, 870, 120);
+        ctx.fillText("Deck: " + player.faction.deck.length, 870, 140);
         ctx.restore();
 
         //draw opponents data
