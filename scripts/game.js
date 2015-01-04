@@ -1507,11 +1507,11 @@ var gameLoop = function () {
                 page_handler.board.drawAndHandleAvailMoves();
                 page_handler.board.drawPreviousMoves();
 
+                page_handler.board.checkMouseActivity();
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
-                page_handler.draw();
 
-                page_handler.board.checkMouseActivity();
+                page_handler.draw();
                 page_handler.board.draw();
 
             }
