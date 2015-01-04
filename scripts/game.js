@@ -149,6 +149,7 @@ socket.on('step_phase', function (data) {
 //incoming end turn event - start your turn
 socket.on('end_turn', function (data) {
 
+    page_handler.board.resetPreviousMoves();
     game_phase = 0;
     player.attacks_left = 3;
     player.moves_left = 3;
@@ -630,7 +631,19 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
+        }
 
+        that.resetPreviousMoves = function () {
+
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if (that.matrix[i][j] != null) {
+
+                        that.matrix[i][j].previous_moves = [];
+                    }
+                }
+            }
         }
 
         that.checkMouseActivity = function () {
@@ -1354,6 +1367,7 @@ var PlaygroundHandler = function () {
 
                 if (player.faction.name != "TODO") {
 
+                    that.board.resetPreviousMoves();
                     game_phase = 0;
                     that.btn_phase_frame = 0;
                     player.attacks_left = 3;
@@ -1521,15 +1535,42 @@ var gameLoop = function () {
                 /* DRAW PHASE */
                 /* ========== */
 
+                //Phase handler handling
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
+                //Board handling
+                page_handler.board.draw();
+                page_handler.board.checkMouseActivity();
+
             } else if (game_phase === 1) {
                 /* ============ */
                 /* SUMMON PHASE */
                 /* ============ */
 
+                //Phase handler handling
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
+                //Board handling
+                page_handler.board.draw();
+                page_handler.board.checkMouseActivity();
+
             } else if (game_phase === 2) {
                 /* =========== */
                 /* EVENT PHASE */
                 /* =========== */
+
+                //Phase handler handling
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
+                //Board handling
+                page_handler.board.draw();
+                page_handler.board.checkMouseActivity();
 
             }
             else if (game_phase === 3) {
