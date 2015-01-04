@@ -1298,11 +1298,11 @@ var PlaygroundHandler = function () {
         ctx.fillText("Deck: " + player.faction.deck.length, 870, 140);
 
         //draw opponents data
-        ctx.fillText(opponent.name, 870, 235);
-        ctx.fillText(opponent.faction.faction_name, 870, 255);
-        ctx.fillText("Magic: " + opponent.magic_pile.length, 870, 275);
-        ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 295);
-        ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 315);
+        ctx.fillText(opponent.name, 870, 230);
+        ctx.fillText(opponent.faction.faction_name, 870, 250);
+        ctx.fillText("Magic: " + opponent.magic_pile.length, 870, 270);
+        ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
+        ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
 
         ctx.restore();
 
