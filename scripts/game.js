@@ -687,8 +687,7 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
-            if (mouse_state === 1)
-                mouse_state = 2;
+
 
         }
 
@@ -1513,6 +1512,7 @@ var gameLoop = function () {
                 page_handler.checkMouseAction();
 
                 page_handler.draw();
+
                 page_handler.board.draw();
 
             }
@@ -1562,6 +1562,9 @@ var gameLoop = function () {
 
         }
 
+        //disable unhandled click
+        if (mouse_state === 1)
+            mouse_state = 2;
         
         //draw animation in queue
         for (var i = 0; i < page_handler.animations.length; i++) {
