@@ -205,7 +205,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.attack = attack; //attack strength
     that.dying = false; //indicator if card is going to die
     that.alpha = 1; //when card is dying alpha should be decremented
-    that.cnt = 0; //for delay 
+    that.cnt = 0; //for delay during dying
 
     that.draw = function (image) {
 
@@ -642,6 +642,7 @@ var PlaygroundHandler = function () {
 
                         that.matrix[i][j].previous_moves = [];
                         that.matrix[i][j].moves_left = 3;
+                        that.matrix[i][j].attacked = false;
                     }
                 }
             }
