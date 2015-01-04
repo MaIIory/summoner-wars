@@ -635,7 +635,7 @@ var PlaygroundHandler = function () {
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
-                        if ((mouse_state === 1)) {
+                        if (mouse_state === 1) {
                             that.matrix[i][j].draw_big_picture = false;
                             parent.draw_big_picture = false;
                             mouse_state = 2;
@@ -681,7 +681,6 @@ var PlaygroundHandler = function () {
                             if (mouse_state === 1) {
                                 that.matrix[i][j].selected = false;
                                 that.matrix[i][j].draw_big_picture = false;
-                                parent.draw_big_picture = false;
                             }
                         }
 
