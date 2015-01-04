@@ -1313,8 +1313,6 @@ var PlaygroundHandler = function () {
         ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
         ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
 
-        ctx.fillText("Draw in big picture: " + that.draw_big_picture, 870, 400);
-
         //restore previous style
         ctx.restore();
 
@@ -1328,14 +1326,33 @@ var PlaygroundHandler = function () {
         if (that.draw_big_picture)
             return;
 
+
+
         //check if phase stepping is requested
         if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
 
-            //step game phase
-            game_phase += 1;
-
             //unselect card if any
             that.board.unselectAll();
+
+            if (game_phase > 5) {
+
+                //emit apropriate event
+                socket.emit('end_turn', { room_name: room_name });
+                return;
+            }
+
+            if (game_phase === 5) {
+
+                if (player.faction.name != "Pheonix Elves") {
+
+                    //emit apropriate event
+                    socket.emit('end_turn', { room_name: room_name });
+                    return;
+                }
+            }
+
+            //step game phase
+            game_phase += 1;
 
             //emit apropriate event
             socket.emit('step_phase', { room_name: room_name });
@@ -1522,6 +1539,7 @@ var gameLoop = function () {
                 /* ============ */
 
                 page_handler.board.drawPreviousMoves();
+                page_handler.board.draw();
                 page_handler.board.drawAndHandleAvailAttacks();
 
                 //Phase button handling
@@ -1529,7 +1547,6 @@ var gameLoop = function () {
                 page_handler.checkMouseAction();
                 page_handler.draw();
 
-                page_handler.board.draw();
                 page_handler.board.checkMouseActivity();
 
             } else if (game_phase === 5) {
@@ -1547,9 +1564,22 @@ var gameLoop = function () {
 
                 page_handler.board.checkMouseActivity();
 
+            } else if (game_phase === 6) {
+                /* ================ */
+                /* BLAZE STEP PHASE */
+                /* ================ */
+
+                page_handler.board.drawPreviousMoves();
+                page_handler.board.draw();
+
+                //Phase button handling
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
+                page_handler.board.checkMouseActivity();
+
             }
-
-
 
 
         } else {
