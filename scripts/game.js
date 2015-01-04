@@ -156,11 +156,7 @@ var Player = function (name) {
     that.faction = null;
     that.moves_left = 2;  //in first turn player has 2 moves
     that.magic_pile = [];
-
-    //TODO dane ponizej moga wchodzic w sklad faction
-    //that.deck = [];
-    //that.discard_pile = [];
-    //that.hand = [];
+    that.discard_pile = [];
 }
 
 var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
@@ -1291,6 +1287,9 @@ var PlaygroundHandler = function () {
     that.draw = function () {
 
         //draw players data
+        ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
+        ctx.font = 'Bold 20pt Harrington';
+        ctx.fillText(player.name, 875, 65);
 
         //draw opponents data
 
