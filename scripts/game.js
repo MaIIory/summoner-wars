@@ -1268,7 +1268,6 @@ var PlaygroundHandler = function () {
 
     }
 
-    
     that.board = new Board();
 
     //method definitions
