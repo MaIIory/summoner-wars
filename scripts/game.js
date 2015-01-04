@@ -641,7 +641,7 @@ var PlaygroundHandler = function () {
                     if (that.matrix[i][j] != null) {
 
                         that.matrix[i][j].previous_moves = [];
-                        that.matrix[i][j].moves_left = 3;
+                        that.matrix[i][j].moves_left = 2;
                         that.matrix[i][j].attacked = false;
                     }
                 }
