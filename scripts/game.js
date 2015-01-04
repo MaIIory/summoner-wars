@@ -1286,18 +1286,25 @@ var PlaygroundHandler = function () {
 
     that.draw = function () {
 
-        //draw players data
         ctx.save();
         ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
         ctx.font = 'Bold 10pt Times New Roman';
+
+        //draw players data
         ctx.fillText(player.name, 870, 60);
         ctx.fillText(player.faction.faction_name, 870, 80);
         ctx.fillText("Magic: " + player.magic_pile.length, 870, 100);
         ctx.fillText("Discard: " + player.discard_pile.length, 870, 120);
         ctx.fillText("Deck: " + player.faction.deck.length, 870, 140);
-        ctx.restore();
 
         //draw opponents data
+        ctx.fillText(opponent.name, 870, 235);
+        ctx.fillText(opponent.faction.faction_name, 870, 255);
+        ctx.fillText("Magic: " + opponent.magic_pile.length, 870, 275);
+        ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 295);
+        ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 315);
+
+        ctx.restore();
 
         //draw end phase button
         ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
