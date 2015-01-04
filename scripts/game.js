@@ -26,7 +26,8 @@ var game_phase = 3; /* 0 - draw phase
                        2 - event phase
                        3 - move phase (start phase)
                        4 - atack phase
-                       5 - build magic phase */
+                       5 - build magic phase
+                       6 - "Blaze Step" phase (in case one of the player plays pheonix elves deck) */
 
 var your_turn = false;
 
@@ -1507,7 +1508,7 @@ var gameLoop = function () {
                 /* ============ */
 
                 page_handler.board.drawPreviousMoves();
-                page_handler.board.draw();
+
 
                 page_handler.board.drawAndHandleAvailAttacks();
 
@@ -1516,6 +1517,7 @@ var gameLoop = function () {
                 page_handler.checkMouseAction();
                 page_handler.draw();
 
+                page_handler.board.draw();
                 page_handler.board.checkMouseActivity();
 
             } else if (game_phase === 5) {
