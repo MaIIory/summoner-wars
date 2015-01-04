@@ -1289,8 +1289,11 @@ var PlaygroundHandler = function () {
         //draw players data
         ctx.save();
         ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
-        ctx.font = 'Bold 12pt Harrington';
-        ctx.fillText(player.name, 870, 70);
+        ctx.font = '12pt Harrington';
+        ctx.fillText(player.name, 870, 65);
+        ctx.fillText(player.magic_pile.length, 870, 85);
+        ctx.fillText(player.name, 870, 105);
+        ctx.fillText(player.name, 870, 125);
         ctx.restore();
 
         //draw opponents data
