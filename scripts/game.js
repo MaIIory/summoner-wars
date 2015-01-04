@@ -1276,7 +1276,7 @@ var PlaygroundHandler = function () {
     that.checkHover = function () {
 
         //check if page handler is active
-        if (that.draw_big_picture === true)
+        if (that.draw_big_picture)
             return;
 
         //check phase button hover
@@ -1315,6 +1315,8 @@ var PlaygroundHandler = function () {
         ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
         ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
 
+        ctx.fillText("Draw in big picture: " + that.draw_big_picture, 870, 400);
+
         //restore previous style
         ctx.restore();
 
@@ -1325,7 +1327,7 @@ var PlaygroundHandler = function () {
     that.checkMouseAction = function () {
 
         //check if page handler is active
-        if (that.draw_big_picture === true)
+        if (that.draw_big_picture)
             return;
 
         //check if phase stepping is requested
