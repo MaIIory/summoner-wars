@@ -146,6 +146,16 @@ socket.on('step_phase', function (data) {
     page_handler.animations.push(new page_handler.Animation(0));
 })
 
+//incoming end turn event - start your turn
+socket.on('end_turn', function (data) {
+
+    game_phase = 0;
+    player.attacks_left = 3;
+    player.moves_left = 3;
+    your_turn = true;
+
+})
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -1342,16 +1352,16 @@ var PlaygroundHandler = function () {
                 return;
             } else if (game_phase === 5) {
 
-                if (player.faction.name != "Pheonix ElvesTODO") {
+                if (player.faction.name != "TODO") {
 
-                    //emit apropriate event
-                    //TODO ENDTURN HANDLING
-                    game_phase = 1;
+                    game_phase = 0;
+                    that.btn_phase_frame = 0;
                     player.attacks_left = 3;
                     player.moves_left = 3;
-
                     your_turn = false;
-                    //socket.emit('end_turn', { room_name: room_name });
+
+                    //emit apropriate event
+                    socket.emit('end_turn', { room_name: room_name });
                     return;
                 }
             } else {

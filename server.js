@@ -255,6 +255,7 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('move_card', { card_id: data.card_id, dest_x: data.dest_x, dest_y: data.dest_y });
     });
 
+    //resolve attack
     socket.on('resolve_attack', function (data) {
         // sending to all clients in 'game' room(channel) except sender
         socket.broadcast.to(data.room_name).emit('resolve_attack', {
@@ -272,5 +273,10 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('step_phase');
     });
 
+    //resolve attack
+    socket.on('end_turn', function (data) {
+        // sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('end_turn');
+    });
 
 });
