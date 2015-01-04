@@ -1289,7 +1289,7 @@ var PlaygroundHandler = function () {
         //draw players data
         ctx.save();
         ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
-        ctx.font = '12pt Harrington';
+        ctx.font = 'Bold 10pt Times New Roman';
         ctx.fillText(player.name, 870, 60);
         ctx.fillText(player.faction.faction_name, 870, 80);
         ctx.fillText("Magic: " + player.magic_pile.length, 870, 100);
