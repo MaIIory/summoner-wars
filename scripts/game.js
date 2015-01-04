@@ -155,7 +155,8 @@ var Player = function (name) {
     that.name = name;
     that.selected_faction = 0; //0 - Phoenics Elves by default, 1 - Tundra Orcs
     that.faction = null;
-    that.moves_left = 2;  //in first turn player has 2 moves
+    that.moves_left = 2;   //in the first turn player has 2 moves
+    that.attacks_left = 2; //in the first turn player has 2 attacks
     that.magic_pile = [];
     that.discard_pile = [];
 }
@@ -1336,28 +1337,34 @@ var PlaygroundHandler = function () {
 
             if (game_phase > 5) {
                 //emit apropriate event
+                //TODO ENDTUNR HANDLING
                 //socket.emit('end_turn', { room_name: room_name });
                 return;
-            }
+            } else if (game_phase === 5) {
 
-            if (game_phase === 5) {
-
-                if (player.faction.name != "Pheonix Elves") {
+                if (player.faction.name != "Pheonix ElvesTODO") {
 
                     //emit apropriate event
+                    //TODO ENDTURN HANDLING
+                    game_phase = 1;
+                    player.attacks_left = 3;
+                    player.moves_left = 3;
+
+                    your_turn = false;
                     //socket.emit('end_turn', { room_name: room_name });
                     return;
                 }
+            } else {
+
+                //step game phase
+                game_phase += 1;
+
+                //emit apropriate event
+                socket.emit('step_phase', { room_name: room_name });
+
+                //add 'end phase' animation
+                that.animations.push(new that.Animation(0));
             }
-
-            //step game phase
-            game_phase += 1;
-
-            //emit apropriate event
-            socket.emit('step_phase', { room_name: room_name });
-
-            //add 'end phase' animation
-            that.animations.push(new that.Animation(0));
 
             mouse_state = 2;
         }
@@ -1537,11 +1544,12 @@ var gameLoop = function () {
                 /* ATTACK PHASE */
                 /* ============ */
 
-                //Phase button handling
+                //Phase handler handling
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
                 page_handler.draw();
 
+                //Board handling
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.draw();
                 page_handler.board.drawAndHandleAvailAttacks();
@@ -1552,14 +1560,14 @@ var gameLoop = function () {
                 /* BUILD MAGIC PHASE */
                 /* ================= */
 
-                page_handler.board.drawPreviousMoves();
-                page_handler.board.draw();
-
-                //Phase button handling
+                //Phase handler handling
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
                 page_handler.draw();
 
+                //Board handling
+                page_handler.board.drawPreviousMoves();
+                page_handler.board.draw();
                 page_handler.board.checkMouseActivity();
 
             } else if (game_phase === 6) {
