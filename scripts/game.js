@@ -1286,6 +1286,7 @@ var PlaygroundHandler = function () {
 
     that.draw = function () {
 
+        //prepare drawing settings for text
         ctx.save();
         ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
         ctx.font = 'Bold 10pt Times New Roman';
@@ -1304,6 +1305,7 @@ var PlaygroundHandler = function () {
         ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
         ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
 
+        //restore previous style
         ctx.restore();
 
         //draw end phase button
@@ -1468,16 +1470,25 @@ var gameLoop = function () {
         if (your_turn) {
 
             if (game_phase === 0) {
+                /* ========== */
+                /* DRAW PHASE */
+                /* ========== */
 
             } else if (game_phase === 1) {
+                /* ============ */
+                /* SUMMON PHASE */
+                /* ============ */
 
             } else if (game_phase === 2) {
+                /* =========== */
+                /* EVENT PHASE */
+                /* =========== */
 
             }
+            else if (game_phase === 3) {
                 /* ========== */
                 /* MOVE PHASE */
                 /* ========== */
-            else if (game_phase === 3) {
 
                 page_handler.board.drawAndHandleAvailMoves();
                 page_handler.board.drawPreviousMoves();
@@ -1490,10 +1501,10 @@ var gameLoop = function () {
                 page_handler.board.draw();
 
             }
-                /* =========== */
-                /* ATACK PHASE */
-                /* =========== */
             else if (game_phase === 4) {
+                /* ============ */
+                /* ATTACK PHASE */
+                /* ============ */
 
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.draw();
@@ -1508,8 +1519,19 @@ var gameLoop = function () {
                 page_handler.board.checkMouseActivity();
 
             } else if (game_phase === 5) {
+                /* ================= */
+                /* BUILD MAGIC PHASE */
+                /* ================= */
 
                 page_handler.board.drawPreviousMoves();
+                page_handler.board.draw();
+
+                //Phase button handling
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
+                page_handler.draw();
+
+                page_handler.board.checkMouseActivity();
 
             }
 
@@ -1539,7 +1561,7 @@ var gameLoop = function () {
         }
         
 
-        //temporary printouts
+        //TODO DEL temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
         ctx.fillText('your turn: ' + your_turn, 840, 510);
         ctx.fillText('game phase: ' + game_phase, 840, 520);
