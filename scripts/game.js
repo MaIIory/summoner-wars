@@ -53,6 +53,11 @@ var fps = 0;
 var fps_sum = [];
 var lastRun;
 
+//iteration counters
+var ite1 = 0;
+var ite2 = 0;
+var ite_dif = 0;
+
 //gameLoop data
 var previous = Date.now();
 var lag = 0.0;
@@ -1698,10 +1703,12 @@ var gameLoop = function () {
                 previous = current;
                 lag += elapsed;
 
+                ite1 += 1;
+
                 while (lag >= MS_PER_UPDATE)
                 {
 
-                    
+                    ite2 += 1;
 
                     //logic layer should not run always
                     page_handler.board.handleMoves();
@@ -1802,6 +1809,9 @@ var gameLoop = function () {
 
 
         ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
+        ctx.fillText("ite1: " + ite1, 840, 550);
+        ctx.fillText("ite2: " + ite2, 840, 560);
+        ctx.fillText("ite_dif: " + (ite2 - ite1), 840, 570);
 
 
     }
