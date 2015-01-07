@@ -698,8 +698,9 @@ var PlaygroundHandler = function () {
                             //check if player wish to select this card
                             if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                                 that.matrix[i][j].selected = true;
+                                mouse_state = 2;
                             }
-                                //check if player click eyeglass (20x20px in the middle of the card)
+                            //check if player click eyeglass (20x20px in the middle of the card)
                             else if (that.matrix[i][j].selected &&
                                 (mouse_state === 1) &&
                                 (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
@@ -708,6 +709,7 @@ var PlaygroundHandler = function () {
                                 (mouse_y < ((that.s_y + (i * that.square_h) + (that.square_h / 2))) + 15)) {
                                 that.matrix[i][j].draw_big_picture = true;
                                 parent.draw_big_picture = true;
+                                mouse_state = 2;
                             }
                         }
                         else {
