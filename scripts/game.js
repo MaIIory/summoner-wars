@@ -685,6 +685,8 @@ var PlaygroundHandler = function () {
                 }
             }
 
+            var new_card_selected = false;
+
             //rest functonality described above
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -701,6 +703,7 @@ var PlaygroundHandler = function () {
                             //check if player wish to select this card
                             if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                                 that.matrix[i][j].selected = true;
+                                new_card_selected = true;
                             }
                             //check if player click eyeglass (20x20px in the middle of the card)
                             else if (that.matrix[i][j].selected &&
@@ -728,6 +731,9 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
+
+            if (new_card_selected)
+                mouse_state = 2;
 
 
         }
