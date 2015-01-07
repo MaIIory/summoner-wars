@@ -1537,13 +1537,13 @@ var gameLoop = function () {
         return;
     }
 
-    if ((mouse_button_down || !mouse_used) && mouse_state === 0)
+    if ((mouse_button_down || (mouse_used === false)) && mouse_state === 0)
         mouse_state = 1;
     else if (mouse_state === 1) {
         mouse_state = 2;
         mouse_used = true;
     }
-    else if (mouse_state === 2 && !mouse_button_down)
+    else if (mouse_state === 2 && (mouse_button_down === false))
         mouse_used = true;
         mouse_state = 0;
         
