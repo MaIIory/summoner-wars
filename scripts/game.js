@@ -1022,6 +1022,8 @@ var PlaygroundHandler = function () {
                                 //handle user input
                                 if (mouse_state === 1) {
 
+                                    ctx.fillText("should not be here", 840, 560);
+
                                     //send move card event
                                     var dest_x = null;
                                     var dest_y = null;
@@ -1683,7 +1685,7 @@ var gameLoop = function () {
                 while (lag >= MS_PER_UPDATE)
                 {
 
-                    ctx.fillText("INNNNN", 840, 560);
+                    
 
                     //logic layer should not run always
                     page_handler.board.handleMoves();
