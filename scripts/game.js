@@ -42,6 +42,8 @@ var mouse_button_down = false;
 var mouse_state = 0; /* 0 - standby
                         1 - clicked
                         2 - used */
+var mouse_used = false; //additional indicator for cohesction purpose
+
 //players settings
 var player = null;
 var opponent = null;
@@ -79,7 +81,7 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('mousedown', function (evt) {
     mouse_button_down = true;
-    mouse_used = false; //additional trigger
+    mouse_used = false;
 }, false);
 
 canvas.addEventListener('mouseup', function (evt) {
