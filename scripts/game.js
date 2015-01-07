@@ -701,7 +701,6 @@ var PlaygroundHandler = function () {
                             //check if player wish to select this card
                             if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                                 that.matrix[i][j].selected = true;
-                                mouse_state = 2;
                             }
                             //check if player click eyeglass (20x20px in the middle of the card)
                             else if (that.matrix[i][j].selected &&
