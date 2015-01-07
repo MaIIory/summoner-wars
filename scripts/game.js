@@ -61,7 +61,7 @@ var ite_dif = 0;
 //gameLoop data
 var previous = Date.now();
 var lag = 0.0;
-var MS_PER_UPDATE = 8;
+var MS_PER_UPDATE = 10;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
