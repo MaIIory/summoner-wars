@@ -51,6 +51,9 @@ var fps = 0;
 var lastRun;
 
 //gameLoop data
+var previous = Date.now();
+var lag = 0.0;
+var MS_PER_UPDATE = 50;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
@@ -1662,17 +1665,29 @@ var gameLoop = function () {
                 /* MOVE PHASE */
                 /* ========== */
 
-                //logic layer should not run always
-                page_handler.board.handleMoves();
-                page_handler.board.checkMouseActivity();
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
+
+                while (lag >= MS_PER_UPDATE)
+                {
+
+                    //logic layer should not run always
+                    page_handler.board.handleMoves();
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+
+                    lag -= MS_PER_UPDATE;
+                }
 
                 //render layer
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.drawAvailMoves();
                 page_handler.board.draw();
+
                 
             }
             else if (game_phase === 4) {
@@ -1753,7 +1768,9 @@ var gameLoop = function () {
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
         ctx.fillText('your turn: ' + your_turn, 840, 510);
         ctx.fillText('game phase: ' + game_phase, 840, 520);
-        ctx.fillText(fps + " fps", 840, 540);
+
+
+        ctx.fillText(Math.round(fps) + " fps", 840, 540);
 
 
     }
