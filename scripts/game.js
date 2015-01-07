@@ -1451,6 +1451,8 @@ var gameLoop = function () {
 
     if (mouse_button_down && mouse_state === 0)
         mouse_state = 1;
+    else if (mouse_state === 1)
+        mouse_state = 2;
         
 
     if (state === 0) {
@@ -1660,10 +1662,6 @@ var gameLoop = function () {
             page_handler.board.draw();
 
         }
-
-        //disable unhandled click
-        if (mouse_state === 1)
-            mouse_state = 2;
         
         //draw animation in queue
         for (var i = 0; i < page_handler.animations.length; i++) {
@@ -1675,22 +1673,21 @@ var gameLoop = function () {
                 i--;
             }
         }
-        
+
+        var delta = (new Date().getTime() - lastRun) / 1000;
+        lastRun = new Date().getTime();
+        fps = 1 / delta;
 
         //TODO DEL temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
         ctx.fillText('your turn: ' + your_turn, 840, 510);
         ctx.fillText('game phase: ' + game_phase, 840, 520);
+        ctx.fillText(fps + " fps", 840, 540);
 
 
     }
 
-    var delta = (new Date().getTime() - lastRun) / 1000;
-    lastRun = new Date().getTime();
-    fps = 1 / delta;
 
-    ctx.font = "normal 16pt Arial";
-    ctx.fillText(fps + " fps", 820, 550);
 
     requestAnimFrame(gameLoop);
 }
