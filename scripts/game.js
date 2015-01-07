@@ -45,6 +45,10 @@ var mouse_state = 0; /* 0 - standby
 var player = null;
 var opponent = null;
 
+//fps counter
+var fps = 0;
+var lastRun;
+
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
 
@@ -1439,6 +1443,12 @@ var gameLoop = function () {
 
     Clear();
 
+    if (!lastRun) {
+        lastRun = new Date().getTime();
+        requestAnimFrame(gameLoop);
+        return;
+    }
+
     if (mouse_button_down && mouse_state === 0)
         mouse_state = 1;
         
@@ -1674,6 +1684,13 @@ var gameLoop = function () {
 
 
     }
+
+    var delta = (new Date().getTime() - lastRun) / 1000;
+    lastRun = new Date().getTime();
+    fps = 1 / delta;
+
+    ctx.font = "normal 16pt Arial";
+    ctx.fillText(fps + " fps", 820, 550);
 
     requestAnimFrame(gameLoop);
 }
