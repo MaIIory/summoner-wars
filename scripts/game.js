@@ -1593,15 +1593,14 @@ var gameLoop = function () {
                 page_handler.board.drawAndHandleAvailMoves(); //NOTOK
 
                 
-
                 page_handler.board.checkMouseActivity(); //OK
                 page_handler.checkHover(); //OK
                 page_handler.checkMouseAction(); //OK
 
-
                 page_handler.draw(); //OK
+                page_handler.board.drawPreviousMoves(); //OK
                 page_handler.board.draw(); //OK
-                page_handler.board.drawPreviousMoves(); //OK - should be moved at the end
+                
 
             }
             else if (game_phase === 4) {
