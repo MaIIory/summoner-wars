@@ -951,7 +951,7 @@ var PlaygroundHandler = function () {
 
         }
 
-        that.drawAndHandleAvailMoves = function () {
+        that.handleMoves = function () {
 
 
             var card_i = null;
@@ -1007,18 +1007,10 @@ var PlaygroundHandler = function () {
                                 }
                             }
 
-                            //highlight this tile if available
-                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
-                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
                             if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
                                 (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
                                 ((i != card_i) || (j != card_j)) &&
                                 (that.matrix[i][j] === null)) {
-
-                                //hover available tiles
-                                ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
-                                ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                                 //handle user input
                                 if (mouse_state === 1) {
@@ -1035,6 +1027,83 @@ var PlaygroundHandler = function () {
                                     mouse_state = 2;
                                     return;
                                 }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        that.drawAvailMoves = function () {
+
+
+            var card_i = null;
+            var card_j = null;
+
+            //get selected card coordinates
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected)) {
+                        card_i = i;
+                        card_j = j;
+                    }
+                }
+            }
+
+            //if there is no selected card break function
+            if ((card_i === null) || (card_j === null))
+                return;
+
+            //if draw in big picture is active break function
+            if (that.matrix[card_i][card_j].draw_big_picture)
+                return;
+
+            //if cards owner is not a player break function
+            if (that.matrix[card_i][card_j].owner != player.name)
+                return;
+
+            //draw available places
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //Wall cant moves 
+                    if (that.matrix[card_i][card_j].name != 'Wall' && that.matrix[card_i][card_j].name != 'Ice Wall') {
+
+
+                        if ((Math.abs(card_i - i) + Math.abs(card_j - j)) <= that.matrix[card_i][card_j].moves_left) {
+
+                            //check if there is no blocking card in row
+                            if ((Math.abs(card_j - j) === 2) && (that.matrix[i][j + ((card_j - j) / Math.abs(card_j - j))] != null)) {
+                                continue;
+                            }
+
+                            //check if there is no blocking card in column
+                            if ((Math.abs(card_i - i) === 2) && (that.matrix[i + ((card_i - i) / Math.abs(card_i - i))][j] != null)) {
+                                continue;
+                            }
+
+                            //check if there is no blocking card diagonally
+                            if ((Math.abs(Math.abs(card_i - i) === 1)) && (Math.abs(card_j - j) === 1)) {
+                                if ((that.matrix[card_i - (card_i - i)][card_j] != null) && (that.matrix[card_i][card_j - (card_j - j)] != null)) {
+                                    continue;
+                                }
+                            }
+
+                            //highlight this tile if available (soft green)
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                            if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                                (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
+                                ((i != card_i) || (j != card_j)) &&
+                                (that.matrix[i][j] === null)) {
+
+                                //hover available tile (green)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
                             }
                         }
 
@@ -1590,18 +1659,18 @@ var gameLoop = function () {
                 /* MOVE PHASE */
                 /* ========== */
 
-                page_handler.board.drawAndHandleAvailMoves(); //NOTOK
+                //logic layer should not run always
+                page_handler.board.handleMoves();
+                page_handler.board.checkMouseActivity();
+                page_handler.checkHover();
+                page_handler.checkMouseAction();
 
+                //render layer
+                page_handler.draw();
+                page_handler.board.drawPreviousMoves();
+                page_handler.board.drawAvailMoves();
+                page_handler.board.draw();
                 
-                page_handler.board.checkMouseActivity(); //OK
-                page_handler.checkHover(); //OK
-                page_handler.checkMouseAction(); //OK
-
-                page_handler.draw(); //OK
-                page_handler.board.drawPreviousMoves(); //OK
-                page_handler.board.draw(); //OK
-                
-
             }
             else if (game_phase === 4) {
                 /* ============ */
