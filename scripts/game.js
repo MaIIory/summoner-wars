@@ -21,6 +21,7 @@ var state = 0; /* 0 - main menu
                   2 - waiting for other players 
                   3 - game in progress */
 
+//game phase indicators
 var game_phase = 3; /* 0 - draw phase
                        1 - summon phase
                        2 - event phase
@@ -49,6 +50,8 @@ var opponent = null;
 var fps = 0;
 var lastRun;
 
+//gameLoop data
+
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
 
@@ -60,7 +63,7 @@ window.requestAnimFrame = (function () {
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
         function (/* function */ callback, /* DOMElement */ element) {
-            window.setTimeout(callback, 1000 / 50);
+            window.setTimeout(callback, 1000 / 200);
         };
 })();
 
