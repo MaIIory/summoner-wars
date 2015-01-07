@@ -83,7 +83,7 @@ canvas.addEventListener('mousedown', function (evt) {
 
 canvas.addEventListener('mouseup', function (evt) {
     mouse_button_down = false;
-    mouse_state = 0;
+    //mouse_state = 0;
 }, false);
 
 socket.on('start_play', function (data) {
@@ -1022,8 +1022,6 @@ var PlaygroundHandler = function () {
                                 //handle user input
                                 if (mouse_state === 1) {
 
-                                    ctx.fillText("should not be here", 840, 560);
-
                                     //send move card event
                                     var dest_x = null;
                                     var dest_y = null;
@@ -1538,6 +1536,8 @@ var gameLoop = function () {
         mouse_state = 1;
     else if (mouse_state === 1)
         mouse_state = 2;
+    else if (mouse_state === 2 && !mouse_button_down)
+        mouse_state = 0;
         
 
     if (state === 0) {
