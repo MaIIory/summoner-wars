@@ -1356,8 +1356,6 @@ var PlaygroundHandler = function () {
         if (that.draw_big_picture)
             return;
 
-
-
         //check if phase stepping is requested
         if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
 
@@ -1592,16 +1590,18 @@ var gameLoop = function () {
                 /* MOVE PHASE */
                 /* ========== */
 
-                page_handler.board.drawAndHandleAvailMoves();
-                page_handler.board.drawPreviousMoves();
+                page_handler.board.drawAndHandleAvailMoves(); //NOTOK
 
-                page_handler.board.checkMouseActivity();
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
+                
 
-                page_handler.draw();
+                page_handler.board.checkMouseActivity(); //OK
+                page_handler.checkHover(); //OK
+                page_handler.checkMouseAction(); //OK
 
-                page_handler.board.draw();
+
+                page_handler.draw(); //OK
+                page_handler.board.draw(); //OK
+                page_handler.board.drawPreviousMoves(); //OK - should be moved at the end
 
             }
             else if (game_phase === 4) {
