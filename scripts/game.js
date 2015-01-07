@@ -48,6 +48,7 @@ var opponent = null;
 
 //fps counter
 var fps = 0;
+var fps_sum = [];
 var lastRun;
 
 //gameLoop data
@@ -1510,6 +1511,15 @@ var rotate180 = function (x, y) {
     return [c_x - (x - c_x) - 1, c_y - (y - c_y) - 1]
 }
 
+
+function srednia(tablica) {
+    var suma = 0;
+    for (i = 0; i < tablica.length; i++) {
+        suma += tablica[i];
+    }
+    return (suma / i);
+}
+
 /************************Main game loop************************/
 //-----------------------------------------------------------//
 var gameLoop = function () {
@@ -1763,6 +1773,7 @@ var gameLoop = function () {
         var delta = (new Date().getTime() - lastRun) / 1000;
         lastRun = new Date().getTime();
         fps = 1 / delta;
+        fps_sum.push(fps);
 
         //TODO DEL temporary printouts
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
@@ -1770,7 +1781,7 @@ var gameLoop = function () {
         ctx.fillText('game phase: ' + game_phase, 840, 520);
 
 
-        ctx.fillText(Math.round(fps) + " fps", 840, 540);
+        ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
 
 
     }
