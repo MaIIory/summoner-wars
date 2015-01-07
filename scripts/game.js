@@ -1683,6 +1683,8 @@ var gameLoop = function () {
                 while (lag >= MS_PER_UPDATE)
                 {
 
+                    ctx.fillText("INNNNN", 840, 560);
+
                     //logic layer should not run always
                     page_handler.board.handleMoves();
                     page_handler.board.checkMouseActivity();
