@@ -54,7 +54,7 @@ var lastRun;
 //gameLoop data
 var previous = Date.now();
 var lag = 0.0;
-var MS_PER_UPDATE = 5;
+var MS_PER_UPDATE = 10;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
