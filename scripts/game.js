@@ -1506,6 +1506,7 @@ var Clear = function () {
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
     ctx.fillText('mouse state: ' + mouse_state, 50, 110);
+    ctx.fillText('mouse used: ' + mouse_used, 50, 120);
 
 }
 
