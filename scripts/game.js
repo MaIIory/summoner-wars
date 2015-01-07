@@ -54,7 +54,7 @@ var lastRun;
 //gameLoop data
 var previous = Date.now();
 var lag = 0.0;
-var MS_PER_UPDATE = 10;
+var MS_PER_UPDATE = 8;
 
 /*************************DEFINE EVENTS*************************/
 //-----------------------------------------------------------//
@@ -67,7 +67,7 @@ window.requestAnimFrame = (function () {
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
         function (/* function */ callback, /* DOMElement */ element) {
-            window.setTimeout(callback, 1000 / 300);
+            window.setTimeout(callback, 1000 / 50);
         };
 })();
 
