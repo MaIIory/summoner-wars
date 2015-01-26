@@ -10,9 +10,10 @@
 var express = require('express');
 var app = express();
 
-var io = require('socket.io').listen(app);
-var port = process.env.PORT || 8000;
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
 
+var port = process.env.PORT || 8000;
 app.listen(port);
 
 app.use(express.static(__dirname + "/"));
