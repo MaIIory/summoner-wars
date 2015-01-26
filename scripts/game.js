@@ -745,6 +745,25 @@ var PlaygroundHandler = function () {
 
         }
 
+        that.handleDyingCard = function () {
+
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+                    if (that.matrix[i][j] != null && that.matrix[i][j].dying) {
+
+                        that.matrix[i][j].cnt++;
+                        if (that.matrix[i][j].cnt > 100)
+                            that.matrix[i][j].alpha -= 0.005;
+
+                        if (that.matrix[i][j].alpha <= 0) {
+                            that.matrix[i][j] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+
         that.draw = function () {
 
             ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
@@ -806,21 +825,6 @@ var PlaygroundHandler = function () {
                                 ctx.drawImage(parent.image, 0, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                             else
                                 ctx.drawImage(parent.image, 130, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-
-                        }
-
-                        //handles dying cards
-                        if (that.matrix[i][j].dying) {
-
-                            that.matrix[i][j].cnt++;
-                            if (that.matrix[i][j].cnt > 130)
-                                that.matrix[i][j].alpha -= 0.01;
-                            ctx.restore();
-
-                            if (that.matrix[i][j].alpha <= 0) {
-                                that.matrix[i][j] = null;
-                                continue;
-                            }
 
                         }
                     }
