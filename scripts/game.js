@@ -1308,7 +1308,7 @@ var PlaygroundHandler = function () {
             that.cnt++;
 
             if (that.cnt > 110) {
-                that.alpha -= 0.01;
+                that.alpha -= 0.001;
 
                 //alpha must not have negative value
                 if (that.alpha < 0)
@@ -1790,7 +1790,7 @@ var gameLoop = function () {
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
-                        //page_handler.animations[i].handle();
+                        page_handler.animations[i].handle();
                     }
 
                     lag -= MS_PER_UPDATE;
