@@ -14,7 +14,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
 var port = process.env.PORT || 8000;
-app.listen(port);
+server.listen(port);
 
 app.use(express.static(__dirname + "/"));
 
