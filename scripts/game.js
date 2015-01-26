@@ -745,7 +745,7 @@ var PlaygroundHandler = function () {
 
         }
 
-        that.handleDyingCard = function () {
+        that.handleDyingCards = function () {
 
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -791,7 +791,6 @@ var PlaygroundHandler = function () {
                             $("#dialog").text("Error: Card owner not found!");
                             $('#dialog').dialog('open');
                         }
-
 
                         //draw wounds on board
                         if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
@@ -1756,6 +1755,7 @@ var gameLoop = function () {
                     ite2 += 1;
 
                     //logic layer should not run always
+                    page_handler.board.handleDyingCards();
                     page_handler.board.handleMoves();
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
@@ -1794,6 +1794,7 @@ var gameLoop = function () {
                     ite2 += 1;
 
                     //Phase handler handling
+                    page_handler.board.handleDyingCards();
                     page_handler.board.handleAttacks();
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
