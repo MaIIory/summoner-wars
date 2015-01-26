@@ -1137,6 +1137,16 @@ var PlaygroundHandler = function () {
 
         that.handleAttacks = function () {
              
+            //reset in_range indicator
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if (that.matrix[i][j] != null)
+                        that.matrix[i][j].in_range = false;
+
+                }
+            }
+
             var card_i = null;
             var card_j = null;
 
@@ -1177,9 +1187,6 @@ var PlaygroundHandler = function () {
 
                     //check if card is not dying
                     if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j)) && ((!that.matrix[i][j].dying))) {
-
-                        //indicator if this card may be attacked
-                        that.matrix[i][j].in_range = false;
 
                         //check if card is in horizontal range
                         if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
