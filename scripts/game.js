@@ -826,6 +826,11 @@ var PlaygroundHandler = function () {
                                 ctx.drawImage(parent.image, 130, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                         }
+
+                        //handles dying cards
+                        if (that.matrix[i][j].dying) {
+                            ctx.restore();
+                        }
                     }
                 }
 
