@@ -1308,7 +1308,9 @@ var PlaygroundHandler = function () {
             that.cnt++;
 
             if (that.cnt > 110) {
-                that.alpha -= 0.001;
+                that.alpha -= 0.01;
+
+                //alpha must not have negative value
                 if (that.alpha < 0)
                     that.alpha = 0;
             }
