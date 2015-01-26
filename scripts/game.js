@@ -1303,6 +1303,15 @@ var PlaygroundHandler = function () {
        b = typeof b !== 'undefined' ? b : 'default_b';
        */
 
+        that.handle() = function () {
+
+            that.cnt++;
+
+            if (that.cnt > 110)
+                that.alpha -= 0.001;
+
+        }
+
         that.draw = function () {
 
             ctx.save();
@@ -1403,10 +1412,7 @@ var PlaygroundHandler = function () {
                 ctx.restore(); //load stored context settings
             }
 
-            that.cnt++;
 
-            if (that.cnt > 110)
-                that.alpha -= 0.01;
             ctx.restore();
 
         }
@@ -1739,6 +1745,11 @@ var gameLoop = function () {
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
 
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
                     lag -= MS_PER_UPDATE;
                 }
 
@@ -1771,6 +1782,11 @@ var gameLoop = function () {
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
 
                     lag -= MS_PER_UPDATE;
                 }
