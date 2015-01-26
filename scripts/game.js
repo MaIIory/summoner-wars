@@ -1315,7 +1315,8 @@ var PlaygroundHandler = function () {
         that.draw = function () {
 
             ctx.save();
-            ctx.globalAlpha = that.alpha;
+            //ctx.globalAlpha = that.alpha;
+            ctx.globalAlpha = 1;
 
             if (that.type === 0)
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 350, 100, 337, 334, 350, 100);
