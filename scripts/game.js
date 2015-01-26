@@ -1786,7 +1786,7 @@ var gameLoop = function () {
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
-                        page_handler.animations[i].handle();
+                        //page_handler.animations[i].handle();
                     }
 
                     lag -= MS_PER_UPDATE;
