@@ -8,12 +8,12 @@
 
 
 var express = require('express');
-var app = express.createServer();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var app = express();
+
+var io = require('socket.io').listen(app);
 var port = process.env.PORT || 8000;
 
-server.listen(port);
+app.listen(port);
 
 app.use(express.static(__dirname + "/"));
 
