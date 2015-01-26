@@ -255,7 +255,6 @@ var rebuildRoomTable = function (rooms) {
                     e = e || window.event;
                     room_name = (e.target || e.srcElement).parentNode.parentNode.id;
 
-
                     socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
 
                 };
@@ -348,19 +347,6 @@ var setEventHandlers = function () {
     });
 
 }
-
-/* DZIALA 
-$.get("/decks/tundra_orcs.txt", function (data, status) {
-    //alert("Data: " + data[0] + "\nStatus: " + status);
-});
-*/
-
-/*
-        $.getScript('cos.js', function () {
-
-        }, true);
-        
-        */
 
 
 function sleep(milliseconds) {

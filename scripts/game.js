@@ -217,7 +217,8 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     //atack phase data
     that.lives = lives;
     that.wounds = 0; //received wounds
-    that.attacked = false; //indicate if card already attacked in this turn
+    that.attacked = false; //indicates if card already attacked in this turn
+    that.in_range = false; //indicates if this card may be attacked (for the drawing purpose)
     /* range of card attacks
        event cards has range 0, so wall cant attacks */
     that.range = range;
@@ -225,6 +226,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.dying = false; //indicator if card is going to die
     that.alpha = 1; //when card is dying alpha should be decremented
     that.cnt = 0; //for delay during dying
+
 
     that.draw = function (image) {
 
@@ -864,7 +866,6 @@ var PlaygroundHandler = function () {
 
         that.drawPreviousMoves = function () {
 
-            //TODO This function should be optimized - draw methods should be closed in one internal method
             /* selected card moves path should be drawn at the
             end in order to show whole path */
             card_selected = null; //indidcate if any card is selected
@@ -1134,7 +1135,7 @@ var PlaygroundHandler = function () {
             }
         }
 
-        that.drawAndHandleAvailAttacks = function () {
+        that.handleAttacks = function () {
              
             var card_i = null;
             var card_j = null;
@@ -1174,20 +1175,21 @@ var PlaygroundHandler = function () {
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
 
+                    //check if card is not dying
                     if ((that.matrix[i][j] != null) && ((card_i != i) || (card_j != j)) && ((!that.matrix[i][j].dying))) {
 
                         //indicator if this card may be attacked
-                        var attack_available = false;
+                        that.matrix[i][j].in_range = false;
 
                         //check if card is in horizontal range
                         if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
 
-                            attack_available = true;
+                            that.matrix[i][j].in_range = true;
 
                             //check horizontal blocking card
                             for (var k = 1; k < Math.abs(card_i - i) ; k++) {
                                 if (that.matrix[card_i - (k * ((card_i - i) / (card_i - i)))][j] != null) {
-                                    attack_available = false;
+                                    that.matrix[i][j].in_range = false;
                                 }
                             }
                         }
@@ -1195,27 +1197,18 @@ var PlaygroundHandler = function () {
                         //check if card is in vertical range
                         if (((Math.abs(card_j - j) <= that.matrix[card_i][card_j].range)) && (card_i === i)) {
 
-                            attack_available = true;
+                            that.matrix[i][j].in_range = true;
 
                             //check horizontal blocking card
                             for (var k = 1; k < Math.abs(card_j - j) ; k++) {
                                 if (that.matrix[i][card_j - (k * ((card_j - j) / (card_j - j)))] != null) {
-                                    attack_available = false;
+                                    that.matrix[i][j].in_range = false;
                                 }
                             }
                         }
 
-                        if (!attack_available)
+                        if (!that.matrix[i][j].in_range)
                             continue;
-
-
-                        //highlight this tile if attack available (different color for owners card)
-                        if (that.matrix[i][j].owner === player_login)
-                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
-                            //ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-                        else
-                            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
-                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                         if (mouse_state === 1) {
 
@@ -1250,6 +1243,30 @@ var PlaygroundHandler = function () {
                 }
             }
         }
+
+        that.drawAvailAttacks = function () {
+
+            //draw available attacks
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if ((that.matrix[i][j] != null) && that.matrix[i][j].in_range) {
+
+                        if (that.matrix[i][j].owner === player_login)
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            //ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                        else
+                            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                    }
+
+                }
+            }
+        }
+
+
+
     }
 
     this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
@@ -1732,16 +1749,22 @@ var gameLoop = function () {
                 /* ATTACK PHASE */
                 /* ============ */
 
+
+
                 //Phase handler handling
+                page_handler.board.handleAttacks();
+                page_handler.board.checkMouseActivity();
                 page_handler.checkHover();
                 page_handler.checkMouseAction();
-                page_handler.draw();
-
+                
+                
                 //Board handling
+                page_handler.draw();
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.draw();
-                page_handler.board.drawAndHandleAvailAttacks();
-                page_handler.board.checkMouseActivity();
+                page_handler.board.drawAvailAttacks();
+                
+
 
             } else if (game_phase === 5) {
                 /* ================= */
