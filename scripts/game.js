@@ -1303,20 +1303,22 @@ var PlaygroundHandler = function () {
        b = typeof b !== 'undefined' ? b : 'default_b';
        */
 
-        that.handle() = function () {
+        that.handle = function () {
 
             that.cnt++;
 
-            if (that.cnt > 110)
+            if (that.cnt > 110) {
                 that.alpha -= 0.001;
+                if (that.alpha < 0)
+                    that.alpha = 0;
+            }
 
         }
 
         that.draw = function () {
 
             ctx.save();
-            //ctx.globalAlpha = that.alpha;
-            ctx.globalAlpha = 1;
+            ctx.globalAlpha = that.alpha;
 
             if (that.type === 0)
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 350, 100, 337, 334, 350, 100);
