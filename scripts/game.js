@@ -1303,6 +1303,44 @@ var PlaygroundHandler = function () {
        b = typeof b !== 'undefined' ? b : 'default_b';
        */
 
+        if (that.type === 2) {
+
+            that.attacking_card_x = null;
+            that.attacking_card_y = null;
+
+            that.hitted_card_x = null;
+            that.hitted_card_y = null;
+
+            for (var i = 0; i < parent.board.matrix.length; i++) {
+                for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                    if (parent.board.matrix[i][j] != null) {
+
+                        if (parent.board.matrix[i][j].id === that.attacking_card_id) {
+                            that.attacking_card_x = i;
+                            that.attacking_card_y = j;
+                        }
+
+                        if (parent.board.matrix[i][j].id === that.hitted_card_id) {
+                            that.hitted_card_x = i;
+                            that.hitted_card_y = j;
+                        }
+
+                    }
+                }
+            }
+
+            //TODO remove this after tests
+            if (that.attacking_card_x === null ||
+                that.attacking_card_y === null ||
+                that.hitted_card_x === null ||
+                that.hitted_card_y === null) {
+
+                alert("Blad 5007");
+            }
+
+        }
+
         that.handle = function () {
 
             that.cnt++;
@@ -1333,45 +1371,14 @@ var PlaygroundHandler = function () {
             }
             else if (that.type === 2) {
 
-
-                var attacking_card_x = null;
-                var attacking_card_y = null;
-
-                var hitted_card_x = null;
-                var hitted_card_y = null;
-
-                for (var i = 0; i < parent.board.matrix.length; i++) {
-                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
-
-                        if (parent.board.matrix[i][j] != null) {
-
-                            if (parent.board.matrix[i][j].id === that.attacking_card_id) {
-                                attacking_card_x = i;
-                                attacking_card_y = j;
-                            }
-
-                            if (parent.board.matrix[i][j].id === that.hitted_card_id) {
-                                hitted_card_x = i;
-                                hitted_card_y = j;
-                            }
-
-                        }
-                    }
-                }
-
-                //TODO remove this after tests
-                if (attacking_card_x === null || attacking_card_y === null || hitted_card_x === null || hitted_card_y === null) {
-                    alert("Blad 5007");
-                }
-
                 ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-                ctx.fillRect(parent.board.s_x + (attacking_card_y * parent.board.square_w), parent.board.s_y + (attacking_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                ctx.fillRect(parent.board.s_x + (that.attacking_card_y * parent.board.square_w), parent.board.s_y + (that.attacking_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
-                ctx.fillRect(parent.board.s_x + (hitted_card_y * parent.board.square_w), parent.board.s_y + (hitted_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                ctx.fillRect(parent.board.s_x + (that.hitted_card_y * parent.board.square_w), parent.board.s_y + (that.hitted_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
 
                 //one of the above dimensions should be equal to zero
-                var ver_diff = hitted_card_x - attacking_card_x; //horizontal difference
-                var hor_diff = hitted_card_y - attacking_card_y; //vertical difference
+                var ver_diff = that.hitted_card_x - that.attacking_card_x; //horizontal difference
+                var hor_diff = that.hitted_card_y - that.attacking_card_y; //vertical difference
 
                 //angle indicates how much plan should be rotated
                 var angle = 0;
@@ -1405,7 +1412,7 @@ var PlaygroundHandler = function () {
                 }
 
                 ctx.save(); //store context coordination settings
-                ctx.translate(parent.board.s_x + (attacking_card_y * parent.board.square_w) + (parent.board.square_w / 2), parent.board.s_y + (attacking_card_x * parent.board.square_h) + (parent.board.square_h / 2)); //change rotation point to the middle of the tank
+                ctx.translate(parent.board.s_x + (that.attacking_card_y * parent.board.square_w) + (parent.board.square_w / 2), parent.board.s_y + (that.attacking_card_x * parent.board.square_h) + (parent.board.square_h / 2)); //change rotation point to the middle of the tank
                 ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
 
                 if (hor_diff != 0)
