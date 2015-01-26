@@ -1856,10 +1856,31 @@ var gameLoop = function () {
 
         } else {
 
-            page_handler.board.drawPreviousMoves();
+            var current = Date.now();
+            var elapsed = current - previous;
+            previous = current;
+            lag += elapsed;
 
+            ite1 += 1;
+
+            while (lag >= MS_PER_UPDATE) {
+
+                ite2 += 1;
+
+                //Phase handler handling
+                page_handler.board.handleDyingCards();
+                page_handler.board.checkMouseActivity();
+
+                //handle animation in queue
+                for (var i = 0; i < page_handler.animations.length; i++) {
+                    page_handler.animations[i].handle();
+                }
+
+                lag -= MS_PER_UPDATE;
+            }
+
+            page_handler.board.drawPreviousMoves();
             page_handler.draw();
-            page_handler.board.checkMouseActivity();
             page_handler.board.draw();
 
         }
