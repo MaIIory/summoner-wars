@@ -505,7 +505,7 @@ var PlaygroundHandler = function () {
 
     //parent pointer for inner classes
     var parent = this;
-    
+
     //Inner classes
     var Board = function () {
 
@@ -712,7 +712,7 @@ var PlaygroundHandler = function () {
                                 that.matrix[i][j].selected = true;
                                 new_card_selected = true;
                             }
-                            //check if player click eyeglass (20x20px in the middle of the card)
+                                //check if player click eyeglass (20x20px in the middle of the card)
                             else if (that.matrix[i][j].selected &&
                                 (mouse_state === 1) &&
                                 (mouse_x > ((that.s_x + (j * that.square_w) + (that.square_w / 2))) - 15) &&
@@ -1136,7 +1136,7 @@ var PlaygroundHandler = function () {
         }
 
         that.handleAttacks = function () {
-             
+
             //reset in_range indicator
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -1583,7 +1583,7 @@ var gameLoop = function () {
         mouse_used = true;
         mouse_state = 0;
     }
-        
+
 
     if (state === 0) {
         /* ========= */
@@ -1606,7 +1606,7 @@ var gameLoop = function () {
     }
 
     else if (state === 1) {
-        /* ================== */ 
+        /* ================== */
         /* faction selection */
         /* ================== */
         page_handler.checkHover();
@@ -1638,7 +1638,7 @@ var gameLoop = function () {
             //change page handler
             page_handler = new WaitingMenu();
 
-        // << select faction button
+            // << select faction button
         } else if (result === 2) {
 
             if (player.selected_faction === 0)
@@ -1646,7 +1646,7 @@ var gameLoop = function () {
             else
                 player.selected_faction--;
 
-        // select faction button >>
+            // select faction button >>
         } else if (result === 3) {
 
             if (player.selected_faction === 1)
@@ -1729,8 +1729,7 @@ var gameLoop = function () {
 
                 ite1 += 1;
 
-                while (lag >= MS_PER_UPDATE)
-                {
+                while (lag >= MS_PER_UPDATE) {
 
                     ite2 += 1;
 
@@ -1749,28 +1748,39 @@ var gameLoop = function () {
                 page_handler.board.drawAvailMoves();
                 page_handler.board.draw();
 
-                
+
             }
             else if (game_phase === 4) {
                 /* ============ */
                 /* ATTACK PHASE */
                 /* ============ */
 
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
 
+                ite1 += 1;
 
-                //Phase handler handling
-                page_handler.board.handleAttacks();
-                page_handler.board.checkMouseActivity();
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                
-                
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //Phase handler handling
+                    page_handler.board.handleAttacks();
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+
+                    lag -= MS_PER_UPDATE;
+                }
+
                 //Board handling
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.draw();
                 page_handler.board.drawAvailAttacks();
-                
+
 
 
             } else if (game_phase === 5) {
@@ -1815,7 +1825,7 @@ var gameLoop = function () {
             page_handler.board.draw();
 
         }
-        
+
         //draw animation in queue
         for (var i = 0; i < page_handler.animations.length; i++) {
 
