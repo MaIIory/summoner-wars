@@ -514,8 +514,8 @@ var PlaygroundHandler = function () {
     that.btn_surrender_wh = 60;
     that.btn_surrender_frame = 0; //0 - active, 1 - hovered
     that.btn_surrender_hover = false;
-    that.btn_surrender_x = 500;
-    that.btn_surrender_y = 500;
+    that.btn_surrender_x = 835;
+    that.btn_surrender_y = 555;
     that.btn_surrender_src_y = 240;
     that.btn_surrender_padding = 5;
 
