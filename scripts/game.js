@@ -1318,7 +1318,7 @@ var PlaygroundHandler = function () {
         that.y = 32;
         that.start_pos = 1010; //start position (closed)
         that.end_pos = 835;
-        that.current_pos = start_pos;
+        that.current_pos = that.start_pos;
 
         //hand state
         that.state = 0; /* 0 - closed,
@@ -1326,7 +1326,7 @@ var PlaygroundHandler = function () {
                            2 - open,
                            3 - closing */
 
-        /*
+        
         that.handle_animation = function () {
 
             if (that.state === 1)
@@ -1343,9 +1343,9 @@ var PlaygroundHandler = function () {
                 that.state = 0;
             }
         }
-        */
+        
 
-        /*
+        
         that.draw = function () {
 
             if (that.state != 0) {
@@ -1354,7 +1354,7 @@ var PlaygroundHandler = function () {
             }
 
         }
-        */
+        
 
     }
 
