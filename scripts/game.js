@@ -1478,10 +1478,10 @@ var PlaygroundHandler = function () {
             return;
 
         //check phase button hover
-        if ((mouse_x > that.btn_phase_x) &&
-            (mouse_x < that.btn_phase_x + that.btn_phase_wh) &&
-            (mouse_y > that.btn_phase_y) &&
-            (mouse_y < that.btn_phase_y + that.btn_phase_wh)) {
+        if ((mouse_x > that.btn_phase_x + 20) &&
+            (mouse_x < that.btn_phase_x + that.btn_phase_wh - 20) &&
+            (mouse_y > that.btn_phase_y + 20) &&
+            (mouse_y < that.btn_phase_y + that.btn_phase_wh - 20)) {
             that.btn_phase_frame = 2;
             that.btn_phase_hover = true;
         }
@@ -1533,9 +1533,6 @@ var PlaygroundHandler = function () {
             that.board.unselectAll();
 
             if (game_phase > 5) {
-                //emit apropriate event
-                //TODO ENDTUNR HANDLING
-                //socket.emit('end_turn', { room_name: room_name });
                 return;
             } else if (game_phase === 5) {
 
