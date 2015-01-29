@@ -1350,7 +1350,7 @@ var PlaygroundHandler = function () {
 
             if (that.state != 0) {
                 var current_w = that.start_pos - that.current_pos;
-                ctx.drawImage(that.image, that.sheet_src_x, that.sheet_src_y, current_w, that.hand_h, that.current_pos, that.y, current_w, that.hand_h);
+                ctx.drawImage(parent.image, that.sheet_src_x, that.sheet_src_y, current_w, that.hand_h, that.current_pos, that.y, current_w, that.hand_h);
             }
 
         }
@@ -1904,7 +1904,7 @@ var gameLoop = function () {
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.drawAvailMoves();
-                //page_handler.hand.draw();
+                page_handler.hand.draw();
                 page_handler.board.draw();
                 
 
@@ -1945,7 +1945,7 @@ var gameLoop = function () {
                 //Board handling
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
-                //page_handler.hand.draw();
+                page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailAttacks();
 
