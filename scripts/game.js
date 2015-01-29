@@ -511,12 +511,13 @@ var PlaygroundHandler = function () {
     that.btn_hand_padding = 10;
 
     //give-up button settings
-    that.btn_giveup_wh = 60;
-    that.btn_giveup_frame = 0; //0 - active, 1 - hovered
-    that.btn_giveup_hover = false;
-    that.btn_giveup_x = 500;
-    that.btn_giveup_y = 500;
-    that.btn_giveup_src_y = 240;
+    that.btn_surrender_wh = 60;
+    that.btn_surrender_frame = 0; //0 - active, 1 - hovered
+    that.btn_surrender_hover = false;
+    that.btn_surrender_x = 500;
+    that.btn_surrender_y = 500;
+    that.btn_surrender_src_y = 240;
+    that.btn_surrender_padding = 5;
 
     that.animations = [];
 
@@ -1492,7 +1493,7 @@ var PlaygroundHandler = function () {
             that.btn_phase_hover = false;
         }
 
-        //check hand button hover
+        //check 'show hand' button hover
         if ((mouse_x > that.btn_hand_x + that.btn_hand_padding) &&
             (mouse_x < that.btn_hand_x + that.btn_hand_wh - that.btn_hand_padding) &&
             (mouse_y > that.btn_hand_y + that.btn_hand_padding) &&
@@ -1505,7 +1506,18 @@ var PlaygroundHandler = function () {
             that.btn_hand_hover = false;
         }
 
-
+        //check 'surrender' button hover
+        if ((mouse_x > that.btn_surrender_x + that.btn_surrender_padding) &&
+            (mouse_x < that.btn_surrender_x + that.btn_surrender_wh - that.btn_surrender_padding) &&
+            (mouse_y > that.btn_surrender_y + that.btn_surrender_padding) &&
+            (mouse_y < that.btn_surrender_y + that.btn_surrender_wh - that.btn_surrender_padding)) {
+            that.btn_hand_frame = 1;
+            that.btn_hand_hover = true;
+        }
+        else {
+            that.btn_hand_frame = 0;
+            that.btn_hand_hover = false;
+        }
 
     }
 
@@ -1538,7 +1550,11 @@ var PlaygroundHandler = function () {
 
         //draw 'show hand' button
         ctx.drawImage(that.image, that.btn_hand_wh * that.btn_hand_frame, that.btn_hand_src_y, that.btn_hand_wh, that.btn_hand_wh, that.btn_hand_x, that.btn_hand_y, that.btn_hand_wh, that.btn_hand_wh);
+
+        //draw 'surrender' button
+        ctx.drawImage(that.image, that.btn_surrender_wh * that.btn_surrender_frame, that.btn_surrender_src_y, that.btn_surrender_wh, that.btn_surrender_wh, that.btn_surrender_x, that.btn_surrender_y, that.btn_surrender_wh, that.btn_surrender_wh);
     }
+
 
     that.checkMouseAction = function () {
 
