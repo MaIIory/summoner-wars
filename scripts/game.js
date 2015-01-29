@@ -506,7 +506,7 @@ var PlaygroundHandler = function () {
     that.btn_hand_frame = 0; // 0 - active, 1 - hovered
     that.btn_hand_hover = false;
     that.btn_hand_x = 895;
-    that.btn_hand_y = 535;
+    that.btn_hand_y = 540;
     that.btn_hand_src_y = 150;
     that.btn_hand_padding = 10;
 
@@ -1315,9 +1315,9 @@ var PlaygroundHandler = function () {
         that.hand_h = 500;
 
         //coordiation settings
-        that.y = 100;
-        that.start_pos = 800; //start position (closed)
-        that.end_pos = 600;
+        that.y = 32;
+        that.start_pos = 1010; //start position (closed)
+        that.end_pos = 835;
         that.current_pos = start_pos;
 
         //hand state
@@ -1342,6 +1342,15 @@ var PlaygroundHandler = function () {
                 that.current_pos = that.start_pos;
                 that.state = 0;
             }
+        }
+
+        that.draw = function () {
+
+            if (that.state != 0) {
+                var current_w = that.start_pos - that.current_pos;
+                ctx.drawImage(that.image, that.sheet_src_x, that.sheet_src_y, current_w, that.hand_h, that.current_pos, that.y, current_w, that.hand_h);
+            }
+
         }
 
     }
@@ -1501,7 +1510,11 @@ var PlaygroundHandler = function () {
 
     }
 
+    //board initialization
     that.board = new Board();
+
+    //hand initialization
+    that.hand = new Hand();
 
     //method definitions
     that.checkHover = function () {
