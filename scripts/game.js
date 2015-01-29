@@ -510,7 +510,7 @@ var PlaygroundHandler = function () {
     that.btn_hand_src_y = 150;
     that.btn_hand_padding = 10;
 
-    //give-up button settings
+    //surrender button settings
     that.btn_surrender_wh = 60;
     that.btn_surrender_frame = 0; //0 - active, 1 - hovered
     that.btn_surrender_hover = false;
@@ -1517,7 +1517,7 @@ var PlaygroundHandler = function () {
     that.board = new Board();
 
     //hand initialization
-    //that.hand = new Hand();
+    that.hand = new Hand();
 
     //method definitions
     that.checkHover = function () {
