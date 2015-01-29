@@ -514,8 +514,8 @@ var PlaygroundHandler = function () {
     that.btn_surrender_wh = 60;
     that.btn_surrender_frame = 0; //0 - active, 1 - hovered
     that.btn_surrender_hover = false;
-    that.btn_surrender_x = 835;
-    that.btn_surrender_y = 555;
+    that.btn_surrender_x = 850;
+    that.btn_surrender_y = 570;
     that.btn_surrender_src_y = 240;
     that.btn_surrender_padding = 5;
 
@@ -1329,8 +1329,8 @@ var PlaygroundHandler = function () {
 
         //image settings
         that.sheet_origin = 401; //indicates start 'y' point for animation graphics in the sheet
-        that.sheet_hor_arrows_origin = 501; //indicates start 'y' point for horizontal arrows
-        that.sheet_ver_arrows_origin = 841; //indicates start 'y' point for vertical arrows
+        that.sheet_hor_arrows_origin = 601; //indicates start 'y' point for horizontal arrows
+        that.sheet_ver_arrows_origin = 941; //indicates start 'y' point for vertical arrows
 
         that.attacking_card_id = attacking_card_id;
         that.hitted_card_id = hitted_card_id;
