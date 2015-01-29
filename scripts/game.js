@@ -1511,12 +1511,12 @@ var PlaygroundHandler = function () {
             (mouse_x < that.btn_surrender_x + that.btn_surrender_wh - that.btn_surrender_padding) &&
             (mouse_y > that.btn_surrender_y + that.btn_surrender_padding) &&
             (mouse_y < that.btn_surrender_y + that.btn_surrender_wh - that.btn_surrender_padding)) {
-            that.btn_hand_frame = 1;
-            that.btn_hand_hover = true;
+            that.btn_surrender_frame = 1;
+            that.btn_surrender_hover = true;
         }
         else {
-            that.btn_hand_frame = 0;
-            that.btn_hand_hover = false;
+            that.btn_surrender_frame = 0;
+            that.btn_surrender_hover = false;
         }
 
     }
