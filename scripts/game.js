@@ -499,14 +499,16 @@ var PlaygroundHandler = function () {
     that.btn_phase_x = 835;
     that.btn_phase_y = 605;
     that.btn_phase_src_y = 0;
+    that.btn_phase_padding = 20;
 
     //hand button settings
     that.btn_hand_wh = 90;
     that.btn_hand_frame = 0; // 0 - active, 1 - hovered
     that.btn_hand_hover = false;
-    that.btn_hand_x = 500;
-    that.btn_hand_y = 500;
+    that.btn_hand_x = 895;
+    that.btn_hand_y = 535;
     that.btn_hand_src_y = 150;
+    that.btn_hand_padding = 10;
 
     //give-up button settings
     that.btn_giveup_wh = 60;
@@ -1478,10 +1480,10 @@ var PlaygroundHandler = function () {
             return;
 
         //check phase button hover
-        if ((mouse_x > that.btn_phase_x + 20) &&
-            (mouse_x < that.btn_phase_x + that.btn_phase_wh - 20) &&
-            (mouse_y > that.btn_phase_y + 20) &&
-            (mouse_y < that.btn_phase_y + that.btn_phase_wh - 20)) {
+        if ((mouse_x > that.btn_phase_x + that.btn_phase_padding) &&
+            (mouse_x < that.btn_phase_x + that.btn_phase_wh - that.btn_phase_padding) &&
+            (mouse_y > that.btn_phase_y + that.btn_phase_padding) &&
+            (mouse_y < that.btn_phase_y + that.btn_phase_wh - that.btn_phase_padding)) {
             that.btn_phase_frame = 2;
             that.btn_phase_hover = true;
         }
@@ -1489,6 +1491,21 @@ var PlaygroundHandler = function () {
             that.btn_phase_frame = 1;
             that.btn_phase_hover = false;
         }
+
+        //check hand button hover
+        if ((mouse_x > that.btn_hand_x + that.btn_hand_padding) &&
+            (mouse_x < that.btn_hand_x + that.btn_hand_wh - that.btn_hand_padding) &&
+            (mouse_y > that.btn_hand_y + that.btn_hand_padding) &&
+            (mouse_y < that.btn_hand_y + that.btn_hand_wh - that.btn_hand_padding)) {
+            that.btn_hand_frame = 1;
+            that.btn_hand_hover = true;
+        }
+        else {
+            that.btn_hand_frame = 0;
+            that.btn_hand_hover = false;
+        }
+
+
 
     }
 
@@ -1518,6 +1535,9 @@ var PlaygroundHandler = function () {
 
         //draw end phase button
         ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_src_y, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
+
+        //draw 'show hand' button
+        ctx.drawImage(that.image, that.btn_hand_wh * that.btn_hand_frame, that.btn_hand_src_y, that.btn_hand_wh, that.btn_hand_wh, that.btn_hand_x, that.btn_hand_y, that.btn_hand_wh, that.btn_hand_wh);
     }
 
     that.checkMouseAction = function () {
@@ -1534,6 +1554,7 @@ var PlaygroundHandler = function () {
 
             if (game_phase > 5) {
                 return;
+
             } else if (game_phase === 5) {
 
                 if (player.faction.name != "TODO") {
@@ -1550,6 +1571,7 @@ var PlaygroundHandler = function () {
                     return;
                 }
             } else {
+                //BLAZE STEP HANDLING
 
                 //step game phase
                 game_phase += 1;
