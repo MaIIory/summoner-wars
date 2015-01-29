@@ -1645,7 +1645,9 @@ var PlaygroundHandler = function () {
             mouse_state = 2;
         }
 
+        /*
         if ((that.btn_hand_hover) === true && (mouse_state === 1)) {
+
             if (that.hand.state === 0)
                 that.hand.state = 1;
             else if (that.hand.state === 1)
@@ -1655,7 +1657,9 @@ var PlaygroundHandler = function () {
             else if (that.hand.state === 3)
                 that.hand.state = 1;
 
+            mouse_state = 2;
         }
+        */
 
     }
 }
