@@ -1904,7 +1904,7 @@ var gameLoop = function () {
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.drawAvailMoves();
-                page_handler.hand.draw();
+                //page_handler.hand.draw();
                 page_handler.board.draw();
                 
 
@@ -1945,7 +1945,7 @@ var gameLoop = function () {
                 //Board handling
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
-                page_handler.hand.draw();
+                //page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailAttacks();
 
