@@ -1326,7 +1326,7 @@ var PlaygroundHandler = function () {
                            2 - open,
                            3 - closing */
 
-
+        /*
         that.handle_animation = function () {
 
             if (that.state === 1)
@@ -1343,6 +1343,7 @@ var PlaygroundHandler = function () {
                 that.state = 0;
             }
         }
+        */
 
         /*
         that.draw = function () {
@@ -1516,7 +1517,7 @@ var PlaygroundHandler = function () {
     that.board = new Board();
 
     //hand initialization
-    that.hand = new Hand();
+    //that.hand = new Hand();
 
     //method definitions
     that.checkHover = function () {
