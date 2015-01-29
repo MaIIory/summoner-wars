@@ -1344,6 +1344,7 @@ var PlaygroundHandler = function () {
             }
         }
 
+        /*
         that.draw = function () {
 
             if (that.state != 0) {
@@ -1352,6 +1353,7 @@ var PlaygroundHandler = function () {
             }
 
         }
+        */
 
     }
 
@@ -1645,7 +1647,7 @@ var PlaygroundHandler = function () {
             mouse_state = 2;
         }
 
-        /*
+        
         if ((that.btn_hand_hover) === true && (mouse_state === 1)) {
 
             if (that.hand.state === 0)
@@ -1659,7 +1661,7 @@ var PlaygroundHandler = function () {
 
             mouse_state = 2;
         }
-        */
+        
 
     }
 }
