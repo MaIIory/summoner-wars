@@ -493,11 +493,28 @@ var PlaygroundHandler = function () {
     that.image.src = "/img/playground_handler.png";
 
     //phase button settings
-    that.btn_phase_wh = 200; //button width and height
+    that.btn_phase_wh = 150; //button width and height
     that.btn_phase_frame = 0; //0 - not active, 1 - active not hovered, 1 - active hovered
     that.btn_phase_hover = false;
-    that.btn_phase_x = 810;
-    that.btn_phase_y = 560;
+    that.btn_phase_x = 835;
+    that.btn_phase_y = 605;
+    that.btn_phase_src_y = 0;
+
+    //hand button settings
+    that.btn_hand_wh = 90;
+    that.btn_hand_frame = 0; // 0 - active, 1 - hovered
+    that.btn_hand_hover = false;
+    that.btn_hand_x = 500;
+    that.btn_hand_y = 500;
+    that.btn_hand_src_y = 150;
+
+    //give-up button settings
+    that.btn_giveup_wh = 60;
+    that.btn_giveup_frame = 0; //0 - active, 1 - hovered
+    that.btn_giveup_hover = false;
+    that.btn_giveup_x = 500;
+    that.btn_giveup_y = 500;
+    that.btn_giveup_src_y = 240;
 
     that.animations = [];
 
@@ -518,7 +535,7 @@ var PlaygroundHandler = function () {
         that.square_h = 85;
 
         //image settings
-        that.sheet_origin = 200; //indicates start 'y' point for board graphics in the parent sheet
+        that.sheet_origin = 300; //indicates start 'y' point for board graphics in the parent sheet
 
         //wounds data - small icons
         that.wounds_src_x = 18;
@@ -1284,6 +1301,18 @@ var PlaygroundHandler = function () {
 
     }
 
+    var Hand = function () {
+
+        var that = this;
+
+        //image settings
+        that.sheet_src_x = 450;
+        that.sheet_src_y = 0;
+        that.hand_w = 175;
+        that.hand_h = 500;
+
+    }
+
     this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
 
         /* types definitions:
@@ -1296,7 +1325,7 @@ var PlaygroundHandler = function () {
         that.type = type;
 
         //image settings
-        that.sheet_origin = 301; //indicates start 'y' point for animation graphics in the sheet
+        that.sheet_origin = 401; //indicates start 'y' point for animation graphics in the sheet
         that.sheet_hor_arrows_origin = 501; //indicates start 'y' point for horizontal arrows
         that.sheet_ver_arrows_origin = 841; //indicates start 'y' point for vertical arrows
 
@@ -1488,7 +1517,7 @@ var PlaygroundHandler = function () {
         ctx.restore();
 
         //draw end phase button
-        ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, 0, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
+        ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_src_y, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
     }
 
     that.checkMouseAction = function () {
