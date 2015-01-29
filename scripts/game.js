@@ -1327,7 +1327,7 @@ var PlaygroundHandler = function () {
                            3 - closing */
 
         
-        that.handle_animation = function () {
+        that.handleAnimation = function () {
 
             if (that.state === 1)
                 that.current_pos -= 2;
@@ -1890,6 +1890,7 @@ var gameLoop = function () {
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
@@ -1903,7 +1904,9 @@ var gameLoop = function () {
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
                 page_handler.board.drawAvailMoves();
+                page_handler.hand.draw();
                 page_handler.board.draw();
+                
 
 
             }
@@ -1929,6 +1932,7 @@ var gameLoop = function () {
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
@@ -1941,6 +1945,7 @@ var gameLoop = function () {
                 //Board handling
                 page_handler.draw();
                 page_handler.board.drawPreviousMoves();
+                page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailAttacks();
 
