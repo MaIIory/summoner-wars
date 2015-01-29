@@ -514,7 +514,7 @@ var PlaygroundHandler = function () {
     that.btn_surrender_wh = 60;
     that.btn_surrender_frame = 0; //0 - active, 1 - hovered
     that.btn_surrender_hover = false;
-    that.btn_surrender_x = 850;
+    that.btn_surrender_x = 845;
     that.btn_surrender_y = 570;
     that.btn_surrender_src_y = 240;
     that.btn_surrender_padding = 5;
@@ -1314,6 +1314,36 @@ var PlaygroundHandler = function () {
         that.hand_w = 175;
         that.hand_h = 500;
 
+        //coordiation settings
+        that.y = 100;
+        that.start_pos = 800; //start position (closed)
+        that.end_pos = 600;
+        that.current_pos = start_pos;
+
+        //hand state
+        that.state = 0; /* 0 - closed,
+                           1 - openning,
+                           2 - open,
+                           3 - closing */
+
+
+        that.handle_animation = function () {
+
+            if (that.state === 1)
+                that.current_pos -= 2;
+            else if (that.state === 3)
+                that.current_pos += 2;
+
+            if (that.current_pos <= that.end_pos) {
+                that.current_pos = that.end_pos;
+                that.state = 2;
+            }
+            else if (that.current_pos >= that.start_pos) {
+                that.current_pos = that.start_pos;
+                that.state = 0;
+            }
+        }
+
     }
 
     this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
@@ -1640,7 +1670,6 @@ var rotate180 = function (x, y) {
 
     return [c_x - (x - c_x) - 1, c_y - (y - c_y) - 1]
 }
-
 
 function srednia(tablica) {
     var suma = 0;
