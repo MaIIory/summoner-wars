@@ -1374,6 +1374,7 @@ var PlaygroundHandler = function () {
                 for (var i = 0; i < that.card_container.length; i++) {
 
                     if (that.card_container[i] != null) {
+                        /*
                         ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].board_w,
                             (2 * that.card_container[i].height) + (that.card_container[i].pos_y * that.card_container[i].board_h),
                             that.card_container[i].board_w,
@@ -1382,6 +1383,10 @@ var PlaygroundHandler = function () {
                             that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.card_container[i].gap_between_cards),
                             that.card_container[i].board_w,
                             that.card_container[i].board_h);
+                            */
+                        ctx.drawImage(parent.image, that.sheet_src_x, that.sheet_src_y, current_w, that.hand_h, 200, 20, current_w, that.hand_h);
+
+                        //check eyeglass draw and hover
                     }
                 }
             }
