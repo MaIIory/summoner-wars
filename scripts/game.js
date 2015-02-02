@@ -521,7 +521,9 @@ var PlaygroundHandler = function () {
 
     that.animations = [];
 
-    that.draw_big_picture = false; //indicates if any card is drawn in big picture - in this case page handler should not be active 
+    //draw in big picture indicator
+    that.draw_big_picture = false;            //indicates if any card from BOARD is drawn in big picture
+    that.draw_big_picture_from_hand = false;  //indicates if any card from HAND is drawn in big picture
 
     //parent pointer for inner classes
     var parent = this;
@@ -1314,8 +1316,12 @@ var PlaygroundHandler = function () {
         that.hand_w = 175;
         that.hand_h = 500;
 
-        //coordiation settings
+        //coordiation settings:
+
+        //Y attribute
         that.y = 32;
+
+        //X attributes
         that.start_pos = 1010; //start position (closed)
         that.end_pos = 835;
         that.current_pos = that.start_pos;
@@ -1326,8 +1332,26 @@ var PlaygroundHandler = function () {
                            2 - open,
                            3 - closing */
 
+        //card container settings
+        //that.card_container = [null,null,null,null,null];
+        that.card_container = [
+          new Card('Archer', 'pe1', 0, 0, that.player_name, 4, 1, 1),
+          new Card('Archer', 'pe2', 0, 0, that.player_name, 4, 1, 1),
+          new Card('Archer', 'pe3', 0, 0, that.player_name, 4, 1, 1),
+          new Card('Archer', 'pe4', 0, 0, that.player_name, 4, 1, 1),
+          new Card('Archer', 'pe5', 0, 0, that.player_name, 4, 1, 1)];
+        that.card_container_s_x = 35;
+        that.card_container_s_y = 40;
+        that.gap_between_cards = 15;
+
         
         that.handleAnimation = function () {
+
+            /* STATES:
+               0 - closed,
+               1 - openning,
+               2 - open,
+               3 - closing */
 
             if (that.state === 1)
                 that.current_pos -= 2;
@@ -1343,577 +1367,691 @@ var PlaygroundHandler = function () {
                 that.state = 0;
             }
         }
-        
-
-        
+          
         that.draw = function () {
 
             if (that.state != 0) {
+
+                //draw hand background
                 var current_w = that.start_pos - that.current_pos;
                 ctx.drawImage(parent.image, that.sheet_src_x, that.sheet_src_y, current_w, that.hand_h, that.current_pos, that.y, current_w, that.hand_h);
-            }
 
-        }
-        
+                //draw card container
+                for (var i = 0; i < that.card_container.length; i++) {
 
-    }
-
-    this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
-
-        /* types definitions:
-           0 - 'End Phase' animation: only 'type' argument required
-           1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
-           2 - 'arrows' animation: all arguments are required
-        */
-
-        var that = this;
-        that.type = type;
-
-        //image settings
-        that.sheet_origin = 401; //indicates start 'y' point for animation graphics in the sheet
-        that.sheet_hor_arrows_origin = 601; //indicates start 'y' point for horizontal arrows
-        that.sheet_ver_arrows_origin = 941; //indicates start 'y' point for vertical arrows
-
-        that.attacking_card_id = attacking_card_id;
-        that.hitted_card_id = hitted_card_id;
-
-        that.alpha = 1;
-        that.cnt = 0;
-
-        /* for education purpose
-           a = typeof a !== 'undefined' ? a : 42;
-       b = typeof b !== 'undefined' ? b : 'default_b';
-       */
-
-        if (that.type === 2) {
-
-            that.attacking_card_x = null;
-            that.attacking_card_y = null;
-
-            that.hitted_card_x = null;
-            that.hitted_card_y = null;
-
-            for (var i = 0; i < parent.board.matrix.length; i++) {
-                for (var j = 0; j < parent.board.matrix[i].length; j++) {
-
-                    if (parent.board.matrix[i][j] != null) {
-
-                        if (parent.board.matrix[i][j].id === that.attacking_card_id) {
-                            that.attacking_card_x = i;
-                            that.attacking_card_y = j;
-                        }
-
-                        if (parent.board.matrix[i][j].id === that.hitted_card_id) {
-                            that.hitted_card_x = i;
-                            that.hitted_card_y = j;
-                        }
-
+                    if(that.card_container[i] != null){
+                        ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].board_w,
+                            (2 * that.card_container[i].height) + (that.card_container[i].pos_y * that.card_container[i].board_h),
+                            that.card_container[i].board_w,
+                            that.card_container[i].board_h,
+                            that.current_pos + that.card_container_s_x,
+                            that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.card_container[i].gap_between_cards), 
+                            that.card_container[i].board_w, 
+                            that.card_container[i].board_h);
                     }
                 }
             }
 
-            //TODO remove this after tests
-            if (that.attacking_card_x === null ||
-                that.attacking_card_y === null ||
-                that.hitted_card_x === null ||
-                that.hitted_card_y === null) {
+        }
+        
+        that.checkHover = function () {
 
-                alert("Blad 5007");
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            //Performance maintanance
+            if(that.state === 0)
+                return;
+
+            if (mouse_x < that.current_pos)
+                return;
+
+            for (var i = 0; i < that.card_container.length; i++) {
+
+                if(that.card_container[i] != null){
+
+                    if((mouse_x > that.current_pos + that.card_container_s_x) &&
+                        (mouse_x < that.current_pos + that.card_container_s_x + that.card_container[i].board_w) &&
+                        (mouse_y > that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards)) &&
+                        (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h) + (i * that.gap_between_cards)){
+
+                        that.card_container[i].hover = true;
+
+                    }
+                    else{
+                        that.card_container[i].hover = false;
+                    }
+                }
             }
 
         }
 
-        that.handle = function () {
+        this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
 
-            that.cnt++;
+            /* types definitions:
+               0 - 'End Phase' animation: only 'type' argument required
+               1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
+               2 - 'arrows' animation: all arguments are required
+            */
 
-            if (that.cnt > 100) {
-                that.alpha -= 0.005;
+            var that = this;
+            that.type = type;
 
-                //alpha must not have negative value
-                if (that.alpha < 0)
-                    that.alpha = 0;
+            //image settings
+            that.sheet_origin = 401; //indicates start 'y' point for animation graphics in the sheet
+            that.sheet_hor_arrows_origin = 601; //indicates start 'y' point for horizontal arrows
+            that.sheet_ver_arrows_origin = 941; //indicates start 'y' point for vertical arrows
+
+            that.attacking_card_id = attacking_card_id;
+            that.hitted_card_id = hitted_card_id;
+
+            that.alpha = 1;
+            that.cnt = 0;
+
+            /* for education purpose
+               a = typeof a !== 'undefined' ? a : 42;
+           b = typeof b !== 'undefined' ? b : 'default_b';
+           */
+
+            if (that.type === 2) {
+
+                that.attacking_card_x = null;
+                that.attacking_card_y = null;
+
+                that.hitted_card_x = null;
+                that.hitted_card_y = null;
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null) {
+
+                            if (parent.board.matrix[i][j].id === that.attacking_card_id) {
+                                that.attacking_card_x = i;
+                                that.attacking_card_y = j;
+                            }
+
+                            if (parent.board.matrix[i][j].id === that.hitted_card_id) {
+                                that.hitted_card_x = i;
+                                that.hitted_card_y = j;
+                            }
+
+                        }
+                    }
+                }
+
+                //TODO remove this after tests
+                if (that.attacking_card_x === null ||
+                    that.attacking_card_y === null ||
+                    that.hitted_card_x === null ||
+                    that.hitted_card_y === null) {
+
+                    alert("Blad 5007");
+                }
+
+            }
+
+            that.handle = function () {
+
+                that.cnt++;
+
+                if (that.cnt > 100) {
+                    that.alpha -= 0.005;
+
+                    //alpha must not have negative value
+                    if (that.alpha < 0)
+                        that.alpha = 0;
+                }
+
+            }
+
+            that.draw = function () {
+
+                ctx.save();
+                ctx.globalAlpha = that.alpha;
+
+                if (that.type === 0)
+                    ctx.drawImage(parent.image, 0, that.sheet_origin, 350, 100, 337, 334, 350, 100);
+                else if (that.type === 1) {
+
+                    ctx.drawImage(parent.image, 50 * hits, that.sheet_origin + 100, 50, 100, 362, 334, 50, 100);
+                    ctx.drawImage(parent.image, 350, that.sheet_origin + 100, 50, 100, 412, 334, 50, 100);
+                    ctx.drawImage(parent.image, 50 * shoots, that.sheet_origin + 100, 50, 100, 462, 334, 50, 100);
+                    ctx.drawImage(parent.image, 400, that.sheet_origin + 100, 150, 100, 512, 334, 150, 100);
+                }
+                else if (that.type === 2) {
+
+                    ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                    ctx.fillRect(parent.board.s_x + (that.attacking_card_y * parent.board.square_w), parent.board.s_y + (that.attacking_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                    ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                    ctx.fillRect(parent.board.s_x + (that.hitted_card_y * parent.board.square_w), parent.board.s_y + (that.hitted_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                    //one of the above dimensions should be equal to zero
+                    var ver_diff = that.hitted_card_x - that.attacking_card_x; //horizontal difference
+                    var hor_diff = that.hitted_card_y - that.attacking_card_y; //vertical difference
+
+                    //angle indicates how much plan should be rotated
+                    var angle = 0;
+
+                    if (0 > hor_diff)
+                        angle = 180;
+                    else if (ver_diff < 0)
+                        angle = 270;
+                    else if (ver_diff > 0)
+                        angle = 90;
+
+                    //arrow length
+                    var arrow_len = 0;
+
+                    if (ver_diff != 0)
+                        arrow_len = Math.abs(ver_diff);
+                    else if (hor_diff != 0)
+                        arrow_len = Math.abs(hor_diff);
+
+                    if (arrow_len === 0)
+                        alert("Setting arrow length does not work!");
+
+                    var tmp_sheet_arrow_origin = null;
+
+                    //select proper image
+                    if (ver_diff != 0) {
+                        tmp_sheet_arrow_origin = that.sheet_ver_arrows_origin;
+                    }
+                    else {
+                        tmp_sheet_arrow_origin = that.sheet_hor_arrows_origin;
+                    }
+
+                    ctx.save(); //store context coordination settings
+                    ctx.translate(parent.board.s_x + (that.attacking_card_y * parent.board.square_w) + (parent.board.square_w / 2), parent.board.s_y + (that.attacking_card_x * parent.board.square_h) + (parent.board.square_h / 2)); //change rotation point to the middle of the tank
+                    ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
+
+                    if (hor_diff != 0)
+                        ctx.drawImage(parent.image, 0, that.sheet_hor_arrows_origin + ((arrow_len - 1) * 85), 130 + (arrow_len * parent.board.square_w), 85, (parent.board.square_w / 2) * (-1), (parent.board.square_h / 2) * (-1), 130 + (arrow_len * parent.board.square_w), 85);
+                    else
+                        ctx.drawImage(parent.image, 0, that.sheet_ver_arrows_origin + ((arrow_len - 1) * 130), 85 + (arrow_len * parent.board.square_h), 130, (parent.board.square_h / 2) * (-1), (parent.board.square_w / 2) * (-1), 85 + (arrow_len * parent.board.square_h), 130);
+
+
+                    ctx.restore(); //load stored context settings
+                }
+
+
+                ctx.restore();
+
+            }
+
+        }
+
+        //board initialization
+        that.board = new Board();
+
+        //hand initialization
+        that.hand = new Hand();
+
+        //method definitions
+        that.checkHover = function () {
+
+            //check if page handler is active
+            if (that.draw_big_picture)
+                return;
+
+            //check phase button hover
+            if ((mouse_x > that.btn_phase_x + that.btn_phase_padding) &&
+                (mouse_x < that.btn_phase_x + that.btn_phase_wh - that.btn_phase_padding) &&
+                (mouse_y > that.btn_phase_y + that.btn_phase_padding) &&
+                (mouse_y < that.btn_phase_y + that.btn_phase_wh - that.btn_phase_padding)) {
+                that.btn_phase_frame = 2;
+                that.btn_phase_hover = true;
+            }
+            else {
+                that.btn_phase_frame = 1;
+                that.btn_phase_hover = false;
+            }
+
+            //check 'show hand' button hover
+            if ((mouse_x > that.btn_hand_x + that.btn_hand_padding) &&
+                (mouse_x < that.btn_hand_x + that.btn_hand_wh - that.btn_hand_padding) &&
+                (mouse_y > that.btn_hand_y + that.btn_hand_padding) &&
+                (mouse_y < that.btn_hand_y + that.btn_hand_wh - that.btn_hand_padding)) {
+                that.btn_hand_frame = 1;
+                that.btn_hand_hover = true;
+            }
+            else {
+                that.btn_hand_frame = 0;
+                that.btn_hand_hover = false;
+            }
+
+            //check 'surrender' button hover
+            if ((mouse_x > that.btn_surrender_x + that.btn_surrender_padding) &&
+                (mouse_x < that.btn_surrender_x + that.btn_surrender_wh - that.btn_surrender_padding) &&
+                (mouse_y > that.btn_surrender_y + that.btn_surrender_padding) &&
+                (mouse_y < that.btn_surrender_y + that.btn_surrender_wh - that.btn_surrender_padding)) {
+                that.btn_surrender_frame = 1;
+                that.btn_surrender_hover = true;
+            }
+            else {
+                that.btn_surrender_frame = 0;
+                that.btn_surrender_hover = false;
             }
 
         }
 
         that.draw = function () {
 
+            //prepare drawing settings for text
             ctx.save();
-            ctx.globalAlpha = that.alpha;
+            ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
+            ctx.font = 'Bold 10pt Times New Roman';
 
-            if (that.type === 0)
-                ctx.drawImage(parent.image, 0, that.sheet_origin, 350, 100, 337, 334, 350, 100);
-            else if (that.type === 1) {
+            //draw players data
+            ctx.fillText(player.name, 870, 60);
+            ctx.fillText(player.faction.faction_name, 870, 80);
+            ctx.fillText("Magic: " + player.magic_pile.length, 870, 100);
+            ctx.fillText("Discard: " + player.discard_pile.length, 870, 120);
+            ctx.fillText("Deck: " + player.faction.deck.length, 870, 140);
 
-                ctx.drawImage(parent.image, 50 * hits, that.sheet_origin + 100, 50, 100, 362, 334, 50, 100);
-                ctx.drawImage(parent.image, 350, that.sheet_origin + 100, 50, 100, 412, 334, 50, 100);
-                ctx.drawImage(parent.image, 50 * shoots, that.sheet_origin + 100, 50, 100, 462, 334, 50, 100);
-                ctx.drawImage(parent.image, 400, that.sheet_origin + 100, 150, 100, 512, 334, 150, 100);
-            }
-            else if (that.type === 2) {
+            //draw opponents data
+            ctx.fillText(opponent.name, 870, 230);
+            ctx.fillText(opponent.faction.faction_name, 870, 250);
+            ctx.fillText("Magic: " + opponent.magic_pile.length, 870, 270);
+            ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
+            ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
 
-                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
-                ctx.fillRect(parent.board.s_x + (that.attacking_card_y * parent.board.square_w), parent.board.s_y + (that.attacking_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
-                ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
-                ctx.fillRect(parent.board.s_x + (that.hitted_card_y * parent.board.square_w), parent.board.s_y + (that.hitted_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
-
-                //one of the above dimensions should be equal to zero
-                var ver_diff = that.hitted_card_x - that.attacking_card_x; //horizontal difference
-                var hor_diff = that.hitted_card_y - that.attacking_card_y; //vertical difference
-
-                //angle indicates how much plan should be rotated
-                var angle = 0;
-
-                if (0 > hor_diff)
-                    angle = 180;
-                else if (ver_diff < 0)
-                    angle = 270;
-                else if (ver_diff > 0)
-                    angle = 90;
-
-                //arrow length
-                var arrow_len = 0;
-
-                if (ver_diff != 0)
-                    arrow_len = Math.abs(ver_diff);
-                else if (hor_diff != 0)
-                    arrow_len = Math.abs(hor_diff);
-
-                if (arrow_len === 0)
-                    alert("Setting arrow length does not work!");
-
-                var tmp_sheet_arrow_origin = null;
-
-                //select proper image
-                if (ver_diff != 0) {
-                    tmp_sheet_arrow_origin = that.sheet_ver_arrows_origin;
-                }
-                else {
-                    tmp_sheet_arrow_origin = that.sheet_hor_arrows_origin;
-                }
-
-                ctx.save(); //store context coordination settings
-                ctx.translate(parent.board.s_x + (that.attacking_card_y * parent.board.square_w) + (parent.board.square_w / 2), parent.board.s_y + (that.attacking_card_x * parent.board.square_h) + (parent.board.square_h / 2)); //change rotation point to the middle of the tank
-                ctx.rotate(angle * (Math.PI / 180)); //rotate context according to arrow direction
-
-                if (hor_diff != 0)
-                    ctx.drawImage(parent.image, 0, that.sheet_hor_arrows_origin + ((arrow_len - 1) * 85), 130 + (arrow_len * parent.board.square_w), 85, (parent.board.square_w / 2) * (-1), (parent.board.square_h / 2) * (-1), 130 + (arrow_len * parent.board.square_w), 85);
-                else
-                    ctx.drawImage(parent.image, 0, that.sheet_ver_arrows_origin + ((arrow_len - 1) * 130), 85 + (arrow_len * parent.board.square_h), 130, (parent.board.square_h / 2) * (-1), (parent.board.square_w / 2) * (-1), 85 + (arrow_len * parent.board.square_h), 130);
-
-
-                ctx.restore(); //load stored context settings
-            }
-
-
+            //restore previous style
             ctx.restore();
 
+            //draw end phase button
+            ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_src_y, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
+
+            //draw 'show hand' button
+            ctx.drawImage(that.image, that.btn_hand_wh * that.btn_hand_frame, that.btn_hand_src_y, that.btn_hand_wh, that.btn_hand_wh, that.btn_hand_x, that.btn_hand_y, that.btn_hand_wh, that.btn_hand_wh);
+
+            //draw 'surrender' button
+            ctx.drawImage(that.image, that.btn_surrender_wh * that.btn_surrender_frame, that.btn_surrender_src_y, that.btn_surrender_wh, that.btn_surrender_wh, that.btn_surrender_x, that.btn_surrender_y, that.btn_surrender_wh, that.btn_surrender_wh);
         }
 
-    }
+        that.checkMouseAction = function () {
 
-    //board initialization
-    that.board = new Board();
-
-    //hand initialization
-    that.hand = new Hand();
-
-    //method definitions
-    that.checkHover = function () {
-
-        //check if page handler is active
-        if (that.draw_big_picture)
-            return;
-
-        //check phase button hover
-        if ((mouse_x > that.btn_phase_x + that.btn_phase_padding) &&
-            (mouse_x < that.btn_phase_x + that.btn_phase_wh - that.btn_phase_padding) &&
-            (mouse_y > that.btn_phase_y + that.btn_phase_padding) &&
-            (mouse_y < that.btn_phase_y + that.btn_phase_wh - that.btn_phase_padding)) {
-            that.btn_phase_frame = 2;
-            that.btn_phase_hover = true;
-        }
-        else {
-            that.btn_phase_frame = 1;
-            that.btn_phase_hover = false;
-        }
-
-        //check 'show hand' button hover
-        if ((mouse_x > that.btn_hand_x + that.btn_hand_padding) &&
-            (mouse_x < that.btn_hand_x + that.btn_hand_wh - that.btn_hand_padding) &&
-            (mouse_y > that.btn_hand_y + that.btn_hand_padding) &&
-            (mouse_y < that.btn_hand_y + that.btn_hand_wh - that.btn_hand_padding)) {
-            that.btn_hand_frame = 1;
-            that.btn_hand_hover = true;
-        }
-        else {
-            that.btn_hand_frame = 0;
-            that.btn_hand_hover = false;
-        }
-
-        //check 'surrender' button hover
-        if ((mouse_x > that.btn_surrender_x + that.btn_surrender_padding) &&
-            (mouse_x < that.btn_surrender_x + that.btn_surrender_wh - that.btn_surrender_padding) &&
-            (mouse_y > that.btn_surrender_y + that.btn_surrender_padding) &&
-            (mouse_y < that.btn_surrender_y + that.btn_surrender_wh - that.btn_surrender_padding)) {
-            that.btn_surrender_frame = 1;
-            that.btn_surrender_hover = true;
-        }
-        else {
-            that.btn_surrender_frame = 0;
-            that.btn_surrender_hover = false;
-        }
-
-    }
-
-    that.draw = function () {
-
-        //prepare drawing settings for text
-        ctx.save();
-        ctx.fillStyle = "rgba(255, 248, 215, 0.8)";
-        ctx.font = 'Bold 10pt Times New Roman';
-
-        //draw players data
-        ctx.fillText(player.name, 870, 60);
-        ctx.fillText(player.faction.faction_name, 870, 80);
-        ctx.fillText("Magic: " + player.magic_pile.length, 870, 100);
-        ctx.fillText("Discard: " + player.discard_pile.length, 870, 120);
-        ctx.fillText("Deck: " + player.faction.deck.length, 870, 140);
-
-        //draw opponents data
-        ctx.fillText(opponent.name, 870, 230);
-        ctx.fillText(opponent.faction.faction_name, 870, 250);
-        ctx.fillText("Magic: " + opponent.magic_pile.length, 870, 270);
-        ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
-        ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
-
-        //restore previous style
-        ctx.restore();
-
-        //draw end phase button
-        ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_src_y, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
-
-        //draw 'show hand' button
-        ctx.drawImage(that.image, that.btn_hand_wh * that.btn_hand_frame, that.btn_hand_src_y, that.btn_hand_wh, that.btn_hand_wh, that.btn_hand_x, that.btn_hand_y, that.btn_hand_wh, that.btn_hand_wh);
-
-        //draw 'surrender' button
-        ctx.drawImage(that.image, that.btn_surrender_wh * that.btn_surrender_frame, that.btn_surrender_src_y, that.btn_surrender_wh, that.btn_surrender_wh, that.btn_surrender_x, that.btn_surrender_y, that.btn_surrender_wh, that.btn_surrender_wh);
-    }
-
-
-    that.checkMouseAction = function () {
-
-        //check if page handler is active
-        if (that.draw_big_picture)
-            return;
-
-        //check if phase stepping is requested
-        if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
-
-            //unselect card if any
-            that.board.unselectAll();
-
-            if (game_phase > 5) {
+            //check if page handler is active
+            if (that.draw_big_picture)
                 return;
 
-            } else if (game_phase === 5) {
+            //check if phase stepping is requested
+            if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
 
-                if (player.faction.name != "TODO") {
+                //unselect card if any
+                that.board.unselectAll();
 
-                    that.board.resetPreviousMoves();
-                    game_phase = 0;
-                    that.btn_phase_frame = 0;
-                    player.attacks_left = 3;
-                    player.moves_left = 3;
-                    your_turn = false;
+                if (game_phase > 5) {
+                    return;
+
+                } else if (game_phase === 5) {
+
+                    if (player.faction.name != "TODO") {
+
+                        that.board.resetPreviousMoves();
+                        game_phase = 0;
+                        that.btn_phase_frame = 0;
+                        player.attacks_left = 3;
+                        player.moves_left = 3;
+                        your_turn = false;
+
+                        //emit apropriate event
+                        socket.emit('end_turn', { room_name: room_name });
+                        return;
+                    }
+                } else {
+                    //BLAZE STEP HANDLING
+
+                    //step game phase
+                    game_phase += 1;
 
                     //emit apropriate event
-                    socket.emit('end_turn', { room_name: room_name });
-                    return;
+                    socket.emit('step_phase', { room_name: room_name });
+
+                    //add 'end phase' animation
+                    that.animations.push(new that.Animation(0));
                 }
-            } else {
-                //BLAZE STEP HANDLING
 
-                //step game phase
-                game_phase += 1;
-
-                //emit apropriate event
-                socket.emit('step_phase', { room_name: room_name });
-
-                //add 'end phase' animation
-                that.animations.push(new that.Animation(0));
+                mouse_state = 2;
             }
-
-            mouse_state = 2;
-        }
 
         
-        if ((that.btn_hand_hover) === true && (mouse_state === 1)) {
+            if ((that.btn_hand_hover) === true && (mouse_state === 1)) {
 
-            if (that.hand.state === 0)
-                that.hand.state = 1;
-            else if (that.hand.state === 1)
-                that.hand.state = 3;
-            else if (that.hand.state === 2)
-                that.hand.state = 3;
-            else if (that.hand.state === 3)
-                that.hand.state = 1;
+                if (that.hand.state === 0)
+                    that.hand.state = 1;
+                else if (that.hand.state === 1)
+                    that.hand.state = 3;
+                else if (that.hand.state === 2)
+                    that.hand.state = 3;
+                else if (that.hand.state === 3)
+                    that.hand.state = 1;
 
-            mouse_state = 2;
-        }
+                mouse_state = 2;
+            }
         
 
-    }
-}
-
-/***************************FUNCTIONS**************************/
-//-----------------------------------------------------------/
-
-var initGame = function () {
-    page_handler = new MainMenu();
-    player = new Player(player_login);
-    /* REMOVE
-    board = new Board();
-    */
-}
-
-var Clear = function () {
-
-    //draw background
-    ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
-
-    //ctx.fillStyle = 'black'; //set active color 
-    //ctx.fillRect(0, 0, width, height);
-    ctx.fillStyle = 'white'; //set active color    
-    ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
-    ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
-    ctx.fillText('Game state: ' + state, 50, 70);
-    ctx.fillText('Room name: ' + room_name, 50, 90);
-    ctx.fillText('Player login: ' + player_login, 50, 100);
-    ctx.fillText('mouse state: ' + mouse_state, 50, 110);
-    ctx.fillText('mouse used: ' + mouse_used, 50, 120);
-
-}
-
-var rotate180 = function (x, y) {
-    c_x = 3;
-    c_y = 4;
-
-    return [c_x - (x - c_x) - 1, c_y - (y - c_y) - 1]
-}
-
-function srednia(tablica) {
-    var suma = 0;
-    for (i = 0; i < tablica.length; i++) {
-        suma += tablica[i];
-    }
-    return (suma / i);
-}
-
-/************************Main game loop************************/
-//-----------------------------------------------------------//
-var gameLoop = function () {
-
-    Clear();
-
-    if (!lastRun) {
-        lastRun = new Date().getTime();
-        requestAnimFrame(gameLoop);
-        return;
-    }
-
-    if ((mouse_button_down || (mouse_used === false)) && mouse_state === 0) {
-        mouse_state = 1;
-    }
-    else if (mouse_state === 1) {
-        mouse_state = 2;
-        mouse_used = true;
-    }
-    else if (mouse_state === 2 && (mouse_button_down === false)) {
-        mouse_used = true;
-        mouse_state = 0;
-    }
-
-
-    if (state === 0) {
-        /* ========= */
-        /* main menu */
-        /* ========= */
-        page_handler.checkHover();
-        page_handler.draw();
-
-        var result = page_handler.checkAction();
-
-        //start briefing
-        if (result === 1) {
-
-            //change page handler to briefing menu
-            page_handler = new BriefingMenu();
-
-            //change game state to briefing
-            state = 1;
         }
     }
 
-    else if (state === 1) {
-        /* ================== */
-        /* faction selection */
-        /* ================== */
-        page_handler.checkHover();
-        page_handler.draw(player);
+    /***************************FUNCTIONS**************************/
+    //-----------------------------------------------------------/
 
-        var result = page_handler.checkAction();
+    var initGame = function () {
+        page_handler = new MainMenu();
+        player = new Player(player_login);
+        /* REMOVE
+        board = new Board();
+        */
+    }
 
-        //start game button
-        if (result === 1) {
+    var Clear = function () {
 
-            state = 2; //waiting for other players
+        //draw background
+        ctx.drawImage(background_image, 0, 0, width, height, 0, 0, width, height);
 
-            //init faction object
-            if (player.selected_faction === 0) {
-                player.faction = new PheonixElves(player.name);
-            }
-            else if (player.selected_faction === 1) {
-                player.faction = new TundraOrcs(player.name);
-            }
+        //ctx.fillStyle = 'black'; //set active color 
+        //ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = 'white'; //set active color    
+        ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
+        ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
+        ctx.fillText('Game state: ' + state, 50, 70);
+        ctx.fillText('Room name: ' + room_name, 50, 90);
+        ctx.fillText('Player login: ' + player_login, 50, 100);
+        ctx.fillText('mouse state: ' + mouse_state, 50, 110);
+        ctx.fillText('mouse used: ' + mouse_used, 50, 120);
 
-            //init player deck
-            player.faction.initDeck();
+    }
 
-            //send ready event
-            socket.emit('player_ready_to_play', {
-                room_name: room_name, player_login: player_login, player_faction: player.selected_faction
-            })
+    var rotate180 = function (x, y) {
+        c_x = 3;
+        c_y = 4;
 
-            //change page handler
-            page_handler = new WaitingMenu();
+        return [c_x - (x - c_x) - 1, c_y - (y - c_y) - 1]
+    }
 
-            // << select faction button
-        } else if (result === 2) {
-
-            if (player.selected_faction === 0)
-                player.selected_faction++;
-            else
-                player.selected_faction--;
-
-            // select faction button >>
-        } else if (result === 3) {
-
-            if (player.selected_faction === 1)
-                player.selected_faction--;
-            else
-                player.selected_faction++;
+    function srednia(tablica) {
+        var suma = 0;
+        for (i = 0; i < tablica.length; i++) {
+            suma += tablica[i];
         }
+        return (suma / i);
     }
 
-    else if (state === 2) {
-        /* ======================== */
-        /* waiting for both players */
-        /* ======================== */
+    /************************Main game loop************************/
+    //-----------------------------------------------------------//
+    var gameLoop = function () {
 
-        /* page handler and state will be changed */
-        /* after receiving 'start play' event     */
-        page_handler.draw();
+        Clear();
 
-        //TODO mogla by to byc jakas animacja, co?
-    }
-    else if (state === 3) {
-        /* ========== */
-        /* playground */
-        /* ========== */
+        if (!lastRun) {
+            lastRun = new Date().getTime();
+            requestAnimFrame(gameLoop);
+            return;
+        }
 
-        if (your_turn) {
+        if ((mouse_button_down || (mouse_used === false)) && mouse_state === 0) {
+            mouse_state = 1;
+        }
+        else if (mouse_state === 1) {
+            mouse_state = 2;
+            mouse_used = true;
+        }
+        else if (mouse_state === 2 && (mouse_button_down === false)) {
+            mouse_used = true;
+            mouse_state = 0;
+        }
 
-            if (game_phase === 0) {
-                /* ========== */
-                /* DRAW PHASE */
-                /* ========== */
 
-                //Phase handler handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
+        if (state === 0) {
+            /* ========= */
+            /* main menu */
+            /* ========= */
+            page_handler.checkHover();
+            page_handler.draw();
 
-                //Board handling
-                page_handler.board.draw();
-                page_handler.board.checkMouseActivity();
+            var result = page_handler.checkAction();
 
-            } else if (game_phase === 1) {
-                /* ============ */
-                /* SUMMON PHASE */
-                /* ============ */
+            //start briefing
+            if (result === 1) {
 
-                //Phase handler handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
+                //change page handler to briefing menu
+                page_handler = new BriefingMenu();
 
-                //Board handling
-                page_handler.board.draw();
-                page_handler.board.checkMouseActivity();
-
-            } else if (game_phase === 2) {
-                /* =========== */
-                /* EVENT PHASE */
-                /* =========== */
-
-                //Phase handler handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
-
-                //Board handling
-                page_handler.board.draw();
-                page_handler.board.checkMouseActivity();
-
+                //change game state to briefing
+                state = 1;
             }
-            else if (game_phase === 3) {
-                /* ========== */
-                /* MOVE PHASE */
-                /* ========== */
+        }
 
-                var current = Date.now();
-                var elapsed = current - previous;
-                previous = current;
-                lag += elapsed;
+        else if (state === 1) {
+            /* ================== */
+            /* faction selection */
+            /* ================== */
+            page_handler.checkHover();
+            page_handler.draw(player);
 
-                ite1 += 1;
+            var result = page_handler.checkAction();
 
-                while (lag >= MS_PER_UPDATE) {
+            //start game button
+            if (result === 1) {
 
-                    ite2 += 1;
+                state = 2; //waiting for other players
 
-                    //logic layer should not run always
-                    page_handler.board.handleDyingCards();
-                    page_handler.board.handleMoves();
-                    page_handler.board.checkMouseActivity();
+                //init faction object
+                if (player.selected_faction === 0) {
+                    player.faction = new PheonixElves(player.name);
+                }
+                else if (player.selected_faction === 1) {
+                    player.faction = new TundraOrcs(player.name);
+                }
+
+                //init player deck
+                player.faction.initDeck();
+
+                //send ready event
+                socket.emit('player_ready_to_play', {
+                    room_name: room_name, player_login: player_login, player_faction: player.selected_faction
+                })
+
+                //change page handler
+                page_handler = new WaitingMenu();
+
+                // << select faction button
+            } else if (result === 2) {
+
+                if (player.selected_faction === 0)
+                    player.selected_faction++;
+                else
+                    player.selected_faction--;
+
+                // select faction button >>
+            } else if (result === 3) {
+
+                if (player.selected_faction === 1)
+                    player.selected_faction--;
+                else
+                    player.selected_faction++;
+            }
+        }
+
+        else if (state === 2) {
+            /* ======================== */
+            /* waiting for both players */
+            /* ======================== */
+
+            /* page handler and state will be changed */
+            /* after receiving 'start play' event     */
+            page_handler.draw();
+
+            //TODO mogla by to byc jakas animacja, co?
+        }
+        else if (state === 3) {
+            /* ========== */
+            /* playground */
+            /* ========== */
+
+            if (your_turn) {
+
+                if (game_phase === 0) {
+                    /* ========== */
+                    /* DRAW PHASE */
+                    /* ========== */
+
+                    //Phase handler handling
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
-                    page_handler.hand.handleAnimation();
+                    page_handler.draw();
 
-                    //handle animation in queue
-                    for (var i = 0; i < page_handler.animations.length; i++) {
-                        page_handler.animations[i].handle();
+                    //Board handling
+                    page_handler.board.draw();
+                    page_handler.board.checkMouseActivity();
+
+                } else if (game_phase === 1) {
+                    /* ============ */
+                    /* SUMMON PHASE */
+                    /* ============ */
+
+                    //Phase handler handling
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.draw();
+
+                    //Board handling
+                    page_handler.board.draw();
+                    page_handler.board.checkMouseActivity();
+
+                } else if (game_phase === 2) {
+                    /* =========== */
+                    /* EVENT PHASE */
+                    /* =========== */
+
+                    //Phase handler handling
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.draw();
+
+                    //Board handling
+                    page_handler.board.draw();
+                    page_handler.board.checkMouseActivity();
+
+                }
+                else if (game_phase === 3) {
+                    /* ========== */
+                    /* MOVE PHASE */
+                    /* ========== */
+
+                    var current = Date.now();
+                    var elapsed = current - previous;
+                    previous = current;
+                    lag += elapsed;
+
+                    ite1 += 1;
+
+                    while (lag >= MS_PER_UPDATE) {
+
+                        ite2 += 1;
+
+                        //logic layer should not run always
+                        page_handler.board.handleDyingCards();
+                        page_handler.board.handleMoves();
+                        page_handler.board.checkMouseActivity();
+                        page_handler.checkHover();
+                        page_handler.checkMouseAction();
+                        page_handler.hand.handleAnimation();
+
+                        //handle animation in queue
+                        for (var i = 0; i < page_handler.animations.length; i++) {
+                            page_handler.animations[i].handle();
+                        }
+
+                        lag -= MS_PER_UPDATE;
                     }
 
-                    lag -= MS_PER_UPDATE;
-                }
-
-                //render layer
-                page_handler.draw();
-                page_handler.board.drawPreviousMoves();
-                page_handler.board.drawAvailMoves();
-                page_handler.hand.draw();
-                page_handler.board.draw();
+                    //render layer
+                    page_handler.draw();
+                    page_handler.board.drawPreviousMoves();
+                    page_handler.board.drawAvailMoves();
+                    page_handler.hand.draw();
+                    page_handler.board.draw();
                 
 
 
-            }
-            else if (game_phase === 4) {
-                /* ============ */
-                /* ATTACK PHASE */
-                /* ============ */
+                }
+                else if (game_phase === 4) {
+                    /* ============ */
+                    /* ATTACK PHASE */
+                    /* ============ */
+
+                    var current = Date.now();
+                    var elapsed = current - previous;
+                    previous = current;
+                    lag += elapsed;
+
+                    ite1 += 1;
+
+                    while (lag >= MS_PER_UPDATE) {
+
+                        ite2 += 1;
+
+                        //Phase handler handling
+                        page_handler.board.handleDyingCards();
+                        page_handler.board.handleAttacks();
+                        page_handler.board.checkMouseActivity();
+                        page_handler.checkHover();
+                        page_handler.checkMouseAction();
+                        page_handler.hand.handleAnimation();
+
+                        //handle animation in queue
+                        for (var i = 0; i < page_handler.animations.length; i++) {
+                            page_handler.animations[i].handle();
+                        }
+
+                        lag -= MS_PER_UPDATE;
+                    }
+
+                    //Board handling
+                    page_handler.draw();
+                    page_handler.board.drawPreviousMoves();
+                    page_handler.hand.draw();
+                    page_handler.board.draw();
+                    page_handler.board.drawAvailAttacks();
+
+
+
+                } else if (game_phase === 5) {
+                    /* ================= */
+                    /* BUILD MAGIC PHASE */
+                    /* ================= */
+
+                    //Phase handler handling
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.draw();
+
+                    //Board handling
+                    page_handler.board.drawPreviousMoves();
+                    page_handler.board.draw();
+                    page_handler.board.checkMouseActivity();
+
+                } else if (game_phase === 6) {
+                    /* ================ */
+                    /* BLAZE STEP PHASE */
+                    /* ================ */
+
+                    page_handler.board.drawPreviousMoves();
+                    page_handler.board.draw();
+
+                    //Phase button handling
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.draw();
+
+                    page_handler.board.checkMouseActivity();
+
+                }
+
+
+            } else {
 
                 var current = Date.now();
                 var elapsed = current - previous;
@@ -1928,11 +2066,7 @@ var gameLoop = function () {
 
                     //Phase handler handling
                     page_handler.board.handleDyingCards();
-                    page_handler.board.handleAttacks();
                     page_handler.board.checkMouseActivity();
-                    page_handler.checkHover();
-                    page_handler.checkMouseAction();
-                    page_handler.hand.handleAnimation();
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
@@ -1942,114 +2076,47 @@ var gameLoop = function () {
                     lag -= MS_PER_UPDATE;
                 }
 
-                //Board handling
-                page_handler.draw();
                 page_handler.board.drawPreviousMoves();
-                page_handler.hand.draw();
-                page_handler.board.draw();
-                page_handler.board.drawAvailAttacks();
-
-
-
-            } else if (game_phase === 5) {
-                /* ================= */
-                /* BUILD MAGIC PHASE */
-                /* ================= */
-
-                //Phase handler handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
                 page_handler.draw();
-
-                //Board handling
-                page_handler.board.drawPreviousMoves();
                 page_handler.board.draw();
-                page_handler.board.checkMouseActivity();
-
-            } else if (game_phase === 6) {
-                /* ================ */
-                /* BLAZE STEP PHASE */
-                /* ================ */
-
-                page_handler.board.drawPreviousMoves();
-                page_handler.board.draw();
-
-                //Phase button handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
-
-                page_handler.board.checkMouseActivity();
 
             }
 
+            //draw animation in queue
+            for (var i = 0; i < page_handler.animations.length; i++) {
 
-        } else {
+                page_handler.animations[i].draw();
 
-            var current = Date.now();
-            var elapsed = current - previous;
-            previous = current;
-            lag += elapsed;
-
-            ite1 += 1;
-
-            while (lag >= MS_PER_UPDATE) {
-
-                ite2 += 1;
-
-                //Phase handler handling
-                page_handler.board.handleDyingCards();
-                page_handler.board.checkMouseActivity();
-
-                //handle animation in queue
-                for (var i = 0; i < page_handler.animations.length; i++) {
-                    page_handler.animations[i].handle();
+                if (page_handler.animations[i].alpha <= 0) {
+                    page_handler.animations.splice(i, 1);
+                    i--;
                 }
-
-                lag -= MS_PER_UPDATE;
             }
 
-            page_handler.board.drawPreviousMoves();
-            page_handler.draw();
-            page_handler.board.draw();
+            var delta = (new Date().getTime() - lastRun) / 1000;
+            lastRun = new Date().getTime();
+            fps = 1 / delta;
+            fps_sum.push(fps);
+
+            //TODO DEL temporary printouts
+            ctx.fillText('your opponent: ' + opponent.name, 840, 500);
+            ctx.fillText('your turn: ' + your_turn, 840, 510);
+            ctx.fillText('game phase: ' + game_phase, 840, 520);
+
+
+            ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
+            ctx.fillText("ite1: " + ite1, 840, 550);
+            ctx.fillText("ite2: " + ite2, 840, 560);
+            ctx.fillText("ite_dif: " + (ite2 - ite1), 840, 570);
+
 
         }
 
-        //draw animation in queue
-        for (var i = 0; i < page_handler.animations.length; i++) {
-
-            page_handler.animations[i].draw();
-
-            if (page_handler.animations[i].alpha <= 0) {
-                page_handler.animations.splice(i, 1);
-                i--;
-            }
-        }
-
-        var delta = (new Date().getTime() - lastRun) / 1000;
-        lastRun = new Date().getTime();
-        fps = 1 / delta;
-        fps_sum.push(fps);
-
-        //TODO DEL temporary printouts
-        ctx.fillText('your opponent: ' + opponent.name, 840, 500);
-        ctx.fillText('your turn: ' + your_turn, 840, 510);
-        ctx.fillText('game phase: ' + game_phase, 840, 520);
 
 
-        ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
-        ctx.fillText("ite1: " + ite1, 840, 550);
-        ctx.fillText("ite2: " + ite2, 840, 560);
-        ctx.fillText("ite_dif: " + (ite2 - ite1), 840, 570);
-
-
+        requestAnimFrame(gameLoop);
     }
 
 
-
-    requestAnimFrame(gameLoop);
-}
-
-
-initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
-gameLoop();
+    initGame(); //TODO inicjalizacja backgrounda, main menu oraz briefing
+    gameLoop();
