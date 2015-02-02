@@ -1397,7 +1397,7 @@ var PlaygroundHandler = function () {
             }
 
         }
-        /*
+        
         that.checkHover = function () {
 
             if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
@@ -1429,7 +1429,7 @@ var PlaygroundHandler = function () {
             }
 
         }
-        */
+        
 
         that.fillHand = function () {
 
@@ -1978,6 +1978,7 @@ var PlaygroundHandler = function () {
                         page_handler.checkHover();
                         page_handler.checkMouseAction();
                         page_handler.hand.handleAnimation();
+                        page_handler.hand.checkHover();
 
                         //handle animation in queue
                         for (var i = 0; i < page_handler.animations.length; i++) {
@@ -2020,6 +2021,7 @@ var PlaygroundHandler = function () {
                         page_handler.checkHover();
                         page_handler.checkMouseAction();
                         page_handler.hand.handleAnimation();
+                        page_handler.hand.checkHover();
 
                         //handle animation in queue
                         for (var i = 0; i < page_handler.animations.length; i++) {
