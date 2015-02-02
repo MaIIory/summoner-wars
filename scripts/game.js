@@ -1335,8 +1335,8 @@ var PlaygroundHandler = function () {
         //card container settings
         that.card_container = [new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 1, player.name, 4, 1, 1), new Card('Archer', 'pe1', 1, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1)];
         that.card_container_s_x = 30;
-        that.card_container_s_y = 35;
-        that.gap_between_cards = 15;
+        that.card_container_s_y = 20;
+        that.gap_between_cards = 10;
 
 
         that.handleAnimation = function () {
