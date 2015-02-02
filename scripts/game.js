@@ -1429,7 +1429,7 @@ var PlaygroundHandler = function () {
                 if (that.card_container[i] != null)
                     nb_of_cards += 1;
 
-            for(var i = nb_of_cards; i < 5; i++)
+            //for(var i = nb_of_cards; i < 5; i++)
 
         }
     }
