@@ -1393,7 +1393,7 @@ var PlaygroundHandler = function () {
             }
 
         }
-        
+        /*
         that.checkHover = function () {
 
             if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
@@ -1425,6 +1425,7 @@ var PlaygroundHandler = function () {
             }
 
         }
+        */
 
         this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
 
