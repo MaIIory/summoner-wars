@@ -1417,7 +1417,7 @@ var PlaygroundHandler = function () {
                     if((mouse_x > that.current_pos + that.card_container_s_x) &&
                         (mouse_x < that.current_pos + that.card_container_s_x + that.card_container[i].board_w) &&
                         (mouse_y > that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards)) &&
-                        (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h) + (i * that.gap_between_cards)){
+                        (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h + (i * that.gap_between_cards))){
 
                         that.card_container[i].hover = true;
 
