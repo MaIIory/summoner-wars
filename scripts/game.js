@@ -1333,7 +1333,7 @@ var PlaygroundHandler = function () {
                            3 - closing */
 
         //card container settings
-        that.card_container = [null, null, null, null, null];
+        that.card_container = [new Card('Archer', 'pe1', 0, 0, that.player_name, 4, 1, 1), null, null, null, null];
         that.card_container_s_x = 35;
         that.card_container_s_y = 40;
         that.gap_between_cards = 15;
@@ -1420,6 +1420,18 @@ var PlaygroundHandler = function () {
 
         }
         */
+
+        that.fillHand = function () {
+
+
+            var nb_of_cards = 0;
+            for (var i = 0; i < that.card_container.length; i++)
+                if (that.card_container[i] != null)
+                    nb_of_cards += 1;
+
+            for(var i = nb_of_cards; i < 5; i++)
+
+        }
     }
 
         this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
