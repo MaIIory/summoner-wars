@@ -1383,7 +1383,12 @@ var PlaygroundHandler = function () {
                             that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
                             that.card_container[i].board_w,
                             that.card_container[i].board_h);
-                            
+
+                        if (that.card_container[i].hover) {
+                            ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
+                            ctx.fillRect(that.current_pos + that.card_container_s_x, that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
+                                that.card_container[i].board_w, that.card_container[i].board_h);
+                        }
                         
 
                         //check eyeglass draw and hover
