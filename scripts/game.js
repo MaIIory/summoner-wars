@@ -1333,12 +1333,12 @@ var PlaygroundHandler = function () {
                            3 - closing */
 
         //card container settings
-        that.card_container = [null,null,null,null,null];
+        that.card_container = [null, null, null, null, null];
         that.card_container_s_x = 35;
         that.card_container_s_y = 40;
         that.gap_between_cards = 15;
 
-        
+
         that.handleAnimation = function () {
 
             /* STATES:
@@ -1361,7 +1361,7 @@ var PlaygroundHandler = function () {
                 that.state = 0;
             }
         }
-          
+
         that.draw = function () {
 
             if (that.state != 0) {
@@ -1373,14 +1373,14 @@ var PlaygroundHandler = function () {
                 //draw card container
                 for (var i = 0; i < that.card_container.length; i++) {
 
-                    if(that.card_container[i] != null){
+                    if (that.card_container[i] != null) {
                         ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].board_w,
                             (2 * that.card_container[i].height) + (that.card_container[i].pos_y * that.card_container[i].board_h),
                             that.card_container[i].board_w,
                             that.card_container[i].board_h,
                             that.current_pos + that.card_container_s_x,
-                            that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.card_container[i].gap_between_cards), 
-                            that.card_container[i].board_w, 
+                            that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.card_container[i].gap_between_cards),
+                            that.card_container[i].board_w,
                             that.card_container[i].board_h);
                     }
                 }
@@ -1420,6 +1420,7 @@ var PlaygroundHandler = function () {
 
         }
         */
+    }
 
         this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
 
@@ -1689,6 +1690,8 @@ var PlaygroundHandler = function () {
                         player.attacks_left = 3;
                         player.moves_left = 3;
                         your_turn = false;
+
+                        //TODO fillHand
 
                         //emit apropriate event
                         socket.emit('end_turn', { room_name: room_name });
