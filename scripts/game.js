@@ -1375,19 +1375,24 @@ var PlaygroundHandler = function () {
 
                     if (that.card_container[i] != null) {
                         
+                        var current_w = that.start_pos + that.card_container_s_x - that.current_pos;
+
+                        if (current_w > that.card_container[i].board_w)
+                            current_w = that.card_container[i].board_w;
+
                         ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].board_w,
                             (2 * that.card_container[i].height) + (that.card_container[i].pos_y * that.card_container[i].board_h),
                             that.card_container[i].board_w,
                             that.card_container[i].board_h,
                             that.current_pos + that.card_container_s_x,
                             that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
-                            that.card_container[i].board_w,
+                            current_w,
                             that.card_container[i].board_h);
 
                         if (that.card_container[i].hover) {
                             ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
                             ctx.fillRect(that.current_pos + that.card_container_s_x, that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
-                                that.card_container[i].board_w, that.card_container[i].board_h);
+                                current_w, that.card_container[i].board_h);
                         }
                         
 
