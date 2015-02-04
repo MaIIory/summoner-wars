@@ -1380,6 +1380,8 @@ var PlaygroundHandler = function () {
 
                         if (current_w > that.card_container[i].board_w)
                             current_w = that.card_container[i].board_w;
+                        else if (current_w < 0)
+                            current_w = 0;
 
                         ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].board_w,
                             (2 * that.card_container[i].height) + (that.card_container[i].pos_y * that.card_container[i].board_h),
@@ -1432,7 +1434,7 @@ var PlaygroundHandler = function () {
 
                         //check eyeglass hover
                         if ((mouse_x > (that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) - 15)) &&
-                            (mouse_x < that.current_pos + that.card_container_s_x + that.card_container[i].board_w) &&
+                            (mouse_x < that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) + 15) &&
                             (mouse_y > that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards)) &&
                             (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h + (i * that.gap_between_cards))) {
 
