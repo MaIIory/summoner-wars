@@ -207,6 +207,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.height = 239;
     that.width = 367;
     that.hover = false;
+    that.hover_eyeglass = false;
     that.selected = false;
     that.draw_big_picture = false;
 
@@ -1375,7 +1376,7 @@ var PlaygroundHandler = function () {
 
                     if (that.card_container[i] != null) {
                         
-                        var current_w = that.start_pos + that.card_container_s_x - that.current_pos;
+                        var current_w = that.start_pos - that.card_container_s_x - that.current_pos;
 
                         if (current_w > that.card_container[i].board_w)
                             current_w = that.card_container[i].board_w;
