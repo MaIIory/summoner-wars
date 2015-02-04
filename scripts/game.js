@@ -210,6 +210,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.hover_eyeglass = false;
     that.selected = false;
     that.draw_big_picture = false;
+    that.draw_big_picture_from_hand = false;
 
     //move phase data
     that.moves_left = 2;
@@ -1402,7 +1403,7 @@ var PlaygroundHandler = function () {
                         }
 
 
-                        //check eyeglass draw and hover
+                        
 
 
                     }
@@ -1454,6 +1455,46 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
+
+        }
+
+        that.checkMouseAction = function () {
+
+            if(mouse_state != 1)
+                return;
+
+            for (var i = 0; i < that.card_container.length; i++) {
+
+                if (that.card_container[i].draw_big_picture_from_hand) {
+                    that.card_container[i].draw_big_picture_from_hand = false;
+                    parent.draw_big_picture_from_hand = false;
+                    mouse_state = 2;
+                    return;
+                }
+            }
+
+            for (var i = 0; i < that.card_container.length; i++) {
+
+                if (that.card_container[i] != null) {
+
+                    if(!that.card_container[i].selected && that.card_container[i].hover){
+                        that.card_container[i].selected = true;
+                        mouse_state = 2;
+                        return;
+                    }
+                    else if(that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
+                        that.card_container[i].selected = false;
+                        mouse_state = 2;
+                        return;
+                    }
+                    else if(that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
+                        that.card_container[i].draw_big_picture_from_hand = true;
+                        parent.draw_big_picture_from_hand = true;
+                        mouse_state = 2;
+                        return;
+                    }
+                       
+                }
 
         }
 
