@@ -1395,15 +1395,26 @@ var PlaygroundHandler = function () {
                             that.card_container[i].board_h);
                         }
 
-
+                        //draw hover (white)
                         if (that.card_container[i].hover) {
                             ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
                             ctx.fillRect(that.current_pos + that.card_container_s_x, that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
                                 current_w, that.card_container[i].board_h);
                         }
 
-                        //ctx.drawImage(parent.image, 0, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        //ctx.drawImage(parent.image, 130, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        //draw eyeglass if selected
+                        if (that.card_container[i].selected) {
+
+                            if (that.card_container[i].hover_eyeglass) {
+                                ctx.drawImage(parent.image, 0, that.board.sheet_origin, that.card_container[i].board_w, that.card_container[i].board_h,
+                                    that.current_pos + that.card_container_s_x, that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
+                                    that.card_container[i].board_w, that.card_container[i].board_h);
+                            } else {
+                                ctx.drawImage(parent.image, 130, that.board.sheet_origin, that.card_container[i].board_w, that.card_container[i].board_h,
+                                    that.current_pos + that.card_container_s_x, that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
+                                    that.card_container[i].board_w, that.card_container[i].board_h);
+                            }
+                        }
                     }
                 }
             }
@@ -1433,7 +1444,7 @@ var PlaygroundHandler = function () {
                         (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h + (i * that.gap_between_cards))) {
 
                         that.card_container[i].hover = true;
-                        /*
+                        
                         //check eyeglass hover
                         if ((mouse_x > (that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) - 15)) &&
                             (mouse_x < that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) + 15) &&
@@ -1444,7 +1455,7 @@ var PlaygroundHandler = function () {
                         } else {
                             that.card_container[i].hover_eyeglass = false;
                         }
-                        */
+                        
 
                     }
                     else {
