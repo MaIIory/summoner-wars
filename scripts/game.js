@@ -1402,10 +1402,8 @@ var PlaygroundHandler = function () {
                                 current_w, that.card_container[i].board_h);
                         }
 
-
-                        
-
-
+                        //ctx.drawImage(parent.image, 0, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+                        //ctx.drawImage(parent.image, 130, that.sheet_origin, that.square_w, that.square_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
                 }
             }
@@ -1477,25 +1475,25 @@ var PlaygroundHandler = function () {
 
                 if (that.card_container[i] != null) {
 
-                    if(!that.card_container[i].selected && that.card_container[i].hover){
+                    if (!that.card_container[i].selected && that.card_container[i].hover) {
                         that.card_container[i].selected = true;
                         mouse_state = 2;
                         return;
                     }
-                    else if(that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
+                    else if (that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
                         that.card_container[i].selected = false;
                         mouse_state = 2;
                         return;
                     }
-                    else if(that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
+                    else if (that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
                         that.card_container[i].draw_big_picture_from_hand = true;
                         parent.draw_big_picture_from_hand = true;
                         mouse_state = 2;
                         return;
                     }
-                       
-                }
 
+                }
+            }
         }
 
 
