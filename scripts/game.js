@@ -1343,6 +1343,9 @@ var PlaygroundHandler = function () {
 
         that.handleAnimation = function () {
 
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
             /* STATES:
                0 - closed,
                1 - openning,
@@ -2056,6 +2059,7 @@ var gameLoop = function () {
                     page_handler.checkMouseAction();
                     page_handler.hand.handleAnimation();
                     page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
@@ -2099,6 +2103,7 @@ var gameLoop = function () {
                     page_handler.checkMouseAction();
                     page_handler.hand.handleAnimation();
                     page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
 
                     //handle animation in queue
                     for (var i = 0; i < page_handler.animations.length; i++) {
