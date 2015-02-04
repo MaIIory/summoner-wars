@@ -1431,17 +1431,18 @@ var PlaygroundHandler = function () {
                         (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h + (i * that.gap_between_cards))){
 
                         that.card_container[i].hover = true;
-
+                        /*
                         //check eyeglass hover
                         if ((mouse_x > (that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) - 15)) &&
                             (mouse_x < that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) + 15) &&
-                            (mouse_y > that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards)) &&
-                            (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h + (i * that.gap_between_cards))) {
+                            (mouse_y > that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards) + (that.card_container[i].board_h / 2) - 15) &&
+                            (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards) + (that.card_container[i].board_h / 2) + 15)) {
 
                             that.card_container[i].hover_eyeglass = true;
                         } else {
                             that.card_container[i].hover_eyeglass = false;
                         }
+                        */
 
                     }
                     else{
