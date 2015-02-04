@@ -1383,6 +1383,7 @@ var PlaygroundHandler = function () {
                         else if (current_w < 0)
                             current_w = 0;
 
+                        /*
                         ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].board_w,
                             (2 * that.card_container[i].height) + (that.card_container[i].pos_y * that.card_container[i].board_h),
                             current_w,
@@ -1391,6 +1392,7 @@ var PlaygroundHandler = function () {
                             that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + (i * that.gap_between_cards),
                             current_w,
                             that.card_container[i].board_h);
+                            */
 
                         if (that.card_container[i].hover) {
                             ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
