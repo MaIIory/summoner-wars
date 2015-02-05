@@ -1114,6 +1114,9 @@ var PlaygroundHandler = function () {
             if (that.matrix[card_i][card_j].draw_big_picture)
                 return;
 
+            if (parent.draw_big_picture_from_hand)
+                return;
+
             //if cards owner is not a player break function
             if (that.matrix[card_i][card_j].owner != player.name)
                 return;
@@ -1501,6 +1504,11 @@ var PlaygroundHandler = function () {
                     else if (that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
                         that.card_container[i].draw_big_picture_from_hand = true;
                         parent.draw_big_picture_from_hand = true;
+                        mouse_state = 2;
+                        return;
+                    }
+                    else if (that.card_container[i].selected && !that.card_container[i].hover) {
+                        that.card_container[i].selected = false;
                         mouse_state = 2;
                         return;
                     }
