@@ -1474,7 +1474,7 @@ var PlaygroundHandler = function () {
 
         that.checkMouseAction = function () {
 
-            if(mouse_state != 1)
+            if(mouse_state != 1 || parent.draw_big_picture_from_hand)
                 return;
 
             for (var i = 0; i < that.card_container.length; i++) {
@@ -1494,23 +1494,19 @@ var PlaygroundHandler = function () {
                     if (!that.card_container[i].selected && that.card_container[i].hover) {
                         that.card_container[i].selected = true;
                         mouse_state = 2;
-                        return;
                     }
                     else if (that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
                         that.card_container[i].selected = false;
                         mouse_state = 2;
-                        return;
                     }
                     else if (that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
                         that.card_container[i].draw_big_picture_from_hand = true;
                         parent.draw_big_picture_from_hand = true;
                         mouse_state = 2;
-                        return;
                     }
                     else if (that.card_container[i].selected && !that.card_container[i].hover) {
                         that.card_container[i].selected = false;
                         mouse_state = 2;
-                        return;
                     }
 
                 }
