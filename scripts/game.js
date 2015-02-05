@@ -1424,6 +1424,21 @@ var PlaygroundHandler = function () {
                 }
             }
 
+            if (parent.draw_big_picture_from_hand) {
+
+                for (var i = 0; i < that.card_container.length; i++) {
+                    if (that.card_container[i] != null && that.card_container[i].draw_big_picture_from_hand) {
+
+                        ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
+                        ctx.fillRect(12, 12, width - 22, height - 22);
+
+                        //check card owner in order to load proper faction image
+                        ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].width, that.card_container[i].pos_y * that.card_container[i].height,
+                            that.card_container[i].width, that.card_container[i].height, 329, 200, that.card_container[i].width, that.card_container[i].height);
+
+                    }
+                }
+            }
         }
 
         that.checkHover = function () {
@@ -1449,7 +1464,7 @@ var PlaygroundHandler = function () {
                         (mouse_y < that.y + that.card_container_s_y + (i * that.card_container[i].board_h) + that.card_container[i].board_h + (i * that.gap_between_cards))) {
 
                         that.card_container[i].hover = true;
-                        
+
                         //check eyeglass hover
                         if ((mouse_x > (that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) - 15)) &&
                             (mouse_x < that.current_pos + that.card_container_s_x + (that.card_container[i].board_w / 2) + 15) &&
@@ -1460,7 +1475,7 @@ var PlaygroundHandler = function () {
                         } else {
                             that.card_container[i].hover_eyeglass = false;
                         }
-                        
+
 
                     }
                     else {
@@ -1474,7 +1489,7 @@ var PlaygroundHandler = function () {
 
         that.checkMouseAction = function () {
 
-            if(mouse_state != 1 || parent.draw_big_picture_from_hand)
+            if (mouse_state != 1 || parent.draw_big_picture_from_hand)
                 return;
 
             for (var i = 0; i < that.card_container.length; i++) {
