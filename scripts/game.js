@@ -695,6 +695,9 @@ var PlaygroundHandler = function () {
 
         that.checkMouseActivity = function () {
 
+            if (parent.draw_big_picture_from_hand)
+                return;
+
             /* This function is independent from game phase
             
                function of this method:
@@ -770,6 +773,9 @@ var PlaygroundHandler = function () {
         }
 
         that.handleDyingCards = function () {
+
+            if (parent.draw_big_picture_from_hand)
+                return;
 
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -1027,7 +1033,7 @@ var PlaygroundHandler = function () {
                 return;
 
             //if draw in big picture is active break function
-            if (that.matrix[card_i][card_j].draw_big_picture)
+            if (that.matrix[card_i][card_j].draw_big_picture || parent.draw_big_picture_from_hand)
                 return;
 
             //if cards owner is not a player break function
@@ -1170,6 +1176,9 @@ var PlaygroundHandler = function () {
         }
 
         that.handleAttacks = function () {
+
+            if (parent.draw_big_picture_from_hand)
+                return;
 
             //reset in_range indicator
             for (var i = 0; i < that.matrix.length; i++) {
@@ -1424,21 +1433,7 @@ var PlaygroundHandler = function () {
                 }
             }
 
-            if (parent.draw_big_picture_from_hand) {
 
-                for (var i = 0; i < that.card_container.length; i++) {
-                    if (that.card_container[i] != null && that.card_container[i].draw_big_picture_from_hand) {
-
-                        ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
-                        ctx.fillRect(12, 12, width - 22, height - 22);
-
-                        //check card owner in order to load proper faction image
-                        ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].width, that.card_container[i].pos_y * that.card_container[i].height,
-                            that.card_container[i].width, that.card_container[i].height, 329, 200, that.card_container[i].width, that.card_container[i].height);
-
-                    }
-                }
-            }
         }
 
         that.checkHover = function () {
@@ -1528,6 +1523,25 @@ var PlaygroundHandler = function () {
             }
         }
 
+        that.drawBigPicture = function () {
+
+            if (parent.draw_big_picture_from_hand) {
+
+                for (var i = 0; i < that.card_container.length; i++) {
+                    if (that.card_container[i] != null && that.card_container[i].draw_big_picture_from_hand) {
+
+                        ctx.fillStyle = "rgba(185, 185, 185, 0.6)";
+                        ctx.fillRect(12, 12, width - 22, height - 22);
+
+                        //check card owner in order to load proper faction image
+                        ctx.drawImage(player.faction.board_image, that.card_container[i].pos_x * that.card_container[i].width, that.card_container[i].pos_y * that.card_container[i].height,
+                            that.card_container[i].width, that.card_container[i].height, 329, 200, that.card_container[i].width, that.card_container[i].height);
+
+                    }
+                }
+            }
+
+        }
 
         that.fillHand = function () {
 
@@ -2093,6 +2107,7 @@ var gameLoop = function () {
                 page_handler.board.drawAvailMoves();
                 page_handler.hand.draw();
                 page_handler.board.draw();
+                page_handler.hand.drawBigPicture();
 
 
 
@@ -2137,6 +2152,7 @@ var gameLoop = function () {
                 page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailAttacks();
+                page_handler.hand.drawBigPicture();
 
 
 
