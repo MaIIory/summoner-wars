@@ -1484,7 +1484,7 @@ var PlaygroundHandler = function () {
 
         that.checkMouseAction = function () {
 
-            if (mouse_state != 1 || parent.draw_big_picture_from_hand)
+            if (mouse_state != 1)
                 return;
 
             for (var i = 0; i < that.card_container.length; i++) {
