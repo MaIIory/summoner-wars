@@ -1554,6 +1554,17 @@ var PlaygroundHandler = function () {
             //for(var i = nb_of_cards; i < 5; i++)
 
         }
+
+        that.unselectAll = function () {
+
+            for (var i = 0; i < that.card_container.length; i++) {
+
+                if (that.card_container[i] != null && that.card_container[i].selected) {
+                    that.card_container[i].selected = false;
+                    return;
+                }
+            }
+        }
     }
 
     this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
@@ -1721,7 +1732,7 @@ var PlaygroundHandler = function () {
     that.checkHover = function () {
 
         //check if page handler is active
-        if (that.draw_big_picture)
+        if (that.draw_big_picture || that.draw_big_picture_from_hand)
             return;
 
         //check phase button hover
@@ -1802,7 +1813,7 @@ var PlaygroundHandler = function () {
     that.checkMouseAction = function () {
 
         //check if page handler is active
-        if (that.draw_big_picture)
+        if (that.draw_big_picture || that.draw_big_picture_from_hand)
             return;
 
         //check if phase stepping is requested
