@@ -1508,10 +1508,10 @@ var PlaygroundHandler = function () {
                         parent.board.unselectAll();
                         mouse_state = 2;
                     }
-                    else if (that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
-                        that.card_container[i].selected = false;
-                        mouse_state = 2;
-                    }
+                    //else if (that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
+                    //    that.card_container[i].selected = false;
+                    //    mouse_state = 2;
+                    //}
                     else if (that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
                         that.card_container[i].draw_big_picture_from_hand = true;
                         parent.draw_big_picture_from_hand = true;
