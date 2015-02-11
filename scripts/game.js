@@ -1326,7 +1326,7 @@ var PlaygroundHandler = function () {
                     for (var j = 0; j < that.matrix.length; j++) {
                         for (var k = 0; k < that.matrix[j].length; k++) {
 
-                            if (that.matrix[j][k] != null && that.matrix[j][k].name === "Wall") {
+                            if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player)) {
 
                                 ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                 
@@ -1337,7 +1337,7 @@ var PlaygroundHandler = function () {
                                 if (that.matrix[j][k + 1] === null)
                                     ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
                                 if (that.matrix[j + 1][k - 1] === null)
-                                    ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
+                                    ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
                             }
                         }
                     }
