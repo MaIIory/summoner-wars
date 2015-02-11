@@ -1118,10 +1118,7 @@ var PlaygroundHandler = function () {
                 return;
 
             //if draw in big picture is active break function
-            if (that.matrix[card_i][card_j].draw_big_picture)
-                return;
-
-            if (parent.draw_big_picture_from_hand)
+            if (that.matrix[card_i][card_j].draw_big_picture || parent.draw_big_picture_from_hand)
                 return;
 
             //if cards owner is not a player break function
@@ -1316,6 +1313,37 @@ var PlaygroundHandler = function () {
             }
         }
 
+        that.drawAvailSummonTails = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+
+                if (parent.hand.card_container[i].selected) {
+
+                    for (var j = 0; j < that.matrix.length; j++) {
+                        for (var k = 0; k < that.matrix[j].length; k++) {
+
+                            if (that.matrix[j][k] != null && that.matrix[j][k].name === "Wall") {
+
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                
+                                if(that.matrix[j + 1][k] === null)
+                                    ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
+                                if (that.matrix[j - 1][k] === null)
+                                    ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
+                                if (that.matrix[j][k + 1] === null)
+                                    ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
+                                if (that.matrix[j + 1][k - 1] === null)
+                                    ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 
     }
@@ -1564,6 +1592,7 @@ var PlaygroundHandler = function () {
                 }
             }
         }
+
     }
 
     this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
@@ -2090,6 +2119,7 @@ var gameLoop = function () {
                 page_handler.draw();
                 page_handler.hand.draw();
                 page_handler.board.draw();
+                page_handler.board.drawAvailSummonTails();
                 page_handler.hand.drawBigPicture();
 
 
@@ -2098,14 +2128,38 @@ var gameLoop = function () {
                 /* EVENT PHASE */
                 /* =========== */
 
-                //Phase handler handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
 
-                //Board handling
+                ite1 += 1;
+
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //logic layer should not run always
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
+                    page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
+                    lag -= MS_PER_UPDATE;
+                }
+
+                //render layer
+                page_handler.draw();
+                page_handler.hand.draw();
                 page_handler.board.draw();
-                page_handler.board.checkMouseActivity();
+                page_handler.hand.drawBigPicture();
 
             }
             else if (game_phase === 3) {
