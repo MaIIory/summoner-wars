@@ -1338,7 +1338,7 @@ var PlaygroundHandler = function () {
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
                                 if (that.matrix[j][k + 1] === null)
                                     ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
-                                if (that.matrix[j + 1][k - 1] === null)
+                                if (that.matrix[j][k - 1] === null)
                                     ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
                             }
                         }
