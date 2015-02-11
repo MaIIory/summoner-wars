@@ -22,7 +22,7 @@ var state = 0; /* 0 - main menu
                   3 - game in progress */
 
 //game phase indicators
-var game_phase = 3; /* 0 - draw phase
+var game_phase = 1; /* 0 - draw phase
                        1 - summon phase
                        2 - event phase
                        3 - move phase (start phase)
@@ -1508,10 +1508,6 @@ var PlaygroundHandler = function () {
                         parent.board.unselectAll();
                         mouse_state = 2;
                     }
-                    //else if (that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
-                    //    that.card_container[i].selected = false;
-                    //    mouse_state = 2;
-                    //}
                     else if (that.card_container[i].selected && that.card_container[i].hover && that.card_container[i].hover_eyeglass) {
                         that.card_container[i].draw_big_picture_from_hand = true;
                         parent.draw_big_picture_from_hand = true;
@@ -2063,14 +2059,39 @@ var gameLoop = function () {
                 /* SUMMON PHASE */
                 /* ============ */
 
-                //Phase handler handling
-                page_handler.checkHover();
-                page_handler.checkMouseAction();
-                page_handler.draw();
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
 
-                //Board handling
+                ite1 += 1;
+
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //logic layer should not run always
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
+                    page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
+                    lag -= MS_PER_UPDATE;
+                }
+
+                //render layer
+                page_handler.draw();
+                page_handler.hand.draw();
                 page_handler.board.draw();
-                page_handler.board.checkMouseActivity();
+                page_handler.hand.drawBigPicture();
+
 
             } else if (game_phase === 2) {
                 /* =========== */
