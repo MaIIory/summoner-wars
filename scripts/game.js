@@ -737,6 +737,7 @@ var PlaygroundHandler = function () {
                             //check if player wish to select this card
                             if ((mouse_state === 1) && that.matrix[i][j].selected === false) {
                                 that.matrix[i][j].selected = true;
+                                parent.hand.unselectAll();
                                 new_card_selected = true;
                             }
                                 //check if player click eyeglass (20x20px in the middle of the card)
@@ -1487,6 +1488,7 @@ var PlaygroundHandler = function () {
             if (mouse_state != 1)
                 return;
 
+            //disable draw in big picture if true
             for (var i = 0; i < that.card_container.length; i++) {
 
                 if (that.card_container[i].draw_big_picture_from_hand) {
@@ -1503,6 +1505,7 @@ var PlaygroundHandler = function () {
 
                     if (!that.card_container[i].selected && that.card_container[i].hover) {
                         that.card_container[i].selected = true;
+                        parent.board.unselectAll();
                         mouse_state = 2;
                     }
                     else if (that.card_container[i].selected && that.card_container[i].hover && !that.card_container[i].hover_eyeglass) {
@@ -1861,6 +1864,11 @@ var PlaygroundHandler = function () {
 
         if ((that.btn_hand_hover) === true && (mouse_state === 1)) {
 
+            /* 0 - closed,
+               1 - openning,
+               2 - open,
+               3 - closing */
+
             if (that.hand.state === 0)
                 that.hand.state = 1;
             else if (that.hand.state === 1)
@@ -1870,6 +1878,7 @@ var PlaygroundHandler = function () {
             else if (that.hand.state === 3)
                 that.hand.state = 1;
 
+            that.hand.unselectAll();
             mouse_state = 2;
         }
 
