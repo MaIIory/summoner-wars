@@ -1318,6 +1318,26 @@ var PlaygroundHandler = function () {
             if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
                 return;
 
+            var mouse_over_board = false;
+            var hovered_tile = [0, 0];
+
+
+            if ((mouse_x > that.s_x) &&
+                (mouse_x < that.s_x + (6 * that.square_w)) &&
+                (mouse_y > that.s_y) &&
+                (mouse_y < that.s_y + (8 * that.square_h)))
+                mouse_over_board = true;
+
+            if (mouse_over_board) {
+
+                hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
+                hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
+
+                ctx.fillText("hovered_tile_x: " + hovered_tile[0], 840, 580);
+                ctx.fillText("hovered_tile_y: " + hovered_tile[1], 840, 590);
+                
+            }
+
 
             for (var i = 0; i < parent.hand.card_container.length; i++) {
 
@@ -1331,7 +1351,7 @@ var PlaygroundHandler = function () {
                                 ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                 
 
-                                //check if any of the below are not out of band
+                                //TODO check if any of the below are not out of band
                                 if(that.matrix[j + 1][k] === null)
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
                                 if (that.matrix[j - 1][k] === null)
