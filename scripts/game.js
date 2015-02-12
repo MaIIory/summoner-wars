@@ -1349,10 +1349,8 @@ var PlaygroundHandler = function () {
                             if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
 
                                 
-
-
-                                //TODO check if any of the below are not out of band
-                                if (that.matrix[j + 1][k] === null) {
+                                //mark green tiles adjacent to Wall, additional check if tile is not out of board
+                                if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
 
@@ -1360,7 +1358,7 @@ var PlaygroundHandler = function () {
                                     if(mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j - 1][k] === null) {
+                                if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
 
@@ -1368,7 +1366,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j][k + 1] === null) {
+                                if (that.matrix[j][k + 1] === null && (k + 1) <= 6) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -1376,7 +1374,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j][k - 1] === null) {
+                                if (that.matrix[j][k - 1] === null && (k - 1) >= 0) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
