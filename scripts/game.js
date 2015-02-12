@@ -1365,20 +1365,19 @@ var PlaygroundHandler = function () {
                                     ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
                                 }
                             }
+
+                            if (
+                                mouse_over_board &&
+                                ((Math.abs(hovered_tile[0] - k) === 1) ||
+                                (Math.abs(hovered_tile[1] - j) === 1)) &&
+                                (that.matrix[hovered_tile[1]][hovered_tile[0]] === null)
+                                ) {
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                            }
                         }
                     }
 
-                    v
-
-                    if (
-                        mouse_over_board &&
-                        ((Math.abs(hovered_tile[0] - k) === 1) ||
-                        (Math.abs(hovered_tile[1] - j) === 1)) 
-                        //(that.matrix[hovered_tile[1]][hovered_tile[0]] === null)
-                        ) {
-                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
-                        ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
-                    }
 
                 }
             }
