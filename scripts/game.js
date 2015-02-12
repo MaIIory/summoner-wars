@@ -1318,8 +1318,8 @@ var PlaygroundHandler = function () {
             if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
                 return;
 
-            var mouse_over_board = false;
-            var hovered_tile = [0, 0];
+            var mouse_over_board = false; //indicate if mouse is over board
+            var hovered_tile = [0, 0]; //stores point coordinates
 
 
             if ((mouse_x > that.s_x) &&
@@ -1338,9 +1338,9 @@ var PlaygroundHandler = function () {
                 
             }
 
-
+            //find selected card in container and trigger appropriate rendering actions
             for (var i = 0; i < parent.hand.card_container.length; i++) {
-
+                
                 if (parent.hand.card_container[i].selected) {
 
                     for (var j = 0; j < that.matrix.length; j++) {
@@ -1363,8 +1363,16 @@ var PlaygroundHandler = function () {
                             }
                         }
                     }
+
+                    if (mouse_over_board) {
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                        ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                    }
+
                 }
             }
+
+            
         }
 
 
