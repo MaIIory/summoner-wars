@@ -201,6 +201,7 @@ var removeStatusSection = function () {
 }
 
 var rebuildRoomTable = function (rooms) {
+
     rooms_container = rooms;
 
     //firsly remove old room table 
@@ -237,6 +238,7 @@ var rebuildRoomTable = function (rooms) {
         if (rooms[i].status === 0) //status: waiting for players
         {
             addNewTd("Waiting for players", room_row);
+
         }
         else if (rooms[i].status === 1) {
 
@@ -246,39 +248,39 @@ var rebuildRoomTable = function (rooms) {
             }
             else if ((rooms[i].first_player.name === player_login) || (rooms[i].second_player.name === player_login)) {
                 var td = document.createElement('td');
-                room_row.appendChild(td);
 
-                //<input type="button">
                 var btn = document.createElement('input');
                 btn.setAttribute('type', 'button');
+                btn.style.width = "100px"
+
                 btn.onclick = function (e) {
+
                     e = e || window.event;
                     room_name = (e.target || e.srcElement).parentNode.parentNode.id;
 
                     socket.emit('join_to_game', { player_login: player_login, room_name: room_name });
-
                 };
+
                 td.appendChild(btn);
+                room_row.appendChild(td);
             }
             else {
                 addNewTd("Ready to start", room_row);
             }
-
-
         }
         else //status: game in progress
         {
             addNewTd("Game in progress", room_row);
         }
 
-
-        room_row.onmousedown = function (e) {
+        room_row.onclick = function (e) {
             e = e || window.event;
+
             var elementId = (e.target || e.srcElement).parentNode.id;
             //sent request to join player to room
-
             socket.emit('assign_player_to_room', { player_login: player_login, room_name: elementId });
         };
+
 
         //append new row to table
         new_table.appendChild(room_row);
@@ -334,7 +336,8 @@ var setEventHandlers = function () {
 
 
         socket.on('error', function (data) {
-            $("#dialog").text(data.message);
+
+            $("#dialog").text('Server error');
             $('#dialog').dialog('open');
         });
 

@@ -1383,8 +1383,6 @@ var PlaygroundHandler = function () {
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
                             }
-
-
                         }
                     }
                 }

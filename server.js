@@ -180,13 +180,14 @@ io.sockets.on('connection', function (socket) {
                 }
             }
         }
-
         io.sockets.emit('update_room_table', { rooms: rooms });
 
     });
 
     //report that player is ready to start game
     socket.on('join_to_game', function (data) {
+
+        
 
         socket.join(data.room_name)
 
@@ -206,7 +207,6 @@ io.sockets.on('connection', function (socket) {
                     rooms[i].status = 2; //battle in progress
                     io.sockets.in(data.room_name).emit('start_game');
                 }
-
                 io.sockets.emit('update_room_table', { rooms: rooms });
                 return;
             }
