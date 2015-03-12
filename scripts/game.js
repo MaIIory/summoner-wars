@@ -228,7 +228,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives) {
     that.dying = false; //indicator if card is going to die
     that.alpha = 1; //when card is dying alpha should be decremented
     that.cnt = 0; //for delay during dying
-
+    that.killed_by = ""; //name of the card killer
 
     that.draw = function (image) {
 
@@ -636,6 +636,9 @@ var PlaygroundHandler = function () {
             var hit_card_i = null;
             var hit_card_j = null;
 
+            //reference to attacking card object
+            var attacking_card_ref = null;
+
             //get hitted cards coordinates
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -644,6 +647,13 @@ var PlaygroundHandler = function () {
 
                         hit_card_i = i;
                         hit_card_j = j;
+
+                    }
+
+                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].id === attacking_card_id)) {
+
+                        attacking_card_ref = that.matrix[i][j];
+
                     }
                 }
             }
@@ -653,6 +663,7 @@ var PlaygroundHandler = function () {
 
             if (that.matrix[hit_card_i][hit_card_j].wounds >= that.matrix[hit_card_i][hit_card_j].lives) {
                 that.matrix[hit_card_i][hit_card_j].wounds = that.matrix[hit_card_i][hit_card_j].lives; //only for displaying purpose
+                that.matrix[hit_card_i][hit_card_j].killed_by = attacking_card_ref.owner; //store card killer name
                 that.matrix[hit_card_i][hit_card_j].dying = true;
                 that.matrix[hit_card_i][hit_card_j].hover = false;
                 that.matrix[hit_card_i][hit_card_j].selected = false;
@@ -778,6 +789,7 @@ var PlaygroundHandler = function () {
             if (parent.draw_big_picture_from_hand)
                 return;
 
+            //step frames for all dying card on a board
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if (that.matrix[i][j] != null && that.matrix[i][j].dying) {
@@ -786,7 +798,16 @@ var PlaygroundHandler = function () {
                         if (that.matrix[i][j].cnt > 100)
                             that.matrix[i][j].alpha -= 0.005;
 
+                        //check if any card is permanently dead
                         if (that.matrix[i][j].alpha <= 0) {
+                            
+                            //add magic for proper player
+                            if (that.matrix[i][j].killed_by == player.name)
+                                player.magic_pile.push(that.matrix[i][j]);
+                            else
+                                opponent.magic_pile.pop(that.matrix[i][j]);
+
+                            //remove card from board
                             that.matrix[i][j] = null;
                         }
                     }
