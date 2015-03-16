@@ -135,8 +135,10 @@ socket.on('start_play', function (data) {
 
     //determine which player starts 
     //data.starting_player: 0 - first player, 1 - second player
-    if (((player.name === data.first_player_name) && (data.starting_player === 0)) || ((player.name === data.second_player_name) && (data.starting_player === 1)))
+    if (((player.name === data.first_player_name) && (data.starting_player === 0)) || ((player.name === data.second_player_name) && (data.starting_player === 1))) {
         your_turn = true;
+        page_handler.hand.fillHand();
+    }
 
     background_image = background_image_with_board;
 
@@ -169,10 +171,12 @@ socket.on('step_phase', function (data) {
 socket.on('end_turn', function (data) {
 
     page_handler.board.resetPreviousMoves();
+    page_handler.hand.fillHand();
     game_phase = 0;
     player.attacks_left = 3;
     player.moves_left = 3;
     your_turn = true;
+
 
 })
 
@@ -564,6 +568,9 @@ var PlaygroundHandler = function () {
         that.hor_big_diff_between = 19;
         that.ver_big_diff_between = 20;
 
+        //Summon phase data
+        that.hovered_tile_for_summon = [null,null];
+
         //init board
         that.matrix =
             [[null, null, null, null, null, null],
@@ -800,7 +807,7 @@ var PlaygroundHandler = function () {
 
                         //check if any card is permanently dead
                         if (that.matrix[i][j].alpha <= 0) {
-                            
+
                             //add magic for proper player
                             if (that.matrix[i][j].killed_by == player.name)
                                 player.magic_pile.push(that.matrix[i][j]);
@@ -1369,14 +1376,14 @@ var PlaygroundHandler = function () {
 
                             if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
 
-                                
+
                                 //mark green tiles adjacent to Wall, additional check if tile is not out of board
                                 if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
 
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
-                                    if(mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
+                                    if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
                                 if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
@@ -1412,6 +1419,53 @@ var PlaygroundHandler = function () {
 
         }
 
+        that.handleSummon = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var mouse_over_board = false; //indicate if mouse is over board
+            
+            if ((mouse_x > that.s_x) &&
+                (mouse_x < that.s_x + (6 * that.square_w)) &&
+                (mouse_y > that.s_y) &&
+                (mouse_y < that.s_y + (8 * that.square_h)))
+                mouse_over_board = true;
+            
+            var selected_card_ref = null; //selected card in a hand
+
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+
+                if (parent.hand.card_container[i].selected) {
+                    selected_card_ref = parent.hand.card_container[i];
+                    break;
+                }
+            }
+
+            var hovered_tile = [0, 0]; //stores point coordinates
+
+            if (mouse_over_board && selected_card_ref != null && mouse_state === 1) {
+
+                hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
+                hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
+
+                if ((parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].owner === player.name)
+                    ) {
+
+                    //add to board
+                    that.addCard(selected_card_ref, hovered_tile[0], hovered_tile[1]);
+                    mouse_state = 2;
+
+                    //remove from hand
+                    parent.hand.unselectAll();
+                    parent.hand.removeCard(selected_card_ref);
+                }
+            }
+
+        }
 
     }
 
@@ -1442,7 +1496,8 @@ var PlaygroundHandler = function () {
                            3 - closing */
 
         //card container settings
-        that.card_container = [new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 1, player.name, 4, 1, 1), new Card('Archer', 'pe1', 1, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1)];
+        //that.card_container = [new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 1, player.name, 4, 1, 1), new Card('Archer', 'pe1', 1, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1), new Card('Archer', 'pe1', 0, 0, player.name, 4, 1, 1)];
+        that.card_container = [];
         that.card_container_s_x = 30;
         that.card_container_s_y = 20;
         that.gap_between_cards = 10;
@@ -1639,14 +1694,16 @@ var PlaygroundHandler = function () {
 
         that.fillHand = function () {
 
+            var nb_of_missing_cards = 5 - that.card_container.length;
 
-            var nb_of_cards = 0;
-            for (var i = 0; i < that.card_container.length; i++)
-                if (that.card_container[i] != null)
-                    nb_of_cards += 1;
+            for (var i = 0; i < nb_of_missing_cards; i++) {
 
-            //for(var i = nb_of_cards; i < 5; i++)
-
+                if (player.faction.deck.length > 0) {
+                    var rand_card = Math.floor((Math.random() * player.faction.deck.length) + 1);
+                    that.card_container.push(player.faction.deck[rand_card]);
+                    player.faction.deck.splice(rand_card, 1);
+                }
+            }
         }
 
         that.unselectAll = function () {
@@ -1659,7 +1716,18 @@ var PlaygroundHandler = function () {
                 }
             }
         }
+        
+        that.removeCard = function (card) {
 
+            for (var i = 0; i < that.card_container.length; i++) {
+                if (that.card_container[i].id === card.id) {
+
+                    that.card_container.splice(i, 1);
+                    return;
+                }
+            }
+        }
+        
     }
 
     this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
@@ -2168,6 +2236,7 @@ var gameLoop = function () {
 
                     //logic layer should not run always
                     page_handler.board.checkMouseActivity();
+                    page_handler.board.handleSummon();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
                     page_handler.hand.handleAnimation();
