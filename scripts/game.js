@@ -1390,6 +1390,8 @@ var PlaygroundHandler = function () {
 
         that.handleSummon = function () {
 
+            ctx.fillText('1...', 50, 140);
+
             if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
                 return;
 
@@ -1401,6 +1403,8 @@ var PlaygroundHandler = function () {
                 (mouse_y < that.s_y + (8 * that.square_h)))
                 mouse_over_board = true;
 
+            ctx.fillText('2...', 50, 150);
+
             var selected_card_ref = null; //selected card in a hand
 
 
@@ -1411,15 +1415,29 @@ var PlaygroundHandler = function () {
             // - is not a Wall
             for (var i = 0; i < parent.hand.card_container.length; i++) {
 
+                ctx.fillText('i '  + i, 50 + (i * 10), 160) ;
+
+                ctx.fillText('len '  + parent.hand.card_container.length, 50  + (i * 10), 170);
+
+                ctx.fillText('3... + '  + parent.hand.card_container[i].selected, 50  + (i * 10), 180);
+
                 if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].cost <= player.magic_pile.length && parent.hand.card_container[i].name != "Wall") {
+                    ctx.fillText('4...', 50, 170);
+
                     selected_card_ref = parent.hand.card_container[i];
+                    ctx.fillText('5...', 50, 180);
+
                     break;
                 }
             }
 
+
+            ctx.fillText('6...', 50, 190);
+
             var hovered_tile = [0, 0]; //stores point coordinates
 
             if (mouse_over_board && selected_card_ref != null && mouse_state === 1) {
+
 
                 hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
                 hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
@@ -1559,8 +1577,6 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
-
-
         }
 
         that.checkHover = function () {
@@ -1606,7 +1622,6 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
-
         }
 
         that.checkMouseAction = function () {
@@ -1675,7 +1690,7 @@ var PlaygroundHandler = function () {
             for (var i = 0; i < nb_of_missing_cards; i++) {
 
                 if (player.faction.deck.length > 0) {
-                    var rand_card = Math.floor((Math.random() * player.faction.deck.length) + 1);
+                    var rand_card = Math.floor(Math.random() * player.faction.deck.length);
                     that.card_container.push(player.faction.deck[rand_card]);
                     player.faction.deck.splice(rand_card, 1);
                 }
@@ -2043,6 +2058,7 @@ var Clear = function () {
     ctx.fillText('Player login: ' + player_login, 50, 100);
     ctx.fillText('mouse state: ' + mouse_state, 50, 110);
     ctx.fillText('mouse used: ' + mouse_used, 50, 120);
+    ctx.fillText('game phase: ' + game_phase, 50, 130);
 
 }
 
@@ -2201,7 +2217,6 @@ var gameLoop = function () {
             state = 3; //play in progress
             start_play_event = false;
         }
-
     }
     else if (state === 3) {
         /* ========== */
@@ -2244,12 +2259,16 @@ var gameLoop = function () {
                     lag -= MS_PER_UPDATE;
                 }
 
+                ctx.fillText('10...', 50, 230);
+
                 //render layer
                 page_handler.draw();
                 page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailSummonTails();
                 page_handler.hand.drawBigPicture();
+
+                ctx.fillText('11...', 50, 240);
 
 
             } else if (game_phase === 2) {
