@@ -32,15 +32,18 @@ function WindowCloseHanlder() {
 }
 
 var rebuildBriefingSection = function () {
+
     //first remove old briefing section
     removeBriefingSection();
 
     //then create new one
     var new_section = document.createElement('div');
     new_section.setAttribute('id', 'briefing_section');
-    //<p>Briefing section</p> 
+
+    //<p>Players online</p> 
     var p = document.createElement('p');
-    p.innerHTML = "Briefing section";
+    p.innerHTML = "Players online";
+    p.setAttribute('class', 'p_basic_style');
     new_section.appendChild(p);
 
     //<textarea id='players_list' cols="20" rows="2"></textarea>
@@ -48,10 +51,18 @@ var rebuildBriefingSection = function () {
     txtarea.setAttribute('id', 'players_list');
     txtarea.setAttribute('cols', '20');
     txtarea.setAttribute('rows', '2');
+    txtarea.disabled = true;
     new_section.appendChild(txtarea);
+
+    //<p>Players online</p> 
+    var p = document.createElement('p');
+    p.innerHTML = "Create new room:";
+    p.setAttribute('class', 'p_basic_style');
+    new_section.appendChild(p);
 
     //<input id='txt_room_name' type='text' />
     var txt_input = document.createElement('input');
+    txt_input.setAttribute('class', 'txt_basic_input');
     txt_input.setAttribute('id', 'txt_room_name');
     txt_input.setAttribute('type', 'text');
     new_section.appendChild(txt_input);
@@ -59,7 +70,9 @@ var rebuildBriefingSection = function () {
     //<input id='btn_create_room' type='button' />
     var btn_input = document.createElement('input');
     btn_input.setAttribute('id', 'btn_create_room');
+    btn_input.setAttribute('class', 'btn_create_room');
     btn_input.setAttribute('type', 'button');
+    btn_input.setAttribute('value', 'Create');
 
     btn_input.addEventListener('click', function () {
         //event to create new room and join player to room automatically
@@ -89,15 +102,14 @@ var rebuildLoginSection = function () {
     var new_section = document.createElement('div');
     new_section.setAttribute('id', 'login_section');
 
-    //<p>
+    //<p id='name_box'>
     var p = document.createElement('p');
-    p.innerHTML = "Put your name:";
+    p.setAttribute('class', 'p_basic_style');
+    p.innerHTML = "Choose your name:";
     new_section.appendChild(p);
-    //<br>
-    var br = document.createElement('br');
-    new_section.appendChild(br);
-    //<input type="text">
+    //<input type="text" id='txt_login'>
     var txt_login = document.createElement('input');
+    txt_login.setAttribute('class', 'txt_basic_input');
     txt_login.setAttribute('type', 'text');
     txt_login.setAttribute('id', 'txt_login');
     new_section.appendChild(txt_login);
@@ -107,20 +119,22 @@ var rebuildLoginSection = function () {
     //<input type="button">
     var btn = document.createElement('input');
     btn.setAttribute('type', 'button');
-    //btn.setAttribute('id', 'btn_join_game');
+    btn.setAttribute('id', 'btn_join_game');
+    btn.setAttribute('value','Join');
 
     btn.onclick = function (e) {
+
         e = e || window.event;
 
-        rebuildBriefingSection();
-
+        //get player name without whitespaces
         player_login = document.getElementById('txt_login').value;
         player_login = player_login.trim();
         if (player_login === "") {
-            //TODO change alert to dialog
             alert("login is empty!" + player_login);
             return;
         }
+
+        rebuildBriefingSection();
 
         socket.on('update_players_list', function (data) {
             var players_list = document.getElementById('players_list');
@@ -146,29 +160,9 @@ var rebuildLoginSection = function () {
         removeLoginSection();
 
     };
-    /*
-    btn.addEventListener('click', function() 
-               { 
-               
-               //rebuildBriefingSection();
-               
-               player_login = document.getElementById('txt_login').value;
-               player_login = player_login.trim();
-               if(player_login === "") 
-                  {
-                  //TODO change alert to dialog
-                  alert("login is empty!" + player_login);
-                  return;
-                  }
-                  
-               
-               socket.emit('add_new_player', { login: player_login });
-               removeLoginSection();
-               //LUCN rebuildBriefingSection();
-               }, true);
-   */
 
     new_section.appendChild(btn);
+
     //add to page content
     page_content.appendChild(new_section);
 }
@@ -204,11 +198,23 @@ var rebuildRoomTable = function (rooms) {
 
     rooms_container = rooms;
 
+    /*
     //firsly remove old room table 
     var old_table = document.getElementById('room_table');
     if (old_table != undefined) {
         briefing_section.removeChild(old_table);
     }
+    */
+    //firsly remove old table holder 
+    var old_table_holder = document.getElementById('table_holder');
+    if (old_table_holder != undefined) {
+        briefing_section.removeChild(old_table_holder);
+    }
+    
+    //create table holder
+    var table_holder = document.createElement('div');
+    table_holder.setAttribute('class', 'CSSTableGenerator');
+    table_holder.setAttribute('id', 'table_holder');
 
     //then create new one
     var new_table = document.createElement('table');
@@ -218,10 +224,10 @@ var rebuildRoomTable = function (rooms) {
     //create header row
     var header_row = document.createElement('tr');
 
-    addNewTh('Room name', header_row);
-    addNewTh('1st player', header_row);
-    addNewTh('2nd player', header_row);
-    addNewTh('Status', header_row);
+    addNewTd('Room name', header_row);
+    addNewTd('1st player', header_row);
+    addNewTd('2nd player', header_row);
+    addNewTd('Status', header_row);
 
     new_table.appendChild(header_row);
 
@@ -250,8 +256,10 @@ var rebuildRoomTable = function (rooms) {
                 var td = document.createElement('td');
 
                 var btn = document.createElement('input');
+                
                 btn.setAttribute('type', 'button');
-                btn.style.width = "100px"
+                btn.setAttribute('id', 'btn_join_room');
+                btn.setAttribute('value', 'Click to start');
 
                 btn.onclick = function (e) {
 
@@ -286,8 +294,44 @@ var rebuildRoomTable = function (rooms) {
         new_table.appendChild(room_row);
     }
 
-    briefing_section.appendChild(new_table);
+    table_holder.appendChild(new_table);
+    briefing_section.appendChild(table_holder);
 }
+
+var startGame = function () {
+    //main settings and game data
+
+    removeLoginSection();
+    removeBriefingSection();
+
+    //<p>Players online</p> 
+
+    var new_section = document.createElement('div');
+    new_section.setAttribute('id', 'warning_section');
+
+    var p = document.createElement('p');
+    p.innerHTML = "Warning: do not refresh this page!";
+    p.setAttribute('class', 'p_basic_style');
+    new_section.appendChild(p);
+    page_content.appendChild(new_section);
+
+    //create canvas HTML document
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'canvas');
+    canvas.width = 1024;
+    canvas.height = 768;
+    page_content.appendChild(canvas)
+
+    var fileref = document.createElement('script')
+    fileref.setAttribute("type", "text/javascript")
+    fileref.setAttribute("src", "/scripts/game.js")
+    document.getElementById('page_content').appendChild(fileref)
+
+}
+
+/**************************************************
+** SUPPORT FUNCTIONS
+**************************************************/
 
 var addNewTh = function (inner_HTML_text, row) {
     var th = document.createElement('th');
@@ -305,21 +349,13 @@ var myFunction = function () {
     $("#dialog").dialog("open");
 }
 
-var startGame = function () {
-    //main settings and game data
-
-    //create canvas HTML document
-    var canvas = document.createElement('canvas');
-    canvas.setAttribute('id', 'canvas');
-    canvas.width = 1024;
-    canvas.height = 768;
-    page_content.appendChild(canvas)
-
-    var fileref = document.createElement('script')
-    fileref.setAttribute("type", "text/javascript")
-    fileref.setAttribute("src", "/scripts/game.js")
-    document.getElementById('page_content').appendChild(fileref)
-
+function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+            break;
+        }
+    }
 }
 
 /**************************************************
@@ -349,16 +385,6 @@ var setEventHandlers = function () {
 
     });
 
-}
-
-
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds) {
-            break;
-        }
-    }
 }
 
 
