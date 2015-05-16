@@ -67,14 +67,44 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
 
-        //TODO remove from rooms
+        var player_name = "";
+
+        //remove player from list
         for (var i = 0; i < players.length; i = i + 1) {
             if (players[i].socket_id === socket.id) {
+                player_name = players[i].name;
                 players.splice(i, 1);
                 io.sockets.emit('update_players_list', { players: players });
-                return;
             }
         }
+
+        var emit_update_room = false;
+
+        //remove player from room
+        if (player_name != "") {
+
+            for (var i = 0; i < rooms.length; i = i + 1) {
+
+                if (rooms[i].first_player.name === player_name) {
+                    rooms[i].first_player = "none";
+                    emit_update_room = true;
+                }
+                else if (rooms[i].second_player.name === player_name) {
+                    rooms[i].second_player = "none";
+                    emit_update_room = true;
+                }
+
+                if ((rooms[i].first_player === "none") && (rooms[i].second_player === "none")) {
+                    rooms.splice(i, 1);
+                    emit_update_room = true;
+                    break;
+                }
+
+            }
+        }
+
+        if (emit_update_room)
+            io.sockets.emit('update_room_table', { rooms: rooms });
     });
 
     socket.emit('connection_confirmation');
@@ -187,7 +217,7 @@ io.sockets.on('connection', function (socket) {
     //report that player is ready to start game
     socket.on('join_to_game', function (data) {
 
-        
+
 
         socket.join(data.room_name)
 
@@ -267,6 +297,16 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    //game over
+    socket.on('game_over', function (data) {
+        // sending to all clients in 'game' room(channel) except sender
+
+        io.sockets.in(data.room_name).emit('game_over', {
+            win: data.win,
+            lost: data.lost
+        });
+    });
+
     //step game phase
     socket.on('step_phase', function (data) {
 
@@ -278,6 +318,13 @@ io.sockets.on('connection', function (socket) {
     socket.on('end_turn', function (data) {
         // sending to all clients in 'game' room(channel) except sender
         socket.broadcast.to(data.room_name).emit('end_turn');
+    });
+
+    //build magic event handling
+    socket.on('add_to_magic_pile', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('add_to_magic_pile', { card_id: data.card_id });
     });
 
 });

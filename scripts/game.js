@@ -19,7 +19,8 @@ background_image_with_board.src = "/img/board.jpg";
 var state = 0; /* 0 - main menu
                   1 - briefing (faction selection)
                   2 - waiting for other players 
-                  3 - game in progress */
+                  3 - game in progress 
+                  */
 
 var start_play_event = false; //indicates if 'start_play' event came
 var end_turn_event = false;   //indicates if 'end turn' event came
@@ -31,7 +32,8 @@ var game_phase = 1; /* 0 - draw phase
                        3 - move phase (start phase)
                        4 - atack phase
                        5 - build magic phase
-                       6 - "Blaze Step" phase (in case one of the player plays pheonix elves deck) */
+                       6 - "Blaze Step" phase (in case one of the player plays pheonix elves deck) 
+                       7 - game over */
 
 var your_turn = false;
 
@@ -115,7 +117,7 @@ socket.on('start_play', function (data) {
             opponent.faction = new TundraOrcs(opponent.name)
     }
 
-        //determine which player starts 
+    //determine which player starts 
     //data.starting_player: 0 - first player, 1 - second player
     if (((player.name === data.first_player_name) && (data.starting_player === 0)) || ((player.name === data.second_player_name) && (data.starting_player === 1))) {
         your_turn = true;
@@ -150,6 +152,39 @@ socket.on('end_turn', function (data) {
     end_turn_event = true;
 })
 
+//incoming game over event
+socket.on('game_over', function (data) {
+
+    game_phase = 7;
+
+    if (player.name === data.win)
+        player.win = 1;
+    else if (opponent.name === data.win)
+        opponent.win = 1;
+
+    page_handler.animations.push(new page_handler.Animation(3));
+
+})
+// { room_name: room_name, card_id: selected_card_ref.id }
+socket.on('add_to_magic_pile', function (data) {
+
+    var card_ref = null;
+
+    for (var i = 0; opponent.faction.deck.length; i++) {
+
+        if (opponent.faction.deck[i].id === data.card_id) {
+            
+            card_ref = opponent.faction.deck[i];
+            opponent.faction.deck.splice(i, 1);
+            break;
+        }
+    }
+
+    if (card_ref === null) return;
+
+    opponent.magic_pile.push(card_ref);
+})
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -163,6 +198,7 @@ var Player = function (name) {
     that.attacks_left = 2; //in the first turn player has 2 attacks
     that.magic_pile = [];
     that.discard_pile = [];
+    that.win = 0; //0 - player lost, 1 - player win
 }
 
 var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost) {
@@ -475,7 +511,7 @@ var PlaygroundHandler = function () {
     that.btn_phase_x = 835;
     that.btn_phase_y = 605;
     that.btn_phase_src_y = 0;
-    that.btn_phase_padding = 20;
+    that.btn_phase_padding = 30;
 
     //hand button settings
     that.btn_hand_wh = 90;
@@ -494,6 +530,18 @@ var PlaygroundHandler = function () {
     that.btn_surrender_y = 570;
     that.btn_surrender_src_y = 240;
     that.btn_surrender_padding = 5;
+
+    //build magic button settings
+    that.btn_build_magic_wh = 40;
+    that.btn_build_magic_state = 0; //0 - not active, 1 - active, 2 - hovered
+    that.btn_build_magic_x = 822;
+    that.btn_build_magic_y = 614;
+    that.btn_build_magic_src_y = 1761;
+    that.btn_build_magic_padding = 3;
+
+    //game over print settings
+    that.go_s_x = 0;    //source start x for game over screen
+    that.go_s_y = 1461; //source start y for game over screen
 
     that.animations = [];
 
@@ -643,6 +691,15 @@ var PlaygroundHandler = function () {
                 that.matrix[hit_card_i][hit_card_j].dying = true;
                 that.matrix[hit_card_i][hit_card_j].hover = false;
                 that.matrix[hit_card_i][hit_card_j].selected = false;
+
+                //handle GAME OVER
+                if ((that.matrix[hit_card_i][hit_card_j].id) === 'pe31' && (that.matrix[hit_card_i][hit_card_j].owner === player.name)) {
+                    socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                }
+                else if ((that.matrix[hit_card_i][hit_card_j].id) === 'to25' && (that.matrix[hit_card_i][hit_card_j].owner === player.name)) {
+                    socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                }
+
             }
 
             //add 'nb of hits' animation and clear container if any animation is hanging
@@ -1415,11 +1472,11 @@ var PlaygroundHandler = function () {
             // - is not a Wall
             for (var i = 0; i < parent.hand.card_container.length; i++) {
 
-                ctx.fillText('i '  + i, 50 + (i * 10), 160) ;
+                ctx.fillText('i ' + i, 50 + (i * 10), 160);
 
-                ctx.fillText('len '  + parent.hand.card_container.length, 50  + (i * 10), 170);
+                ctx.fillText('len ' + parent.hand.card_container.length, 50 + (i * 10), 170);
 
-                ctx.fillText('3... + '  + parent.hand.card_container[i].selected, 50  + (i * 10), 180);
+                ctx.fillText('3... + ' + parent.hand.card_container[i].selected, 50 + (i * 10), 180);
 
                 if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].cost <= player.magic_pile.length && parent.hand.card_container[i].name != "Wall") {
                     ctx.fillText('4...', 50, 170);
@@ -1726,6 +1783,7 @@ var PlaygroundHandler = function () {
            0 - 'End Phase' animation: only 'type' argument required
            1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
            2 - 'arrows' animation: all arguments are required
+           3 - 'Game over' animation
         */
 
         var that = this;
@@ -1785,18 +1843,25 @@ var PlaygroundHandler = function () {
 
         }
 
+        if (that.type === 3) {
+
+            //overwrite sheet settings
+            that.sheet_origin = 1461; // y start coordinates
+        }
+
         that.handle = function () {
 
-            that.cnt++;
+            if (that.type != 3) {
+                that.cnt++;
 
-            if (that.cnt > 100) {
-                that.alpha -= 0.005;
+                if (that.cnt > 100) {
+                    that.alpha -= 0.005;
 
-                //alpha must not have negative value
-                if (that.alpha < 0)
-                    that.alpha = 0;
+                    //alpha must not have negative value
+                    if (that.alpha < 0)
+                        that.alpha = 0;
+                }
             }
-
         }
 
         that.draw = function () {
@@ -1867,7 +1932,11 @@ var PlaygroundHandler = function () {
 
                 ctx.restore(); //load stored context settings
             }
-
+            else if (that.type === 3) {
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 375, 100, 325, 250, 375, 100);
+                ctx.drawImage(parent.image, 325 * player.win, that.sheet_origin + 100, 325, 100, 350, 350, 325, 100);
+                ctx.drawImage(parent.image, 0, that.sheet_origin + 200, 650, 100, 187, 450, 650, 100);
+            }
 
             ctx.restore();
 
@@ -1888,7 +1957,7 @@ var PlaygroundHandler = function () {
             return;
 
         //check phase button hover
-        if(your_turn){
+        if (your_turn) {
 
             if ((mouse_x > that.btn_phase_x + that.btn_phase_padding) &&
                 (mouse_x < that.btn_phase_x + that.btn_phase_wh - that.btn_phase_padding) &&
@@ -1901,6 +1970,21 @@ var PlaygroundHandler = function () {
                 that.btn_phase_frame = 1;
                 that.btn_phase_hover = false;
             }
+        }
+
+        //check 'build magic' button hover
+        if (that.btn_build_magic_state != 0) {
+            if ((mouse_x > that.btn_build_magic_x + that.btn_build_magic_padding) &&
+                (mouse_x < that.btn_build_magic_x + that.btn_build_magic_wh - that.btn_build_magic_padding) &&
+                (mouse_y > that.btn_build_magic_y + that.btn_build_magic_padding) &&
+                (mouse_y < that.btn_build_magic_y + that.btn_build_magic_wh - that.btn_build_magic_padding)) {
+                that.btn_build_magic_state = 2;
+            }
+            else {
+                that.btn_build_magic_state = 1;
+            }
+
+
         }
 
         //check 'show hand' button hover
@@ -1963,6 +2047,9 @@ var PlaygroundHandler = function () {
 
         //draw 'surrender' button
         ctx.drawImage(that.image, that.btn_surrender_wh * that.btn_surrender_frame, that.btn_surrender_src_y, that.btn_surrender_wh, that.btn_surrender_wh, that.btn_surrender_x, that.btn_surrender_y, that.btn_surrender_wh, that.btn_surrender_wh);
+
+        //draw 'build magic' button
+        ctx.drawImage(that.image, that.btn_build_magic_wh * that.btn_build_magic_state, that.btn_build_magic_src_y, that.btn_build_magic_wh, that.btn_build_magic_wh, that.btn_build_magic_x, that.btn_build_magic_y, that.btn_build_magic_wh, that.btn_build_magic_wh);
     }
 
     that.checkMouseAction = function () {
@@ -1971,7 +2058,7 @@ var PlaygroundHandler = function () {
         if (that.draw_big_picture || that.draw_big_picture_from_hand)
             return;
 
-        //check if phase stepping is requested
+        //check if 'step phase' button is clicked
         if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
 
             //unselect card if any
@@ -1987,6 +2074,7 @@ var PlaygroundHandler = function () {
                 player.attacks_left = 3;
                 player.moves_left = 3;
                 your_turn = false;
+                that.btn_build_magic_state = 0;
 
                 //emit apropriate event
                 socket.emit('end_turn', { room_name: room_name });
@@ -2009,7 +2097,7 @@ var PlaygroundHandler = function () {
             mouse_state = 2;
         }
 
-
+        //check if 'show hand' button is clicked
         if ((that.btn_hand_hover) === true && (mouse_state === 1)) {
 
             /* 0 - closed,
@@ -2029,6 +2117,44 @@ var PlaygroundHandler = function () {
             that.hand.unselectAll();
             mouse_state = 2;
         }
+
+        //check if 'build magic' button is clicked
+        if ((that.btn_build_magic_state === 2) && (mouse_state === 1)) {
+
+            var selected_card_ref = null;
+
+            for (var i = 0; i < that.hand.card_container.length; i++) {
+
+                if (that.hand.card_container[i].selected) 
+                    selected_card_ref = that.hand.card_container[i];  
+            }
+
+            if (selected_card_ref === null) return;
+
+            that.hand.unselectAll();
+            player.magic_pile.push(selected_card_ref);
+            that.hand.removeCard(selected_card_ref);
+            that.btn_build_magic_state = 0;
+            mouse_state = 2;
+            socket.emit('add_to_magic_pile', { room_name: room_name, card_id: selected_card_ref.id })
+            
+        }
+    }
+
+    that.handleBuildMagicButtonState = function () {
+
+        for (var i = 0; i < that.hand.card_container.length; i++) {
+
+            if (that.hand.card_container[i].selected) {
+                that.btn_build_magic_state = 1; //activate button
+                break;
+            }
+
+            //if any card is not selected deactivate button
+            that.btn_build_magic_state = 0;
+        }
+
+        //further building magic actions are perform in checkMouseAction method
     }
 }
 
@@ -2132,7 +2258,7 @@ var gameLoop = function () {
         page_handler.draw(player);
 
         var result = page_handler.checkAction();
-        
+
         //start game button
         if (result === 1) {
 
@@ -2183,7 +2309,7 @@ var gameLoop = function () {
         /* after receiving 'start play' event     */
         page_handler.draw();
 
-        if(start_play_event){
+        if (start_play_event) {
 
             //init opponent deck
             opponent.faction.initDeck();
@@ -2415,6 +2541,7 @@ var gameLoop = function () {
                     //Phase handler handling
                     page_handler.board.handleDyingCards();
                     page_handler.board.checkMouseActivity();
+                    page_handler.handleBuildMagicButtonState();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
                     page_handler.hand.handleAnimation();
@@ -2476,6 +2603,46 @@ var gameLoop = function () {
                 page_handler.board.draw();
                 page_handler.hand.drawBigPicture();
 
+            } else if (game_phase === 7) {
+                /* ================= */
+                /*  GAME OVER PHASE  */
+                /* ================= */
+
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
+
+                ite1 += 1;
+
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //Phase handler handling
+                    page_handler.board.handleDyingCards();
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
+                    page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
+                    lag -= MS_PER_UPDATE;
+                }
+
+                //Board handling
+                page_handler.draw();
+                page_handler.board.drawPreviousMoves();
+                page_handler.hand.draw();
+                page_handler.board.draw();
+                page_handler.hand.drawBigPicture();
+
             }
 
 
@@ -2499,8 +2666,8 @@ var gameLoop = function () {
                 page_handler.hand.handleAnimation();
                 page_handler.hand.checkHover();
                 page_handler.hand.checkMouseAction();
-                
-                
+
+
 
                 //handle animation in queue
                 for (var i = 0; i < page_handler.animations.length; i++) {
@@ -2510,7 +2677,7 @@ var gameLoop = function () {
                 lag -= MS_PER_UPDATE;
             }
 
-            if(end_turn_event){
+            if (end_turn_event) {
 
                 page_handler.board.resetPreviousMoves();
                 page_handler.hand.fillHand();
@@ -2560,8 +2727,6 @@ var gameLoop = function () {
 
 
     }
-
-
 
     requestAnimFrame(gameLoop);
 }
