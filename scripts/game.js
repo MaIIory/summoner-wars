@@ -251,6 +251,31 @@ socket.on('PE_greater_burn_event', function (data) {
     }
 })
 
+socket.on('PE_spirit_of_the_phoenix_event', function (data) {
+
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.card_id) {
+
+                page_handler.board.matrix[i][j].spirit_of_the_phoenix = true;
+
+                //add 'Spirit of the phoenix' animation
+                page_handler.animations.push(new page_handler.Animation(6, null, null, data.card_id));
+
+                for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+                    if (opponent.faction.deck[i].name === 'Spirit of the Phoenix') {
+                        opponent.discard_pile.push(opponent.faction.deck[i]);
+                        opponent.faction.deck.splice(i, 1);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+})
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -310,6 +335,16 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
     that.killed_by = ""; //name of the card killer
     that.card_class = card_class;
 
+    //abilities assignment
+    that.precise = false;
+
+    if (that.name === 'Guardian')
+        that.precise = true;
+
+    //events handling
+    that.spirit_of_the_phoenix = false;
+
+    //TODO draw method should be removed
     that.draw = function (image) {
 
     }
@@ -1016,6 +1051,11 @@ var PlaygroundHandler = function () {
                             }
                         }
 
+                        //EVENTS ANIMATION HANDLING
+                        //draw 'Spirit of the phoenix animation'
+                        if (that.matrix[i][j].spirit_of_the_phoenix)
+                            ctx.drawImage(parent.image, 0, 1901, 650, 100, 350, 450, 325, 50);
+
                     }
                 }
             }
@@ -1390,6 +1430,9 @@ var PlaygroundHandler = function () {
                                     if (Math.floor((Math.random() * 6) + 1) > 2)
                                         hits++;
                                 }
+
+                                if (that.matrix[card_i][card_j].precise || that.matrix[card_i][card_j].spirit_of_the_phoenix)
+                                    hits = that.matrix[card_i][card_j].attack;
 
                                 that.matrix[card_i][card_j].attacked = true;
                                 mouse_state = 2;
@@ -1851,6 +1894,8 @@ var PlaygroundHandler = function () {
            2 - 'arrows' animation: all arguments are required
            3 - 'Game over' animation
            4 - 'Burn'
+           5 - 'Greater Burn'
+           6 - 'Spirit of the Phoenix'
         */
 
         var that = this;
@@ -1914,7 +1959,28 @@ var PlaygroundHandler = function () {
             //overwrite sheet settings
             that.sheet_origin = 1801; // y start coordinates
         }
+        if (that.type === 6) {
 
+            //overwrite sheet settings
+            that.sheet_origin = 1901; // y start coordinates
+
+            that.touched_card_x = null;
+            that.touched_card_y = null;
+
+            for (var i = 0; i < parent.board.matrix.length; i++) {
+                for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                    if (parent.board.matrix[i][j] != null) {
+
+                        if (parent.board.matrix[i][j].id === that.attacking_card_id) {
+                            that.touched_card_x = i;
+                            that.touched_card_y = j;
+                        }
+
+                    }
+                }
+            }
+        }
 
 
         that.handle = function () {
@@ -2011,8 +2077,13 @@ var PlaygroundHandler = function () {
             else if (that.type === 5) {
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 450, 100, 387, 334, 450, 100);
             }
+            else if (that.type === 6) {
+                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                ctx.fillRect(parent.board.s_x + (that.touched_card_y * parent.board.square_w), parent.board.s_y + (that.touched_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 650, 100, 187, 334, 650, 100);
+            }
 
-            ctx.restore();
+            ctx.restore(); 
 
         }
     }
@@ -2044,7 +2115,7 @@ var PlaygroundHandler = function () {
 
             } else if (card_ref.name === 'Burn') {
 
-                
+
                 for (var i = 0; i < parent.board.matrix.length; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
 
@@ -2067,7 +2138,7 @@ var PlaygroundHandler = function () {
                                     parent.board.matrix[i][j].dying = true;
                                     parent.board.matrix[i][j].hover = false;
                                     parent.board.matrix[i][j].selected = false;
-                                    
+
                                 }
 
                                 mouse_state = 2;
@@ -2079,7 +2150,7 @@ var PlaygroundHandler = function () {
                         }
                     }
                 }
-                
+
 
             } else if (card_ref.name === 'Greater Burn') {
 
@@ -2096,7 +2167,7 @@ var PlaygroundHandler = function () {
 
                                 parent.board.matrix[i][j].wounds += 2;
 
-                                //add 'Burn' animation
+                                //add 'Greater Burn' animation
                                 parent.animations.push(new parent.Animation(5));
 
                                 if (parent.board.matrix[i][j].wounds >= parent.board.matrix[i][j].lives) {
@@ -2121,6 +2192,32 @@ var PlaygroundHandler = function () {
             } else if (card_ref.name === 'Magic Drain') {
 
             } else if (card_ref.name === 'Spirit of the Phoenix') {
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null) {
+
+                            if ((mouse_x > parent.board.s_x + (j * parent.board.square_w)) &&
+                                (mouse_x < parent.board.s_x + (j * parent.board.square_w) + parent.board.square_w) &&
+                                (mouse_y > parent.board.s_y + (i * parent.board.square_h)) &&
+                                (mouse_y < parent.board.s_y + (i * parent.board.square_h) + parent.board.square_h) &&
+                                ((parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion' || parent.board.matrix[i][j].card_class === 'summoner') && parent.board.matrix[i][j].owner === player_login)) {
+
+                                parent.board.matrix[i][j].spirit_of_the_phoenix = true;
+
+                                //add 'Spirit of the Phoenix' animation
+                                parent.animations.push(new parent.Animation(6, null, null, parent.board.matrix[i][j].id));
+
+                                mouse_state = 2;
+                                socket.emit('PE_spirit_of_the_phoenix_event', { room_name: room_name, card_id: parent.board.matrix[i][j].id });
+                                player.discard_pile.push(card_ref);
+                                parent.hand.removeCard(card_ref);
+
+                            }
+                        }
+                    }
+                }
 
             } else if (card_ref.name === 'Wall') {
 
@@ -2182,10 +2279,20 @@ var PlaygroundHandler = function () {
                     }
                 }
 
+            } else if (card_name === 'Spirit of the Phoenix') {
+
+                //draw available cards
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if ((parent.board.matrix[i][j] != null) && ((parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion' || parent.board.matrix[i][j].card_class === 'summoner') && parent.board.matrix[i][j].owner === player_login)) {
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                        }
+                    }
+                }
             }
-
         }
-
     }
 
     var TundraOrcsEventPhaseHandler = function () {
@@ -2342,6 +2449,9 @@ var PlaygroundHandler = function () {
                 your_turn = false;
                 that.btn_build_magic_state = 0;
 
+                //restore some data related to events
+                that.restoreEventsData();
+
                 //emit apropriate event
                 socket.emit('end_turn', { room_name: room_name });
 
@@ -2421,6 +2531,16 @@ var PlaygroundHandler = function () {
         }
 
         //further building magic actions are perform in checkMouseAction method
+    }
+
+    that.restoreEventsData = function () {
+
+        for (var i = 0; i < that.board.matrix.length; i++) {
+            for (var j = 0; j < that.board.matrix[i].length; j++) {
+                if (parent.board.matrix[i][j] != null && parent.board.matrix[i][j].spirit_of_the_phoenix)
+                    parent.board.matrix[i][j].spirit_of_the_phoenix = false;
+            }
+        }
     }
 }
 
@@ -2951,6 +3071,8 @@ var gameLoop = function () {
                 player.moves_left = 3;
                 your_turn = true;
                 end_turn_event = false;
+                page_handler.restoreEventsData();
+                
             }
 
             page_handler.draw();
