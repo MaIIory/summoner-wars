@@ -327,4 +327,12 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('add_to_magic_pile', { card_id: data.card_id });
     });
 
+    //HANDLING EVENTS
+    //PE
+    socket.on('PE_event_burn', function(data) { 
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_event_burn', { card_id: data.card_id, player_name: data.player_name });
+    });
+
 });

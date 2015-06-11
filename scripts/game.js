@@ -173,7 +173,7 @@ socket.on('add_to_magic_pile', function (data) {
     for (var i = 0; opponent.faction.deck.length; i++) {
 
         if (opponent.faction.deck[i].id === data.card_id) {
-            
+
             card_ref = opponent.faction.deck[i];
             opponent.faction.deck.splice(i, 1);
             break;
@@ -183,6 +183,40 @@ socket.on('add_to_magic_pile', function (data) {
     if (card_ref === null) return;
 
     opponent.magic_pile.push(card_ref);
+})
+
+//EVENTS HANDLING
+//incoming 'burn' event
+socket.on('PE_event_burn', function (data) {
+
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.card_id) {
+
+                page_handler.board.matrix[i][j].wounds += 1;
+
+                //add 'Burn' animation
+                page_handler.animations.push(new page_handler.Animation(4));
+
+                if (page_handler.board.matrix[i][j].wounds >= page_handler.board.matrix[i][j].lives) {
+                    page_handler.board.matrix[i][j].wounds = page_handler.board.matrix[i][j].lives; //only for displaying purpose
+                    page_handler.board.matrix[i][j].killed_by = data.player_name; //store card killer name
+                    page_handler.board.matrix[i][j].dying = true;
+                    page_handler.board.matrix[i][j].hover = false;
+                    page_handler.board.matrix[i][j].selected = false;
+                }
+                for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+                    if (opponent.faction.deck[i].name === 'Burn') {
+                        opponent.discard_pile.push(opponent.faction.deck[i]);
+                        opponent.faction.deck.splice(i, 1);
+                        return;
+                    }
+                }
+            }
+        }
+    }
 })
 
 /***************************CLASSES****************************/
@@ -201,7 +235,7 @@ var Player = function (name) {
     that.win = 0; //0 - player lost, 1 - player win
 }
 
-var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost) {
+var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost, card_class) {
     var that = this;
 
     //basic data
@@ -242,6 +276,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
     that.alpha = 1; //when card is dying alpha should be decremented
     that.cnt = 0; //for delay during dying
     that.killed_by = ""; //name of the card killer
+    that.card_class = card_class;
 
     that.draw = function (image) {
 
@@ -1769,7 +1804,6 @@ var PlaygroundHandler = function () {
 
             for (var i = 0; i < that.card_container.length; i++) {
                 if (that.card_container[i].id === card.id) {
-
                     that.card_container.splice(i, 1);
                     return;
                 }
@@ -1784,6 +1818,7 @@ var PlaygroundHandler = function () {
            1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
            2 - 'arrows' animation: all arguments are required
            3 - 'Game over' animation
+           4 - 'Burn'
         */
 
         var that = this;
@@ -1802,7 +1837,7 @@ var PlaygroundHandler = function () {
 
         /* for education purpose
            a = typeof a !== 'undefined' ? a : 42;
-       b = typeof b !== 'undefined' ? b : 'default_b';
+           b = typeof b !== 'undefined' ? b : 'default_b';
        */
 
         if (that.type === 2) {
@@ -1831,22 +1866,18 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
-
-            //TODO remove this after tests
-            if (that.attacking_card_x === null ||
-                that.attacking_card_y === null ||
-                that.hitted_card_x === null ||
-                that.hitted_card_y === null) {
-
-                alert("Blad 5007");
-            }
-
         }
 
         if (that.type === 3) {
 
             //overwrite sheet settings
             that.sheet_origin = 1461; // y start coordinates
+        }
+
+        if (that.type === 4) {
+
+            //overwrite sheet settings
+            that.sheet_origin = 1801; // y start coordinates
         }
 
         that.handle = function () {
@@ -1937,10 +1968,143 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 325 * player.win, that.sheet_origin + 100, 325, 100, 350, 350, 325, 100);
                 ctx.drawImage(parent.image, 0, that.sheet_origin + 200, 650, 100, 187, 450, 650, 100);
             }
+            else if (that.type === 4) {
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 200, 100, 412, 334, 200, 100);
+            }
 
             ctx.restore();
 
         }
+    }
+
+    //EventPhaseHandlers
+
+    var PhoenixElvesEventPhaseHandler = function () {
+
+        var that = this;
+
+        that.handleEventPhaseLogic = function () {
+
+            //check if page handler is active
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var card_ref = null;
+
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+                if (parent.hand.card_container[i].selected)
+                    card_ref = parent.hand.card_container[i];
+            }
+
+            //if event card is not selected just stop
+            if (card_ref === null || mouse_state != 1)
+                return;
+
+            if (card_ref.name === 'A Hero Is Born') {
+
+            } else if (card_ref.name === 'Burn') {
+
+                
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null) {
+
+                            if ((mouse_x > parent.board.s_x + (j * parent.board.square_w)) &&
+                                (mouse_x < parent.board.s_x + (j * parent.board.square_w) + parent.board.square_w) &&
+                                (mouse_y > parent.board.s_y + (i * parent.board.square_h)) &&
+                                (mouse_y < parent.board.s_y + (i * parent.board.square_h) + parent.board.square_h) &&
+                                (parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion')) {
+
+                                parent.board.matrix[i][j].wounds += 1;
+
+                                //add 'Burn' animation
+                                parent.animations.push(new parent.Animation(4));
+
+                                if (parent.board.matrix[i][j].wounds >= parent.board.matrix[i][j].lives) {
+                                    parent.board.matrix[i][j].wounds = parent.board.matrix[i][j].lives; //only for displaying purpose
+                                    parent.board.matrix[i][j].killed_by = player.name; //store card killer name
+                                    parent.board.matrix[i][j].dying = true;
+                                    parent.board.matrix[i][j].hover = false;
+                                    parent.board.matrix[i][j].selected = false;
+                                    
+                                }
+
+                                mouse_state = 2;
+                                socket.emit('PE_event_burn', { room_name: room_name, card_id: parent.board.matrix[i][j].id, player_name: player.name });
+                                player.discard_pile.push(card_ref);
+                                parent.hand.removeCard(card_ref);
+
+                            }
+                        }
+                    }
+                }
+                
+
+            } else if (card_ref.name === 'Greater Burn') {
+
+            } else if (card_ref.name === 'Magic Drain') {
+
+            } else if (card_ref.name === 'Spirit of the Phoenix') {
+
+            } else if (card_ref.name === 'Wall') {
+
+            }
+
+
+        }
+
+        that.handleEventPhaseRender = function () {
+
+            var card_name = null;
+
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+                if (parent.hand.card_container[i].selected)
+                    card_name = parent.hand.card_container[i].name;
+            }
+
+            //if event card is not selected just stop
+            if (card_name === null)
+                return;
+
+            if (card_name === 'A Hero Is Born') {
+
+            } else if (card_name === 'Burn') {
+
+                //draw available attacks
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if ((parent.board.matrix[i][j] != null) && (parent.board.matrix[i][j].card_class === "common" || parent.board.matrix[i][j].card_class === "champion")) {
+
+                            if (parent.board.matrix[i][j].owner === player_login)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            else
+                                ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    var TundraOrcsEventPhaseHandler = function () {
+
+        var that = this;
+
+        that.handleEventPhaseLogic = function () {
+
+        }
+
+        that.handleEventPhaseRender = function () {
+
+        }
+
     }
 
     //board initialization
@@ -1948,6 +2112,13 @@ var PlaygroundHandler = function () {
 
     //hand initialization
     that.hand = new Hand();
+
+    //event handler initialization
+    that.event_handler = null;
+    if (player.faction.faction_name === "Pheonix Elves")
+        that.event_handler = new PhoenixElvesEventPhaseHandler();
+    else if (player.faction.faction_name === "Tundra Orcs")
+        that.event_handler = new TundraOrcsEventPhaseHandler();
 
     //method definitions
     that.checkHover = function () {
@@ -2125,8 +2296,8 @@ var PlaygroundHandler = function () {
 
             for (var i = 0; i < that.hand.card_container.length; i++) {
 
-                if (that.hand.card_container[i].selected) 
-                    selected_card_ref = that.hand.card_container[i];  
+                if (that.hand.card_container[i].selected)
+                    selected_card_ref = that.hand.card_container[i];
             }
 
             if (selected_card_ref === null) return;
@@ -2137,7 +2308,7 @@ var PlaygroundHandler = function () {
             that.btn_build_magic_state = 0;
             mouse_state = 2;
             socket.emit('add_to_magic_pile', { room_name: room_name, card_id: selected_card_ref.id })
-            
+
         }
     }
 
@@ -2164,9 +2335,6 @@ var PlaygroundHandler = function () {
 var initGame = function () {
     page_handler = new MainMenu();
     player = new Player(player_login);
-    /* REMOVE
-    board = new Board();
-    */
 }
 
 var Clear = function () {
@@ -2415,6 +2583,7 @@ var gameLoop = function () {
 
                     //logic layer should not run always
                     page_handler.board.handleDyingCards();
+                    page_handler.event_handler.handleEventPhaseLogic();
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
@@ -2434,6 +2603,7 @@ var gameLoop = function () {
                 page_handler.draw();
                 page_handler.hand.draw();
                 page_handler.board.draw();
+                page_handler.event_handler.handleEventPhaseRender();
                 page_handler.hand.drawBigPicture();
 
             }
