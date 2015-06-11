@@ -335,4 +335,11 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('PE_event_burn', { card_id: data.card_id, player_name: data.player_name });
     });
 
+    socket.on('PE_greater_burn_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_greater_burn_event', { card_id: data.card_id, player_name: data.player_name });
+    });
+
+
 });

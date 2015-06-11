@@ -219,6 +219,38 @@ socket.on('PE_event_burn', function (data) {
     }
 })
 
+socket.on('PE_greater_burn_event', function (data) {
+
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.card_id) {
+
+                page_handler.board.matrix[i][j].wounds += 2;
+
+                //add 'Burn' animation
+                page_handler.animations.push(new page_handler.Animation(5));
+
+                if (page_handler.board.matrix[i][j].wounds >= page_handler.board.matrix[i][j].lives) {
+                    page_handler.board.matrix[i][j].wounds = page_handler.board.matrix[i][j].lives; //only for displaying purpose
+                    page_handler.board.matrix[i][j].killed_by = data.player_name; //store card killer name
+                    page_handler.board.matrix[i][j].dying = true;
+                    page_handler.board.matrix[i][j].hover = false;
+                    page_handler.board.matrix[i][j].selected = false;
+                }
+                for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+                    if (opponent.faction.deck[i].name === 'Greater Burn') {
+                        opponent.discard_pile.push(opponent.faction.deck[i]);
+                        opponent.faction.deck.splice(i, 1);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+})
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -1867,18 +1899,23 @@ var PlaygroundHandler = function () {
                 }
             }
         }
-
         if (that.type === 3) {
 
             //overwrite sheet settings
             that.sheet_origin = 1461; // y start coordinates
         }
-
         if (that.type === 4) {
 
             //overwrite sheet settings
             that.sheet_origin = 1801; // y start coordinates
         }
+        if (that.type === 5) {
+
+            //overwrite sheet settings
+            that.sheet_origin = 1801; // y start coordinates
+        }
+
+
 
         that.handle = function () {
 
@@ -1969,7 +2006,10 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 0, that.sheet_origin + 200, 650, 100, 187, 450, 650, 100);
             }
             else if (that.type === 4) {
-                ctx.drawImage(parent.image, 0, that.sheet_origin, 200, 100, 412, 334, 200, 100);
+                ctx.drawImage(parent.image, 250, that.sheet_origin, 200, 100, 412, 334, 200, 100);
+            }
+            else if (that.type === 5) {
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 450, 100, 387, 334, 450, 100);
             }
 
             ctx.restore();
@@ -2043,6 +2083,41 @@ var PlaygroundHandler = function () {
 
             } else if (card_ref.name === 'Greater Burn') {
 
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null) {
+
+                            if ((mouse_x > parent.board.s_x + (j * parent.board.square_w)) &&
+                                (mouse_x < parent.board.s_x + (j * parent.board.square_w) + parent.board.square_w) &&
+                                (mouse_y > parent.board.s_y + (i * parent.board.square_h)) &&
+                                (mouse_y < parent.board.s_y + (i * parent.board.square_h) + parent.board.square_h) &&
+                                (parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion')) {
+
+                                parent.board.matrix[i][j].wounds += 2;
+
+                                //add 'Burn' animation
+                                parent.animations.push(new parent.Animation(5));
+
+                                if (parent.board.matrix[i][j].wounds >= parent.board.matrix[i][j].lives) {
+                                    parent.board.matrix[i][j].wounds = parent.board.matrix[i][j].lives; //only for displaying purpose
+                                    parent.board.matrix[i][j].killed_by = player.name; //store card killer name
+                                    parent.board.matrix[i][j].dying = true;
+                                    parent.board.matrix[i][j].hover = false;
+                                    parent.board.matrix[i][j].selected = false;
+
+                                }
+
+                                mouse_state = 2;
+                                socket.emit('PE_greater_burn_event', { room_name: room_name, card_id: parent.board.matrix[i][j].id, player_name: player.name });
+                                player.discard_pile.push(card_ref);
+                                parent.hand.removeCard(card_ref);
+
+                            }
+                        }
+                    }
+                }
+
             } else if (card_ref.name === 'Magic Drain') {
 
             } else if (card_ref.name === 'Spirit of the Phoenix') {
@@ -2087,6 +2162,26 @@ var PlaygroundHandler = function () {
 
                     }
                 }
+
+            } else if (card_name === 'Greater Burn') {
+
+                //draw available attacks
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if ((parent.board.matrix[i][j] != null) && (parent.board.matrix[i][j].card_class === "common" || parent.board.matrix[i][j].card_class === "champion")) {
+
+                            if (parent.board.matrix[i][j].owner === player_login)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            else
+                                ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                        }
+
+                    }
+                }
+
             }
 
         }
