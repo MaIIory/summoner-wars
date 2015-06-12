@@ -347,7 +347,26 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('PE_spirit_of_the_phoenix_event', { card_id: data.card_id });
     });
 
+    socket.on('PE_wall_summon_event', function (data) {
 
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_wall_summon_event', { card_id: data.card_id, i: data.i, j: data.j });
+    });
+
+    //TO
+    socket.on('TO_wall_summon_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_wall_summon_event', { card_id: data.card_id, i: data.i, j: data.j });
+    });
+
+    socket.on('TO_ice_wall_summon_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_ice_wall_summon_event', { card_id: data.card_id, i: data.i, j: data.j });
+    });
+
+    
     
 
 });

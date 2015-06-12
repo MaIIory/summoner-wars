@@ -20,7 +20,7 @@ var PheonixElves = function (player_name) {
             
             new Card('Archer', 'pe03', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
             new Card('Archer', 'pe04', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
-            new Card('Archer', 'pe05', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
+            new Card('Archer', 'pe05', 0, 0, that.player_name, 4, 1, 1, 1, "common"),/*
             new Card('Archer', 'pe06', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
             new Card('Guardian', 'pe08', 1, 0, that.player_name, 1, 1, 2, 2, "common"),
             new Card('Guardian', 'pe09', 1, 0, that.player_name, 1, 1, 2, 2, "common"),
@@ -43,7 +43,7 @@ var PheonixElves = function (player_name) {
             new Card('Magic Drain', 'pe27', 3, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Spirit of the Phoenix', 'pe28', 4, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Spirit of the Phoenix', 'pe29', 4, 1, that.player_name, 0, 0, 0, 0, "event"),
-            new Card('Spirit of the Phoenix', 'pe30', 4, 1, that.player_name, 0, 0, 0, 0, "event"),
+            new Card('Spirit of the Phoenix', 'pe30', 4, 1, that.player_name, 0, 0, 0, 0, "event"),*/
             new Card('Wall', 'pe33', 6, 0, that.player_name, 0, 0, 9, 0, "event"),
             new Card('Wall', 'pe34', 6, 0, that.player_name, 0, 0, 9, 0, "event")
             
@@ -86,6 +86,7 @@ var TundraOrcs = function (player_name) {
                [0,0][1,0][2,0]
                [0,1][1,1][2,1]
             */
+            
             new Card('Fighter', 'to03', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Fighter', 'to04', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Fighter', 'to05', 3, 0, that.player_name, 1, 1, 1, 1, "common"),

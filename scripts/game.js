@@ -165,7 +165,8 @@ socket.on('game_over', function (data) {
     page_handler.animations.push(new page_handler.Animation(3));
 
 })
-// { room_name: room_name, card_id: selected_card_ref.id }
+
+//incoming add card to magic pile event
 socket.on('add_to_magic_pile', function (data) {
 
     var card_ref = null;
@@ -186,7 +187,6 @@ socket.on('add_to_magic_pile', function (data) {
 })
 
 //EVENTS HANDLING
-//incoming 'burn' event
 socket.on('PE_event_burn', function (data) {
 
     for (var i = 0; i < page_handler.board.matrix.length; i++) {
@@ -272,6 +272,48 @@ socket.on('PE_spirit_of_the_phoenix_event', function (data) {
                     }
                 }
             }
+        }
+    }
+})
+
+socket.on('PE_wall_summon_event', function (data) {
+
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+        if (opponent.faction.deck[i].name === 'Wall') {
+
+            page_handler.animations.push(new page_handler.Animation(7));
+            page_handler.board.addCard(opponent.faction.deck[i], data.j, data.i);
+            opponent.faction.deck.splice(i, 1);
+            return;
+        }
+    }
+})
+
+socket.on('TO_wall_summon_event', function (data) {
+
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+        if (opponent.faction.deck[i].name === 'Wall') {
+
+            page_handler.animations.push(new page_handler.Animation(7));
+            page_handler.board.addCard(opponent.faction.deck[i], data.j, data.i);
+            opponent.faction.deck.splice(i, 1);
+            return;
+        }
+    }
+})
+
+socket.on('TO_ice_wall_summon_event', function (data) {
+
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+        if (opponent.faction.deck[i].name === 'Ice Wall') {
+
+            page_handler.animations.push(new page_handler.Animation(8));
+            page_handler.board.addCard(opponent.faction.deck[i], data.j, data.i);
+            opponent.faction.deck.splice(i, 1);
+            return;
         }
     }
 })
@@ -1896,6 +1938,8 @@ var PlaygroundHandler = function () {
            4 - 'Burn'
            5 - 'Greater Burn'
            6 - 'Spirit of the Phoenix'
+           7 - 'Wall'
+           8 - 'Ice Wall'
         */
 
         var that = this;
@@ -1980,6 +2024,10 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
+        }
+        if (that.type === 7 || that.type === 8) {
+
+            that.sheet_origin = 2001; // y start coordinates
         }
 
 
@@ -2082,8 +2130,14 @@ var PlaygroundHandler = function () {
                 ctx.fillRect(parent.board.s_x + (that.touched_card_y * parent.board.square_w), parent.board.s_y + (that.touched_card_x * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 650, 100, 187, 334, 650, 100);
             }
+            else if (that.type === 7) {
+                ctx.drawImage(parent.image, 130, that.sheet_origin, 200, 100, 412, 334, 200, 100);
+            }
+            else if (that.type === 8) {
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 330, 100, 347, 334, 330, 100);
+            }
 
-            ctx.restore(); 
+            ctx.restore();
 
         }
     }
@@ -2221,9 +2275,25 @@ var PlaygroundHandler = function () {
 
             } else if (card_ref.name === 'Wall') {
 
+                for (var i = 4; i < 8; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null) {
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) &&
+                                (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                mouse_state = 2;
+                                parent.board.addCard(card_ref, j, i);
+                                [j, i] = rotate180(j, i);
+                                socket.emit('PE_wall_summon_event', { room_name: room_name, card_id: card_ref.id, i: i, j: j });
+                                parent.hand.removeCard(card_ref);
+                                page_handler.animations.push(new page_handler.Animation(7));
+                            }
+                        }
+                    }
+                }
             }
-
-
         }
 
         that.handleEventPhaseRender = function () {
@@ -2291,6 +2361,29 @@ var PlaygroundHandler = function () {
                         }
                     }
                 }
+
+            } else if (card_name === 'Wall') {
+
+                //draw available tails
+                for (var i = 4; i < 8; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null) {
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) &&
+                                (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                //hover available tile (green)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -2301,12 +2394,122 @@ var PlaygroundHandler = function () {
 
         that.handleEventPhaseLogic = function () {
 
+            //check if page handler is active
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var card_ref = null;
+
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+                if (parent.hand.card_container[i].selected)
+                    card_ref = parent.hand.card_container[i];
+            }
+
+            //if event card is not selected just stop
+            if (card_ref === null || mouse_state != 1)
+                return;
+
+            if (card_ref.name === 'Wall') {
+
+                for (var i = 4; i < 8; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null) {
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) &&
+                                (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                mouse_state = 2;
+                                parent.board.addCard(card_ref, j, i);
+                                [j, i] = rotate180(j, i);
+                                socket.emit('TO_wall_summon_event', { room_name: room_name, card_id: card_ref.id, i: i, j: j });
+                                parent.hand.removeCard(card_ref);
+                                page_handler.animations.push(new page_handler.Animation(7));
+                            }
+                        }
+                    }
+                }
+            } else if (card_ref.name === 'Ice Wall') {
+
+                for (var i = 4; i < 8; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null) {
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) &&
+                                (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                mouse_state = 2;
+                                parent.board.addCard(card_ref, j, i);
+                                [j, i] = rotate180(j, i);
+                                socket.emit('TO_ice_wall_summon_event', { room_name: room_name, card_id: card_ref.id, i: i, j: j });
+                                parent.hand.removeCard(card_ref);
+                                page_handler.animations.push(new page_handler.Animation(8));
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         that.handleEventPhaseRender = function () {
 
-        }
+            var card_name = null;
 
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+                if (parent.hand.card_container[i].selected)
+                    card_name = parent.hand.card_container[i].name;
+            }
+
+            //if event card is not selected just stop
+            if (card_name === null)
+                return;
+
+            if (card_name === 'Wall') {
+
+                //draw available tails
+                for (var i = 4; i < 8; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null) {
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) &&
+                                (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                //hover available tile (green)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                            }
+                        }
+                    }
+                }
+            } else if (card_name === 'Ice Wall') {
+
+                //draw available tails
+                for (var i = 4; i < 8; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null) {
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) &&
+                                (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                //hover available tile (green)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //board initialization
@@ -3072,7 +3275,7 @@ var gameLoop = function () {
                 your_turn = true;
                 end_turn_event = false;
                 page_handler.restoreEventsData();
-                
+
             }
 
             page_handler.draw();
