@@ -367,6 +367,11 @@ io.sockets.on('connection', function (socket) {
     });
 
     
-    
+    //ALL
+    socket.on('ALL_magic_drain_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('ALL_magic_drain_event', { card_id: data.card_id });
+    });
 
 });

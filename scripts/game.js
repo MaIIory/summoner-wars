@@ -318,6 +318,23 @@ socket.on('TO_ice_wall_summon_event', function (data) {
     }
 })
 
+socket.on('ALL_magic_drain_event', function (data) {
+
+    for (var i = 0; i < player.magic_pile.length && i < 2; i++) {
+        opponent.magic_pile.push(player.magic_pile.pop());
+    }
+    page_handler.animations.push(new page_handler.Animation(9));
+
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+        if (opponent.faction.deck[i].name === 'Magic Drain') {
+            opponent.discard_pile.push(opponent.faction.deck[i]);
+            opponent.faction.deck.splice(i, 1);
+            return;
+        }
+    }
+})
+
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
 
@@ -1940,6 +1957,7 @@ var PlaygroundHandler = function () {
            6 - 'Spirit of the Phoenix'
            7 - 'Wall'
            8 - 'Ice Wall'
+           9 - 'Magic Drain'
         */
 
         var that = this;
@@ -2028,6 +2046,10 @@ var PlaygroundHandler = function () {
         if (that.type === 7 || that.type === 8) {
 
             that.sheet_origin = 2001; // y start coordinates
+        }
+        if (that.type === 9) {
+
+            that.co_xywh = [300, 2001, 350, 100];
         }
 
 
@@ -2136,6 +2158,9 @@ var PlaygroundHandler = function () {
             else if (that.type === 8) {
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 330, 100, 347, 334, 330, 100);
             }
+            else if (that.type === 9) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 338, 334, that.co_xywh[2], that.co_xywh[3]);
+            }
 
             ctx.restore();
 
@@ -2147,12 +2172,15 @@ var PlaygroundHandler = function () {
     var PhoenixElvesEventPhaseHandler = function () {
 
         var that = this;
+        that.use_button_src_xywh = [0, 2101, 150, 100]; // "USE" button source coordinates - for specific card purpose (x,y,width,height)
+        that.use_button_xywh = [437, 450, 150, 100]; // "USE" button coordinates - for specific card purpose (x,y,width,height)
+        that.card_to_be_removed = [];  //events cards id that should be removed - in case they cant be removed before
 
         that.handleEventPhaseLogic = function () {
 
-            //check if page handler is active
-            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
-                return;
+            //firstly remove card from previous loop
+            for (var i = 0; i < that.card_to_be_removed.length; i++)
+                parent.hand.removeCard(that.card_to_be_removed[i]);
 
             var card_ref = null;
 
@@ -2169,6 +2197,9 @@ var PlaygroundHandler = function () {
 
             } else if (card_ref.name === 'Burn') {
 
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 for (var i = 0; i < parent.board.matrix.length; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2208,6 +2239,10 @@ var PlaygroundHandler = function () {
 
             } else if (card_ref.name === 'Greater Burn') {
 
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
                 for (var i = 0; i < parent.board.matrix.length; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
 
@@ -2245,7 +2280,51 @@ var PlaygroundHandler = function () {
 
             } else if (card_ref.name === 'Magic Drain') {
 
+                if (parent.draw_big_picture_from_hand === false || parent.draw_big_picture)
+                    return;
+
+                //count number of units on the board for both players
+                var player_nb_of_units = 0;
+                var opponent_nb_of_units = 0;
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null && (parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion')) {
+
+                            if (parent.board.matrix[i][j].owner === player.name)
+                                player_nb_of_units++;
+                            else if (parent.board.matrix[i][j].owner === opponent.name)
+                                opponent_nb_of_units++;
+                        }
+                    }
+                }
+
+                if (opponent_nb_of_units >= player_nb_of_units || opponent.magic_pile.length === 0) {
+                    return;
+                }
+
+                if ((mouse_x > that.use_button_xywh[0]) &&
+                    (mouse_x < that.use_button_xywh[0] + that.use_button_xywh[2]) &&
+                    (mouse_y > that.use_button_xywh[1]) &&
+                    (mouse_y < that.use_button_xywh[1] + that.use_button_xywh[3])) {
+
+                    for (var i = 0; i < opponent.magic_pile.length && i < 2; i++) 
+                        player.magic_pile.push(opponent.magic_pile.pop());
+                        
+                    page_handler.animations.push(new page_handler.Animation(9));
+                    socket.emit('ALL_magic_drain_event', { room_name: room_name, card_id: card_ref.id });
+                    player.discard_pile.push(card_ref);
+                    that.card_to_be_removed.push(card_ref);
+                    
+                    return;
+                }
+
             } else if (card_ref.name === 'Spirit of the Phoenix') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 for (var i = 0; i < parent.board.matrix.length; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2274,6 +2353,10 @@ var PlaygroundHandler = function () {
                 }
 
             } else if (card_ref.name === 'Wall') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 for (var i = 4; i < 8; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2311,7 +2394,12 @@ var PlaygroundHandler = function () {
 
             if (card_name === 'A Hero Is Born') {
 
+
             } else if (card_name === 'Burn') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 //draw available attacks
                 for (var i = 0; i < parent.board.matrix.length; i++) {
@@ -2332,6 +2420,10 @@ var PlaygroundHandler = function () {
 
             } else if (card_name === 'Greater Burn') {
 
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
                 //draw available attacks
                 for (var i = 0; i < parent.board.matrix.length; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2351,6 +2443,10 @@ var PlaygroundHandler = function () {
 
             } else if (card_name === 'Spirit of the Phoenix') {
 
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
                 //draw available cards
                 for (var i = 0; i < parent.board.matrix.length; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2363,6 +2459,10 @@ var PlaygroundHandler = function () {
                 }
 
             } else if (card_name === 'Wall') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 //draw available tails
                 for (var i = 4; i < 8; i++) {
@@ -2383,6 +2483,46 @@ var PlaygroundHandler = function () {
                         }
                     }
                 }
+
+            } else if(card_name === 'Magic Drain') {
+
+                if (parent.draw_big_picture_from_hand === false)
+                    return;
+
+                //count number of units on the board for both players
+                var player_nb_of_units = 0;
+                var opponent_nb_of_units = 0;
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null && (parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion')) {
+
+                            if (parent.board.matrix[i][j].owner === player.name)
+                                player_nb_of_units++;
+                            else if (parent.board.matrix[i][j].owner === opponent.name)
+                                opponent_nb_of_units++;
+                        }
+                    }
+                }
+
+                if (opponent_nb_of_units >= player_nb_of_units || opponent.magic_pile.length === 0) {
+                    ctx.drawImage(parent.image, 0, that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[2], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+                    return;
+                }
+                else
+                    ctx.drawImage(parent.image, that.use_button_src_xywh[2], that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+
+                //check hover
+                if ((mouse_x > that.use_button_xywh[0]) &&
+                    (mouse_x < that.use_button_xywh[0] + that.use_button_xywh[2]) &&
+                    (mouse_y > that.use_button_xywh[1]) &&
+                    (mouse_y < that.use_button_xywh[1] + that.use_button_xywh[3])) {
+
+                    ctx.drawImage(parent.image, that.use_button_src_xywh[2] * 2, that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+
+                }
+
 
             }
         }
@@ -2468,6 +2608,10 @@ var PlaygroundHandler = function () {
 
             if (card_name === 'Wall') {
 
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
                 //draw available tails
                 for (var i = 4; i < 8; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2488,6 +2632,10 @@ var PlaygroundHandler = function () {
                     }
                 }
             } else if (card_name === 'Ice Wall') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 //draw available tails
                 for (var i = 4; i < 8; i++) {
@@ -3021,8 +3169,8 @@ var gameLoop = function () {
                 page_handler.draw();
                 page_handler.hand.draw();
                 page_handler.board.draw();
-                page_handler.event_handler.handleEventPhaseRender();
                 page_handler.hand.drawBigPicture();
+                page_handler.event_handler.handleEventPhaseRender();
 
             }
             else if (game_phase === 3) {
