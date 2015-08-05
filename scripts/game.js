@@ -173,6 +173,8 @@ socket.on('add_to_magic_pile', function (data) {
 
     for (var i = 0; opponent.faction.deck.length; i++) {
 
+        console.log('card_id' + data.card_id)
+
         if (opponent.faction.deck[i].id === data.card_id) {
 
             card_ref = opponent.faction.deck[i];
@@ -318,6 +320,34 @@ socket.on('TO_ice_wall_summon_event', function (data) {
     }
 })
 
+socket.on('TO_freeze_event', function (data) {
+
+    //run animation
+    page_handler.animations.push(new page_handler.Animation(11));
+
+    //Freeze specific card
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.freezed_card_id) {
+                page_handler.board.matrix[i][j].freezed = true;
+
+                //add 'Freeze' card to discard pile
+                for (var k = 0; k < opponent.faction.deck.length; k++) {
+                    if (opponent.faction.deck[k].id === data.freezing_card_id) {
+                        page_handler.board.matrix[i][j].freeze_card_ref = opponent.faction.deck[k];
+                        opponent.discard_pile.push(opponent.faction.deck[k]);
+                        console.log("card discarded");
+                        opponent.faction.deck.splice(k, 1);
+                        return;
+                    }
+                }
+
+            }
+        }
+    }
+})
+
 socket.on('ALL_magic_drain_event', function (data) {
 
     for (var i = 0; i < player.magic_pile.length && i < 2; i++) {
@@ -334,6 +364,23 @@ socket.on('ALL_magic_drain_event', function (data) {
         }
     }
 })
+
+socket.on('ALL_hero_is_born_event', function (data) {
+
+    page_handler.animations.push(new page_handler.Animation(10));
+
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+
+        if (opponent.faction.deck[i].name === 'A Hero Is Born') {
+            opponent.discard_pile.push(opponent.faction.deck[i]);
+            opponent.faction.deck.splice(i, 1);
+            return;
+        }
+    }
+})
+
+
+//socket.emit('ALL_hero_is_born_event', { room_name: room_name, card_id: card_ref.id, champion_id: player_champion_cards[i].id });
 
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
@@ -402,6 +449,8 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
 
     //events handling
     that.spirit_of_the_phoenix = false;
+    that.freezed = false;
+    that.freeze_card_ref = null; //for printing purpose
 
     //TODO draw method should be removed
     that.draw = function (image) {
@@ -910,7 +959,25 @@ var PlaygroundHandler = function () {
                - in case of click on card change "selection indicator" in Card object
             */
 
-            //check if user want to unselect focused card
+
+            //firstly check if player want to unfreeze frezzed card
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (that.matrix[i][j].freezed) && (that.matrix[i][j].owner === player.name)) {
+
+                        if ((mouse_state === 1) && (player.magic_pile.length >= 2) && mouse_x > 415 && mouse_x < 610 && mouse_y > 560 && mouse_y < 640) {
+                            that.matrix[i][j].freezed = false;
+                            player.discard_pile.push(player.magic_pile.pop());
+                            player.discard_pile.push(player.magic_pile.pop());
+                            mouse_state = 2;
+                            return;
+                            //TODO send event unfreeze
+                        }
+                    }
+                }
+            }
+
+            //check if player want to unselect focused card
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
@@ -1054,7 +1121,13 @@ var PlaygroundHandler = function () {
                         }
 
                         //draw hover
+                        ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
                         if (that.matrix[i][j].hover)
+                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                        //draw freeze rectangle
+                        ctx.fillStyle = "rgba(0, 169, 205, 0.5)";
+                        if (that.matrix[i][j].freezed)
                             ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
 
                         //draw eyeglass for selected card
@@ -1111,9 +1184,42 @@ var PlaygroundHandler = function () {
                         }
 
                         //EVENTS ANIMATION HANDLING
-                        //draw 'Spirit of the phoenix animation'
+                        //draw 'Spirit of the phoenix' animation
                         if (that.matrix[i][j].spirit_of_the_phoenix)
                             ctx.drawImage(parent.image, 0, 1901, 650, 100, 350, 450, 325, 50);
+
+                        //draw 'Freeze' animation
+                        if (that.matrix[i][j].freezed) {
+                            ctx.fillStyle = "rgba(0, 169, 205, 0.2)";
+                            ctx.fillRect(329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+
+                            if (that.matrix[i][j].freeze_card_ref.owner === player.name)
+                                ctx.drawImage(player.faction.board_image, that.matrix[i][j].freeze_card_ref.pos_x * that.matrix[i][j].freeze_card_ref.width, that.matrix[i][j].freeze_card_ref.pos_y * that.matrix[i][j].freeze_card_ref.height,
+                                    that.matrix[i][j].freeze_card_ref.width, that.matrix[i][j].freeze_card_ref.height, 530, 330, that.matrix[i][j].freeze_card_ref.width, that.matrix[i][j].freeze_card_ref.height);
+                            else if (that.matrix[i][j].freeze_card_ref.owner === opponent.name)
+                                ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].freeze_card_ref.pos_x * that.matrix[i][j].freeze_card_ref.width, that.matrix[i][j].freeze_card_ref.pos_y * that.matrix[i][j].freeze_card_ref.height,
+                                    that.matrix[i][j].freeze_card_ref.width, that.matrix[i][j].freeze_card_ref.height, 530, 330, that.matrix[i][j].freeze_card_ref.width, that.matrix[i][j].freeze_card_ref.height);
+
+                            //check if viewer is an owner of the card (for unfreeze purposes)
+                            if (that.matrix[i][j].owner === player.name) {
+
+                                //print proper "Unfreeze" animation
+                                if (player.magic_pile.length >= 2) {
+
+                                    if (mouse_x > 415 && mouse_x < 610 && mouse_y > 560 && mouse_y < 640)
+                                        ctx.drawImage(parent.image, 430, 2301, 215, 100, 405, 550, 215, 100);
+                                    else
+                                        ctx.drawImage(parent.image, 215, 2301, 215, 100, 405, 550, 215, 100);
+
+
+                                } else {
+
+                                    ctx.drawImage(parent.image, 0, 2301, 215, 100, 405, 550, 215, 100);
+
+                                }
+                            }
+
+                        }
 
                     }
                 }
@@ -1258,6 +1364,10 @@ var PlaygroundHandler = function () {
             if (that.matrix[card_i][card_j].owner != player.name)
                 return;
 
+            //if card is freezed break function
+            if (that.matrix[card_i][card_j].freezed)
+                return;
+
             //draw available places
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -1340,6 +1450,10 @@ var PlaygroundHandler = function () {
 
             //if cards owner is not a player break function
             if (that.matrix[card_i][card_j].owner != player.name)
+                return;
+
+            //if card is freezed break function
+            if (that.matrix[card_i][card_j].freezed)
                 return;
 
             //draw available places
@@ -1437,6 +1551,10 @@ var PlaygroundHandler = function () {
 
             //if card is dying break function
             if (that.matrix[card_i][card_j].dying)
+                return;
+
+            //if card is freezed break function
+            if (that.matrix[card_i][card_j].freezed)
                 return;
 
             //draw available attacks
@@ -1958,6 +2076,8 @@ var PlaygroundHandler = function () {
            7 - 'Wall'
            8 - 'Ice Wall'
            9 - 'Magic Drain'
+           10- 'A hero is born'
+           11- 'Freeze'
         */
 
         var that = this;
@@ -2051,7 +2171,14 @@ var PlaygroundHandler = function () {
 
             that.co_xywh = [300, 2001, 350, 100];
         }
+        if (that.type === 10) {
 
+            that.co_xywh = [0, 2201, 450, 100];
+        }
+        if (that.type === 11) {
+
+            that.co_xywh = [450, 1800, 200, 100];
+        }
 
         that.handle = function () {
 
@@ -2161,6 +2288,12 @@ var PlaygroundHandler = function () {
             else if (that.type === 9) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 338, 334, that.co_xywh[2], that.co_xywh[3]);
             }
+            else if (that.type === 10) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 338, 334, that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 11) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 412, 334, that.co_xywh[2], that.co_xywh[3]);
+            }
 
             ctx.restore();
 
@@ -2194,6 +2327,62 @@ var PlaygroundHandler = function () {
                 return;
 
             if (card_ref.name === 'A Hero Is Born') {
+
+                if (parent.draw_big_picture_from_hand === false || parent.draw_big_picture)
+                    return;
+
+                var visible_part = 250;
+                var ver_delta = 25; //vertical delta
+                var hor_delta = 117;
+                var card_h = 239;
+                var s_x = 100;
+                var s_y = 500;
+
+                if (parent.draw_big_picture_from_hand === false)
+                    return;
+
+                var player_champion_cards = [];
+
+                //get champion cards ref 
+                for (var i = 0; i < player.faction.deck.length; i++) {
+                    if (player.faction.deck[i].card_class === "champion")
+                        player_champion_cards.push(player.faction.deck[i]);
+                }
+
+                //draw highlight in case of hover
+                for (var i = 0; i < player_champion_cards.length; i++) {
+
+                    //check card hover
+                    if (
+                        ((mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + visible_part) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ||
+                        ((mouse_x > s_x + (i + 1) * visible_part) &&
+                        (mouse_x < s_x + (i + 1) * visible_part + hor_delta) &&
+                        (mouse_y > s_y - (i * ver_delta) + (card_h - ver_delta)) &&
+                        (mouse_y < s_y - (i * ver_delta) + card_h))
+                        ||
+                        ((i === player_champion_cards.length - 1) &&
+                        (mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + player_champion_cards[i].width) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ) {
+
+                        mouse_state = 2;
+                        socket.emit('ALL_hero_is_born_event', { room_name: room_name });
+
+                        parent.animations.push(new parent.Animation(10));
+                        player.discard_pile.push(card_ref);
+                        parent.hand.removeCard(card_ref);
+                        parent.hand.card_container.push(player_champion_cards[i]);
+                        parent.draw_big_picture_from_hand = false;
+                        return;
+
+                    }
+                }
 
             } else if (card_ref.name === 'Burn') {
 
@@ -2309,14 +2498,13 @@ var PlaygroundHandler = function () {
                     (mouse_y > that.use_button_xywh[1]) &&
                     (mouse_y < that.use_button_xywh[1] + that.use_button_xywh[3])) {
 
-                    for (var i = 0; i < opponent.magic_pile.length && i < 2; i++) 
+                    for (var i = 0; i < opponent.magic_pile.length && i < 2; i++)
                         player.magic_pile.push(opponent.magic_pile.pop());
-                        
-                    page_handler.animations.push(new page_handler.Animation(9));
+
+                    page_handler.animations.push(new parent.Animation(9));
                     socket.emit('ALL_magic_drain_event', { room_name: room_name, card_id: card_ref.id });
                     player.discard_pile.push(card_ref);
                     that.card_to_be_removed.push(card_ref);
-                    
                     return;
                 }
 
@@ -2371,7 +2559,7 @@ var PlaygroundHandler = function () {
                                 [j, i] = rotate180(j, i);
                                 socket.emit('PE_wall_summon_event', { room_name: room_name, card_id: card_ref.id, i: i, j: j });
                                 parent.hand.removeCard(card_ref);
-                                page_handler.animations.push(new page_handler.Animation(7));
+                                page_handler.animations.push(new parent.Animation(7));
                             }
                         }
                     }
@@ -2393,6 +2581,65 @@ var PlaygroundHandler = function () {
                 return;
 
             if (card_name === 'A Hero Is Born') {
+
+                var visible_part = 250;
+                var ver_delta = 25; //vertical delta
+                var hor_delta = 117;
+                var card_h = 239;
+                var s_x = 100;
+                var s_y = 500;
+
+                if (parent.draw_big_picture_from_hand === false)
+                    return;
+
+                var player_champion_cards = [];
+
+                //get champion cards ref 
+                for (var i = 0; i < player.faction.deck.length; i++) {
+                    if (player.faction.deck[i].card_class === "champion")
+                        player_champion_cards.push(player.faction.deck[i]);
+                }
+
+                //draw cards
+                for (var i = 0; i < player_champion_cards.length; i++) {
+                    ctx.drawImage(player.faction.board_image, player_champion_cards[i].pos_x * player_champion_cards[i].width, player_champion_cards[i].pos_y * player_champion_cards[i].height,
+                                    player_champion_cards[i].width, player_champion_cards[i].height, s_x + (i * visible_part), s_y - (i * ver_delta), player_champion_cards[i].width, player_champion_cards[i].height);
+                }
+
+                //draw highlight in case of hover
+                for (var i = 0; i < player_champion_cards.length; i++) {
+
+                    //check card hover
+                    if (
+                        ((mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + visible_part) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ||
+                        ((mouse_x > s_x + (i + 1) * visible_part) &&
+                        (mouse_x < s_x + (i + 1) * visible_part + hor_delta) &&
+                        (mouse_y > s_y - (i * ver_delta) + (card_h - ver_delta)) &&
+                        (mouse_y < s_y - (i * ver_delta) + card_h))
+                        ||
+                        ((i === player_champion_cards.length - 1) &&
+                        (mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + player_champion_cards[i].width) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ) {
+
+                        ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
+
+                        //additional check for last card
+                        if (i === player_champion_cards.length - 1) {
+                            ctx.fillRect(s_x + (i * visible_part) + visible_part, s_y - (i * ver_delta), hor_delta, card_h - ver_delta);
+
+                        }
+                        ctx.fillRect(s_x + (i * visible_part), s_y - (i * ver_delta), visible_part, card_h);
+                        ctx.fillRect(s_x + ((i + 1) * visible_part), s_y - (i * ver_delta) + (card_h - ver_delta), hor_delta, ver_delta);
+
+                    }
+                }
 
 
             } else if (card_name === 'Burn') {
@@ -2484,7 +2731,7 @@ var PlaygroundHandler = function () {
                     }
                 }
 
-            } else if(card_name === 'Magic Drain') {
+            } else if (card_name === 'Magic Drain') {
 
                 if (parent.draw_big_picture_from_hand === false)
                     return;
@@ -2532,11 +2779,10 @@ var PlaygroundHandler = function () {
 
         var that = this;
 
-        that.handleEventPhaseLogic = function () {
+        that.use_button_src_xywh = [0, 2101, 150, 100]; // "USE" button source coordinates - for specific card purpose (x,y,width,height)
+        that.use_button_xywh = [437, 450, 150, 100]; // "USE" button coordinates - for specific card purpose (x,y,width,height)
 
-            //check if page handler is active
-            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
-                return;
+        that.handleEventPhaseLogic = function () {
 
             var card_ref = null;
 
@@ -2551,6 +2797,10 @@ var PlaygroundHandler = function () {
 
             if (card_ref.name === 'Wall') {
 
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
                 for (var i = 4; i < 8; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
 
@@ -2564,12 +2814,16 @@ var PlaygroundHandler = function () {
                                 [j, i] = rotate180(j, i);
                                 socket.emit('TO_wall_summon_event', { room_name: room_name, card_id: card_ref.id, i: i, j: j });
                                 parent.hand.removeCard(card_ref);
-                                page_handler.animations.push(new page_handler.Animation(7));
+                                page_handler.animations.push(new parent.Animation(7));
                             }
                         }
                     }
                 }
             } else if (card_ref.name === 'Ice Wall') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
 
                 for (var i = 4; i < 8; i++) {
                     for (var j = 0; j < parent.board.matrix[i].length; j++) {
@@ -2584,11 +2838,98 @@ var PlaygroundHandler = function () {
                                 [j, i] = rotate180(j, i);
                                 socket.emit('TO_ice_wall_summon_event', { room_name: room_name, card_id: card_ref.id, i: i, j: j });
                                 parent.hand.removeCard(card_ref);
-                                page_handler.animations.push(new page_handler.Animation(8));
+                                page_handler.animations.push(new parent.Animation(8));
                             }
                         }
                     }
                 }
+            } else if (card_ref.name === 'A Hero Is Born') {
+
+                if (parent.draw_big_picture_from_hand === false || parent.draw_big_picture)
+                    return;
+
+                var visible_part = 250;
+                var ver_delta = 25; //vertical delta
+                var hor_delta = 117;
+                var card_h = 239;
+                var s_x = 100;
+                var s_y = 500;
+
+                if (parent.draw_big_picture_from_hand === false)
+                    return;
+
+                var player_champion_cards = [];
+
+                //get champion cards ref 
+                for (var i = 0; i < player.faction.deck.length; i++) {
+                    if (player.faction.deck[i].card_class === "champion")
+                        player_champion_cards.push(player.faction.deck[i]);
+                }
+
+                //draw highlight in case of hover
+                for (var i = 0; i < player_champion_cards.length; i++) {
+
+                    //check card hover
+                    if (
+                        ((mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + visible_part) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ||
+                        ((mouse_x > s_x + (i + 1) * visible_part) &&
+                        (mouse_x < s_x + (i + 1) * visible_part + hor_delta) &&
+                        (mouse_y > s_y - (i * ver_delta) + (card_h - ver_delta)) &&
+                        (mouse_y < s_y - (i * ver_delta) + card_h))
+                        ||
+                        ((i === player_champion_cards.length - 1) &&
+                        (mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + player_champion_cards[i].width) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ) {
+
+                        mouse_state = 2;
+                        socket.emit('ALL_hero_is_born_event', { room_name: room_name });
+
+                        parent.animations.push(new parent.Animation(10));
+                        player.discard_pile.push(card_ref);
+                        parent.hand.removeCard(card_ref);
+                        parent.hand.card_container.push(player_champion_cards[i]);
+                        parent.draw_big_picture_from_hand = false;
+                        return;
+
+                    }
+                }
+
+            } else if (card_ref.name === 'Freeze') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
+
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+
+                        if ((parent.board.matrix[i][j] != null) && (parent.board.matrix[i][j].card_class === "common" || parent.board.matrix[i][j].card_class === "champion" || parent.board.matrix[i][j].card_class === "summoner")) {
+
+                            if ((parseInt((((mouse_x - parent.board.s_x) / parent.board.square_w))) === j) && (parseInt((((mouse_y - parent.board.s_y) / parent.board.square_h))) === i)) {
+
+                                mouse_state = 2;
+                                parent.board.matrix[i][j].freezed = true;
+                                parent.board.matrix[i][j].freeze_card_ref = card_ref;
+                                socket.emit('TO_freeze_event', { room_name: room_name, freezed_card_id: parent.board.matrix[i][j].id, freezing_card_id: card_ref.id });
+                                player.discard_pile.push(card_ref);
+                                parent.hand.removeCard(card_ref);
+                                page_handler.animations.push(new parent.Animation(11));
+                            }
+                        }
+
+                    }
+                }
+
             }
 
         }
@@ -2606,7 +2947,94 @@ var PlaygroundHandler = function () {
             if (card_name === null)
                 return;
 
-            if (card_name === 'Wall') {
+
+            if (card_name === 'A Hero Is Born') {
+
+                var visible_part = 250;
+                var ver_delta = 25; //vertical delta
+                var hor_delta = 117;
+                var card_h = 239;
+                var s_x = 100;
+                var s_y = 500;
+
+                if (parent.draw_big_picture_from_hand === false)
+                    return;
+
+                var player_champion_cards = [];
+
+                //get champion cards ref 
+                for (var i = 0; i < player.faction.deck.length; i++) {
+                    if (player.faction.deck[i].card_class === "champion")
+                        player_champion_cards.push(player.faction.deck[i]);
+                }
+
+                //draw cards
+                for (var i = 0; i < player_champion_cards.length; i++) {
+                    ctx.drawImage(player.faction.board_image, player_champion_cards[i].pos_x * player_champion_cards[i].width, player_champion_cards[i].pos_y * player_champion_cards[i].height,
+                                    player_champion_cards[i].width, player_champion_cards[i].height, s_x + (i * visible_part), s_y - (i * ver_delta), player_champion_cards[i].width, player_champion_cards[i].height);
+                }
+
+                //draw highlight in case of hover
+                for (var i = 0; i < player_champion_cards.length; i++) {
+
+                    //check card hover
+                    if (
+                        ((mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + visible_part) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ||
+                        ((mouse_x > s_x + (i + 1) * visible_part) &&
+                        (mouse_x < s_x + (i + 1) * visible_part + hor_delta) &&
+                        (mouse_y > s_y - (i * ver_delta) + (card_h - ver_delta)) &&
+                        (mouse_y < s_y - (i * ver_delta) + card_h))
+                        ||
+                        ((i === player_champion_cards.length - 1) &&
+                        (mouse_x > s_x + (i * visible_part)) &&
+                        (mouse_x < s_x + (i * visible_part) + player_champion_cards[i].width) &&
+                        (mouse_y > s_y - (i * ver_delta)) &&
+                        (mouse_y < s_y + card_h - (i * ver_delta)))
+                        ) {
+
+                        ctx.fillStyle = "rgba(233, 233, 233, 0.3)";
+
+                        //additional check for last card
+                        if (i === player_champion_cards.length - 1) {
+                            ctx.fillRect(s_x + (i * visible_part) + visible_part, s_y - (i * ver_delta), hor_delta, card_h - ver_delta);
+
+                        }
+                        ctx.fillRect(s_x + (i * visible_part), s_y - (i * ver_delta), visible_part, card_h);
+                        ctx.fillRect(s_x + ((i + 1) * visible_part), s_y - (i * ver_delta) + (card_h - ver_delta), hor_delta, ver_delta);
+
+                    }
+                }
+
+
+            } else if (card_name === 'Freeze') {
+
+                //check if page handler is active
+                if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                    return;
+
+                //draw available attacks
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if ((parent.board.matrix[i][j] != null) && (parent.board.matrix[i][j].card_class === "common" || parent.board.matrix[i][j].card_class === "champion" || parent.board.matrix[i][j].card_class === "summoner")) {
+
+
+                            if (parent.board.matrix[i][j].owner === player_login)
+                                ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                            else
+                                ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                        }
+
+                    }
+                }
+
+            } else if (card_name === 'Wall') {
 
                 //check if page handler is active
                 if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
@@ -3050,6 +3478,7 @@ var gameLoop = function () {
 
             //set proper page handler
             page_handler = new PlaygroundHandler();
+            console.log("zmiana pagehandlera na PlaygroundHandler");
 
             //add opponents start cards to board
             var start_cards = opponent.faction.getStartCards();

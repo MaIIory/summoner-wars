@@ -366,12 +366,23 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('TO_ice_wall_summon_event', { card_id: data.card_id, i: data.i, j: data.j });
     });
 
+    socket.on('TO_freeze_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_freeze_event', { freezed_card_id: data.freezed_card_id, freezing_card_id: data.freezing_card_id });
+    });
     
     //ALL
     socket.on('ALL_magic_drain_event', function (data) {
 
         //sending to all clients in 'game' room(channel) except sender
         socket.broadcast.to(data.room_name).emit('ALL_magic_drain_event', { card_id: data.card_id });
+    });
+
+    socket.on('ALL_hero_is_born_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('ALL_hero_is_born_event');
     });
 
 });
