@@ -95,6 +95,7 @@ var removeBriefingSection = function () {
 }
 
 var rebuildLoginSection = function () {
+
     //firsly remove old login section 
     removeLoginSection();
 
@@ -130,7 +131,10 @@ var rebuildLoginSection = function () {
         player_login = document.getElementById('txt_login').value;
         player_login = player_login.trim();
         if (player_login === "") {
-            alert("login is empty!" + player_login);
+            //alert("login is empty!" + player_login);
+
+            $("#dialog").text('Login is empty!');
+            $('#dialog').dialog('open');
             return;
         }
 

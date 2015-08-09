@@ -327,6 +327,13 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('add_to_magic_pile', { card_id: data.card_id });
     });
 
+    //summoning handling
+    socket.on('summon_card', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('summon_card', { summoned_card_id: data.summoned_card_id, card_x: data.card_x, card_y: data.card_y });
+    });
+
     //HANDLING EVENTS
     //PE
     socket.on('PE_event_burn', function(data) { 
@@ -371,7 +378,13 @@ io.sockets.on('connection', function (socket) {
         //sending to all clients in 'game' room(channel) except sender
         socket.broadcast.to(data.room_name).emit('TO_freeze_event', { freezed_card_id: data.freezed_card_id, freezing_card_id: data.freezing_card_id });
     });
-    
+
+    socket.on('TO_unfreeze_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_unfreeze_event', { freezed_card_id: data.freezed_card_id,});
+    });
+
     //ALL
     socket.on('ALL_magic_drain_event', function (data) {
 

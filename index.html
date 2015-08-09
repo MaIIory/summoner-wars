@@ -4,32 +4,18 @@
     <meta charset="utf-8">
 
     <link rel="stylesheet" type="text/css" href="/css/my_styles.css">
+    <link href="jquery-ui.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-    <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/ui-darkness/jquery-ui.css">-->
-    <!--<script src="//code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>-->
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-    <!--This part of the code prevent from dialog stripe issue-->
-    <style>
-    .ui-widget-overlay
-    {
-    background: #000;
-    opacity: .7;
-    -moz-opacity: 0.7;
-    filter: alpha(opacity=70);
-    }
-    </style>
-
-
     <script src="/socket.io/socket.io.js"></script>
-
     <script type="text/javascript" src="/scripts/factions.js"></script>
+
     <script>
         $(function () {
             $("#dialog").dialog({
+                draggable: false,
                 resizable: false,
                 height: 140,
                 modal: true,
@@ -47,26 +33,15 @@
     </script>
 
 </head>
-
 <body id='main_body'>
 
-    <div id="dialog" title="Basic dialog">
-        <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-    </div>
-
+    <div id="dialog" title="Oooops!"></div>
 
     <div id='page_content'>
-
-        <!--<button id="opener">Open Dialog</button>-->
-        
             <img id='main_img' src="/img/main_logo_index.png" alt="Summoner Wars online">
-        
-
     </div>
 
     <script type="text/javascript" src="/scripts/main.js"></script>
 
 </body>
-
-
 </html>

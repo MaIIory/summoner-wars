@@ -17,7 +17,7 @@ var PheonixElves = function (player_name) {
                [0,0][1,0][2,0]
                [0,1][1,1][2,1]
             */
-            /*
+            
             new Card('Archer', 'pe03', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
             new Card('Archer', 'pe04', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
             new Card('Archer', 'pe05', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
@@ -31,11 +31,7 @@ var PheonixElves = function (player_name) {
             new Card('Warrior', 'pe15', 2, 0, that.player_name, 1, 2, 1, 1, "common"),
             new Card('Warrior', 'pe16', 2, 0, that.player_name, 1, 2, 1, 1, "common"),
             new Card('Warrior', 'pe17', 2, 0, that.player_name, 1, 2, 1, 1, "common"),
-            new Card('Warrior', 'pe18', 2, 0, that.player_name, 1, 2, 1, 1, "common"),*/
-            new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
-            new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
-            new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
-            new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
+            new Card('Warrior', 'pe18', 2, 0, that.player_name, 1, 2, 1, 1, "common"),
             new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
             new Card('Kaeseeall', 'pe20', 4, 0, that.player_name, 3, 2, 5, 5, "champion"),
             new Card('Maelena', 'pe21', 5, 0, that.player_name, 3, 2, 5, 5, "champion"),
@@ -90,7 +86,7 @@ var TundraOrcs = function (player_name) {
                [0,0][1,0][2,0]
                [0,1][1,1][2,1]
             */
-            /*
+            
             new Card('Fighter', 'to03', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Fighter', 'to04', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Fighter', 'to05', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
@@ -109,7 +105,7 @@ var TundraOrcs = function (player_name) {
             new Card('Krung', 'to20', 1, 0, that.player_name, 1, 3, 9, 8, "champion"),
             new Card('Ragnor', 'to21', 2, 0, that.player_name, 1, 2, 5, 5, "champion"),
             new Card('Wall', 'to23', 4, 1, that.player_name, 0, 0, 9, 0, "event"),
-            new Card('Wall', 'to24', 4, 1, that.player_name, 0, 0, 9, 0, "event"),*/
+            new Card('Wall', 'to24', 4, 1, that.player_name, 0, 0, 9, 0, "event"),
             new Card('Freeze', 'to26', 0, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Freeze', 'to27', 0, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Freeze', 'to28', 0, 1, that.player_name, 0, 0, 0, 0, "event"),

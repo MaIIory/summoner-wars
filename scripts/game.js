@@ -188,6 +188,26 @@ socket.on('add_to_magic_pile', function (data) {
     opponent.magic_pile.push(card_ref);
 })
 
+socket.on('summon_card', function (data) {
+    //run animation
+    page_handler.animations.push(new page_handler.Animation(13,null,null,null,null,data.card_y,data.card_x));
+    
+    //LUCN
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+        if (opponent.faction.deck[i].id === data.summoned_card_id) {
+            page_handler.board.addCard(opponent.faction.deck[i], data.card_y, data.card_x);
+            
+            var cost = opponent.faction.deck[i].cost;
+            opponent.faction.deck.splice(i, 1);
+
+            for (var i = 0; i < cost; i++) {
+                opponent.discard_pile.push(opponent.magic_pile.pop());
+            }
+            return
+        }
+    }
+})
+
 //EVENTS HANDLING
 socket.on('PE_event_burn', function (data) {
 
@@ -343,6 +363,22 @@ socket.on('TO_freeze_event', function (data) {
                     }
                 }
 
+            }
+        }
+    }
+})
+
+socket.on('TO_unfreeze_event', function (data) {
+
+    //run animation
+    page_handler.animations.push(new page_handler.Animation(12));
+
+    //Freeze specific card
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.freezed_card_id) {
+                page_handler.board.matrix[i][j].freezed = false;
             }
         }
     }
@@ -970,8 +1006,9 @@ var PlaygroundHandler = function () {
                             player.discard_pile.push(player.magic_pile.pop());
                             player.discard_pile.push(player.magic_pile.pop());
                             mouse_state = 2;
+                            socket.emit('TO_unfreeze_event', { room_name: room_name, freezed_card_id: that.matrix[i][j].id });
+                            parent.animations.push(new parent.Animation(12));
                             return;
-                            //TODO send event unfreeze
                         }
                     }
                 }
@@ -1759,24 +1796,11 @@ var PlaygroundHandler = function () {
             // - is not a Wall
             for (var i = 0; i < parent.hand.card_container.length; i++) {
 
-                ctx.fillText('i ' + i, 50 + (i * 10), 160);
-
-                ctx.fillText('len ' + parent.hand.card_container.length, 50 + (i * 10), 170);
-
-                ctx.fillText('3... + ' + parent.hand.card_container[i].selected, 50 + (i * 10), 180);
-
                 if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].cost <= player.magic_pile.length && parent.hand.card_container[i].name != "Wall") {
-                    ctx.fillText('4...', 50, 170);
-
                     selected_card_ref = parent.hand.card_container[i];
-                    ctx.fillText('5...', 50, 180);
-
                     break;
                 }
             }
-
-
-            ctx.fillText('6...', 50, 190);
 
             var hovered_tile = [0, 0]; //stores point coordinates
 
@@ -1796,7 +1820,17 @@ var PlaygroundHandler = function () {
                     that.addCard(selected_card_ref, hovered_tile[0], hovered_tile[1]);
                     mouse_state = 2;
 
-                    //TODO send event 
+                    //LUCN
+                    for (var i = 0; i < parent.hand.card_container[i].cost; i++) {
+                        player.discard_pile.push(player.magic_pile.pop());
+                    }
+
+                    var card_x = null;
+                    var card_y = null;
+                    console.log('hovered_tile[1] ' + hovered_tile[1] + ' hovered_tile[0] ' + hovered_tile[0]);
+                    [card_y, card_x] = rotate180(hovered_tile[0], hovered_tile[1]);
+                    console.log('card_y ' + card_y + ' card_x ' + card_x);
+                    socket.emit('summon_card', { room_name: room_name, summoned_card_id: selected_card_ref.id, card_x: card_x, card_y: card_y });
 
                     //remove from hand
                     parent.hand.unselectAll();
@@ -2063,7 +2097,7 @@ var PlaygroundHandler = function () {
         }
     }
 
-    this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id) {
+    this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id, x, y) {
 
         /* types definitions:
            0 - 'End Phase' animation: only 'type' argument required
@@ -2078,6 +2112,8 @@ var PlaygroundHandler = function () {
            9 - 'Magic Drain'
            10- 'A hero is born'
            11- 'Freeze'
+           12- 'Unfreeze'
+           13- 'The card has been summoned': x nad y arguments are used
         */
 
         var that = this;
@@ -2178,6 +2214,15 @@ var PlaygroundHandler = function () {
         if (that.type === 11) {
 
             that.co_xywh = [450, 1800, 200, 100];
+        }
+        if (that.type === 12) {
+            that.co_xywh = [430, 2301, 200, 100];
+        }
+        if (that.type === 13) {
+
+            that.card_x = x;
+            that.card_y = y;
+            that.co_xywh = [0, 2401, 650, 70];
         }
 
         that.handle = function () {
@@ -2293,6 +2338,14 @@ var PlaygroundHandler = function () {
             }
             else if (that.type === 11) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 412, 334, that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 12) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 412, 334, that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 13) {
+                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 0, 320, that.co_xywh[2], that.co_xywh[3]);
             }
 
             ctx.restore();
