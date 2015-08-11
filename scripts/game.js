@@ -33,7 +33,8 @@ var game_phase = 1; /* 0 - draw phase
                        4 - atack phase
                        5 - build magic phase
                        6 - "Blaze Step" phase (in case one of the player plays pheonix elves deck) 
-                       7 - game over */
+                       7 - game over 
+                       8 - "Reinforcement" - specific phase for Tundra Orcs */
 
 var your_turn = false;
 
@@ -138,7 +139,11 @@ socket.on('resolve_attack', function (data) {
 
 //incoming step phase event
 socket.on('step_phase', function (data) {
-    game_phase += 1;
+
+    if (game_phase === 8)
+        game_phase = 2;
+    else
+        game_phase += 1;
 
     //add 'end phase' animation
     page_handler.animations = [];
@@ -190,13 +195,12 @@ socket.on('add_to_magic_pile', function (data) {
 
 socket.on('summon_card', function (data) {
     //run animation
-    page_handler.animations.push(new page_handler.Animation(13,null,null,null,null,data.card_y,data.card_x));
-    
-    //LUCN
+    page_handler.animations.push(new page_handler.Animation(13, null, null, null, null, data.card_y, data.card_x));
+
     for (var i = 0; i < opponent.faction.deck.length; i++) {
         if (opponent.faction.deck[i].id === data.summoned_card_id) {
             page_handler.board.addCard(opponent.faction.deck[i], data.card_y, data.card_x);
-            
+
             var cost = opponent.faction.deck[i].cost;
             opponent.faction.deck.splice(i, 1);
 
@@ -384,6 +388,21 @@ socket.on('TO_unfreeze_event', function (data) {
     }
 })
 
+socket.on('TO_reinforcements_event', function (data) {
+
+    //run animation
+    page_handler.animations.push(new page_handler.Animation(14));
+    game_phase = 8;
+
+    for (var i = 0; i < opponent.faction.deck.length; i++) {
+        if (opponent.faction.deck[i].id === data.card_id) {
+            opponent.discard_pile.push(opponent.faction.deck[i]);
+            opponent.faction.deck.splice(i, 1);
+            return;
+        }
+    }
+})
+
 socket.on('ALL_magic_drain_event', function (data) {
 
     for (var i = 0; i < player.magic_pile.length && i < 2; i++) {
@@ -432,6 +451,7 @@ var Player = function (name) {
     that.magic_pile = [];
     that.discard_pile = [];
     that.win = 0; //0 - player lost, 1 - player win
+    that.reinforcement_cnt = 0; //for reinforcement event purpose
 }
 
 var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost, card_class) {
@@ -785,7 +805,7 @@ var PlaygroundHandler = function () {
     that.btn_build_magic_src_y = 1761;
     that.btn_build_magic_padding = 3;
 
-    //game over print settings
+    //'game over' print settings
     that.go_s_x = 0;    //source start x for game over screen
     that.go_s_y = 1461; //source start y for game over screen
 
@@ -1771,8 +1791,6 @@ var PlaygroundHandler = function () {
 
         that.handleSummon = function () {
 
-            ctx.fillText('1...', 50, 140);
-
             if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
                 return;
 
@@ -1783,8 +1801,6 @@ var PlaygroundHandler = function () {
                 (mouse_y > that.s_y) &&
                 (mouse_y < that.s_y + (8 * that.square_h)))
                 mouse_over_board = true;
-
-            ctx.fillText('2...', 50, 150);
 
             var selected_card_ref = null; //selected card in a hand
 
@@ -1820,7 +1836,159 @@ var PlaygroundHandler = function () {
                     that.addCard(selected_card_ref, hovered_tile[0], hovered_tile[1]);
                     mouse_state = 2;
 
-                    //LUCN
+                    for (var i = 0; i < parent.hand.card_container[i].cost; i++) {
+                        player.discard_pile.push(player.magic_pile.pop());
+                    }
+
+                    var card_x = null;
+                    var card_y = null;
+                    console.log('hovered_tile[1] ' + hovered_tile[1] + ' hovered_tile[0] ' + hovered_tile[0]);
+                    [card_y, card_x] = rotate180(hovered_tile[0], hovered_tile[1]);
+                    console.log('card_y ' + card_y + ' card_x ' + card_x);
+                    socket.emit('summon_card', { room_name: room_name, summoned_card_id: selected_card_ref.id, card_x: card_x, card_y: card_y });
+
+                    //remove from hand
+                    parent.hand.unselectAll();
+                    parent.hand.removeCard(selected_card_ref);
+                }
+            }
+
+        }
+
+        that.drawAvailSummonTailsReinforcementsPhase = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            if (player.reinforcement_cnt <= 0)
+                return;
+
+            var mouse_over_board = false; //indicate if mouse is over board
+            var hovered_tile = [0, 0]; //stores point coordinates
+
+
+            if ((mouse_x > that.s_x) &&
+                (mouse_x < that.s_x + (6 * that.square_w)) &&
+                (mouse_y > that.s_y) &&
+                (mouse_y < that.s_y + (8 * that.square_h)))
+                mouse_over_board = true;
+
+            if (mouse_over_board) {
+
+                hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
+                hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
+            }
+
+            //LUCN
+            //find selected card in container and trigger appropriate rendering actions
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+
+                //highlights available tiles for card which meet the following requirements:
+                // - it is selected
+                // - it is unit (range > 0)
+                // - is not a Wall
+                // - it is common card
+                if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].name != "Wall" && parent.hand.card_container[i].card_class === 'common') {
+
+                    for (var j = 0; j < that.matrix.length; j++) {
+                        for (var k = 0; k < that.matrix[j].length; k++) {
+
+                            if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
+
+
+                                //mark green tiles adjacent to Wall, additional check if tile is not out of board
+                                if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                    ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
+
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                    if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
+                                        ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                }
+                                if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                    ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
+
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                    if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1))
+                                        ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                }
+                                if (that.matrix[j][k + 1] === null && (k + 1) <= 6) {
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                    ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
+
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                    if (mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j))
+                                        ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                }
+                                if (that.matrix[j][k - 1] === null && (k - 1) >= 0) {
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                    ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
+
+                                    ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                    if (mouse_over_board && (hovered_tile[0] === k - 1) && (hovered_tile[1] === j))
+                                        ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        that.handleSummonReinforcementsPhase = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            if (player.reinforcement_cnt <= 0)
+                return;
+
+            var mouse_over_board = false; //indicate if mouse is over board
+
+            if ((mouse_x > that.s_x) &&
+                (mouse_x < that.s_x + (6 * that.square_w)) &&
+                (mouse_y > that.s_y) &&
+                (mouse_y < that.s_y + (8 * that.square_h)))
+                mouse_over_board = true;
+
+            var selected_card_ref = null; //selected card in a hand
+
+
+            //Get ref card which meet the following requirements:
+            // - it is selected
+            // - it is unit (range > 0)
+            // - is not a Wall
+            // - it is common card
+            for (var i = 0; i < parent.hand.card_container.length; i++) {
+
+                if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].name != "Wall" && parent.hand.card_container[i].card_class === 'common') {
+                    selected_card_ref = parent.hand.card_container[i];
+                    break;
+                }
+            }
+
+            var hovered_tile = [0, 0]; //stores point coordinates
+
+            if (mouse_over_board && selected_card_ref != null && mouse_state === 1) {
+
+
+                hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
+                hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
+
+                if ((parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].owner === player.name)
+                    ) {
+
+                    //add to board
+                    that.addCard(selected_card_ref, hovered_tile[0], hovered_tile[1]);
+                    mouse_state = 2;
+
+                    //decrement reinforcement counter
+                    player.reinforcement_cnt--;
+
                     for (var i = 0; i < parent.hand.card_container[i].cost; i++) {
                         player.discard_pile.push(player.magic_pile.pop());
                     }
@@ -2113,7 +2281,10 @@ var PlaygroundHandler = function () {
            10- 'A hero is born'
            11- 'Freeze'
            12- 'Unfreeze'
-           13- 'The card has been summoned': x nad y arguments are used
+           13- 'The card has been summoned': x and y arguments are used
+           14- 'Reinforcements'
+           15- 'Blaze step'
+           16- 'Fury'
         */
 
         var that = this;
@@ -2223,7 +2394,14 @@ var PlaygroundHandler = function () {
             that.card_x = x;
             that.card_y = y;
             that.co_xywh = [0, 2401, 650, 70];
+        } else if (that.type === 14) {
+            that.co_xywh = [0, 2470, 450, 100];
+        } else if (that.type === 15) {
+            that.co_xywh = [0, 2570, 350, 100];
+        } else if (that.type === 16) {
+            that.co_xywh = [450, 2470, 200, 100];
         }
+        
 
         that.handle = function () {
 
@@ -2346,6 +2524,15 @@ var PlaygroundHandler = function () {
                 ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
                 ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 0, 320, that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 14) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 15) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 16) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
             }
 
             ctx.restore();
@@ -2807,7 +2994,7 @@ var PlaygroundHandler = function () {
                 }
 
                 if (opponent_nb_of_units >= player_nb_of_units || opponent.magic_pile.length === 0) {
-                    ctx.drawImage(parent.image, 0, that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[2], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+                    ctx.drawImage(parent.image, that.use_button_src_xywh[0], that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
                     return;
                 }
                 else
@@ -2834,8 +3021,13 @@ var PlaygroundHandler = function () {
 
         that.use_button_src_xywh = [0, 2101, 150, 100]; // "USE" button source coordinates - for specific card purpose (x,y,width,height)
         that.use_button_xywh = [437, 450, 150, 100]; // "USE" button coordinates - for specific card purpose (x,y,width,height)
+        that.card_to_be_removed = [];  //events cards id that should be removed - in case they cant be removed before
 
         that.handleEventPhaseLogic = function () {
+
+            //firstly remove card from previous loop
+            for (var i = 0; i < that.card_to_be_removed.length; i++)
+                parent.hand.removeCard(that.card_to_be_removed[i]);
 
             var card_ref = null;
 
@@ -2981,6 +3173,47 @@ var PlaygroundHandler = function () {
                         }
 
                     }
+                }
+
+            } else if (card_ref.name === 'Reinforcements') {
+
+                if (parent.draw_big_picture_from_hand === false || parent.draw_big_picture)
+                    return;
+
+                //count number of units on the board for both players
+                var player_nb_of_units = 0;
+                var opponent_nb_of_units = 0;
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null && (parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion')) {
+
+                            if (parent.board.matrix[i][j].owner === player.name)
+                                player_nb_of_units++;
+                            else if (parent.board.matrix[i][j].owner === opponent.name)
+                                opponent_nb_of_units++;
+                        }
+                    }
+                }
+
+                if (opponent_nb_of_units <= player_nb_of_units) {
+                    return;
+                }
+
+                if ((mouse_x > that.use_button_xywh[0]) &&
+                    (mouse_x < that.use_button_xywh[0] + that.use_button_xywh[2]) &&
+                    (mouse_y > that.use_button_xywh[1]) &&
+                    (mouse_y < that.use_button_xywh[1] + that.use_button_xywh[3])) {
+
+                    page_handler.animations.push(new parent.Animation(14));
+                    game_phase = 8;
+                    player.reinforcement_cnt = 2;
+
+                    socket.emit('TO_reinforcements_event', { room_name: room_name, card_id: card_ref.id });
+                    player.discard_pile.push(card_ref);
+                    that.card_to_be_removed.push(card_ref);
+                    return;
                 }
 
             }
@@ -3137,6 +3370,46 @@ var PlaygroundHandler = function () {
                         }
                     }
                 }
+            } else if (card_name === 'Reinforcements') {
+
+                if (parent.draw_big_picture_from_hand === false)
+                    return;
+
+                //count number of units on the board for both players
+                var player_nb_of_units = 0;
+                var opponent_nb_of_units = 0;
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null && (parent.board.matrix[i][j].card_class === 'common' || parent.board.matrix[i][j].card_class === 'champion')) {
+
+                            if (parent.board.matrix[i][j].owner === player.name)
+                                player_nb_of_units++;
+                            else if (parent.board.matrix[i][j].owner === opponent.name)
+                                opponent_nb_of_units++;
+                        }
+                    }
+                }
+
+                if (opponent_nb_of_units <= player_nb_of_units) {
+                    ctx.drawImage(parent.image, that.use_button_src_xywh[0], that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+                    return;
+                }
+                else
+                    ctx.drawImage(parent.image, that.use_button_src_xywh[2], that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+
+                //check hover
+                if ((mouse_x > that.use_button_xywh[0]) &&
+                    (mouse_x < that.use_button_xywh[0] + that.use_button_xywh[2]) &&
+                    (mouse_y > that.use_button_xywh[1]) &&
+                    (mouse_y < that.use_button_xywh[1] + that.use_button_xywh[3])) {
+
+                    ctx.drawImage(parent.image, that.use_button_src_xywh[2] * 2, that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
+
+                }
+
+
             }
         }
     }
@@ -3269,8 +3542,8 @@ var PlaygroundHandler = function () {
             //unselect card if any
             that.board.unselectAll();
 
-            if (game_phase >= 5) {
-
+            if (game_phase === 5) {
+                /* END TURN CASE */
 
                 that.btn_phase_frame = 0;
                 that.btn_phase_hover = false;
@@ -3290,7 +3563,21 @@ var PlaygroundHandler = function () {
                 mouse_state = 2;
                 return;
 
+            } else if (game_phase === 8) {
+                /* REINFORCEMENTS CASE */
+
+                game_phase = 2;
+
+                //emit apropriate event
+                socket.emit('step_phase', { room_name: room_name });
+
+                //add 'end phase' animation
+                that.animations.push(new that.Animation(0));
+
+                mouse_state = 2;
+
             } else {
+                /* NORMAL CASE */
 
                 //step game phase
                 game_phase += 1;
@@ -3601,16 +3888,12 @@ var gameLoop = function () {
                     lag -= MS_PER_UPDATE;
                 }
 
-                ctx.fillText('10...', 50, 230);
-
                 //render layer
                 page_handler.draw();
                 page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailSummonTails();
                 page_handler.hand.drawBigPicture();
-
-                ctx.fillText('11...', 50, 240);
 
 
             } else if (game_phase === 2) {
@@ -3861,6 +4144,48 @@ var gameLoop = function () {
                 page_handler.board.draw();
                 page_handler.hand.drawBigPicture();
 
+            } else if (game_phase === 8) {
+                /* ======================= */
+                /*  REINFORECEMENTS PHASE  */
+                /* ======================= */
+
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
+
+                ite1 += 1;
+
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //logic layer should not run always
+                    page_handler.board.handleDyingCards();
+                    page_handler.board.checkMouseActivity();
+                    page_handler.board.handleSummonReinforcementsPhase();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
+                    page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
+                    lag -= MS_PER_UPDATE;
+                }
+
+                //render layer
+                page_handler.draw();
+                page_handler.hand.draw();
+                page_handler.board.draw();
+                page_handler.board.drawAvailSummonTailsReinforcementsPhase();
+                page_handler.hand.drawBigPicture();
+
+                
             }
 
 
@@ -3936,7 +4261,7 @@ var gameLoop = function () {
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
         ctx.fillText('your turn: ' + your_turn, 840, 510);
         ctx.fillText('game phase: ' + game_phase, 840, 520);
-
+        
 
         ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
         ctx.fillText("ite1: " + ite1, 840, 550);

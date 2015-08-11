@@ -305,13 +305,20 @@ var rebuildRoomTable = function (rooms) {
 var startGame = function () {
     //main settings and game data
 
+    console.log('0');
+
     removeLoginSection();
     removeBriefingSection();
 
     //<p>Players online</p> 
 
+    console.log('1');
+
     var new_section = document.createElement('div');
     new_section.setAttribute('id', 'warning_section');
+
+
+    console.log('2');
 
     var p = document.createElement('p');
     p.innerHTML = "Warning: do not refresh this page!";
@@ -319,12 +326,16 @@ var startGame = function () {
     new_section.appendChild(p);
     page_content.appendChild(new_section);
 
+    console.log('3');
+
     //create canvas HTML document
     var canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'canvas');
     canvas.width = 1024;
     canvas.height = 768;
-    page_content.appendChild(canvas)
+    page_content.appendChild(canvas);
+
+    console.log('4');
 
     var fileref = document.createElement('script')
     fileref.setAttribute("type", "text/javascript")

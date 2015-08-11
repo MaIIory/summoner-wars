@@ -35,7 +35,7 @@ var PheonixElves = function (player_name) {
             new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
             new Card('Kaeseeall', 'pe20', 4, 0, that.player_name, 3, 2, 5, 5, "champion"),
             new Card('Maelena', 'pe21', 5, 0, that.player_name, 3, 2, 5, 5, "champion"),
-            new Card('A Hero Is Born', 'pe22', 0, 1, that.player_name, 0, 0, 0, 0, "event")/*,
+            new Card('A Hero Is Born', 'pe22', 0, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Burn', 'pe23', 1, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Burn', 'pe24', 1, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Greater Burn', 'pe25', 2, 1, that.player_name, 0, 0, 0, 0, "event"),
@@ -45,7 +45,7 @@ var PheonixElves = function (player_name) {
             new Card('Spirit of the Phoenix', 'pe29', 4, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Spirit of the Phoenix', 'pe30', 4, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Wall', 'pe33', 6, 0, that.player_name, 0, 0, 9, 0, "event"),
-            new Card('Wall', 'pe34', 6, 0, that.player_name, 0, 0, 9, 0, "event")*/
+            new Card('Wall', 'pe34', 6, 0, that.player_name, 0, 0, 9, 0, "event")
             
         ]
     }
@@ -89,7 +89,7 @@ var TundraOrcs = function (player_name) {
             
             new Card('Fighter', 'to03', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Fighter', 'to04', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
-            new Card('Fighter', 'to05', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
+            /*new Card('Fighter', 'to05', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Fighter', 'to06', 3, 0, that.player_name, 1, 1, 1, 1, "common"),
             new Card('Shaman', 'to08', 4, 0, that.player_name, 3, 2, 2, 1, "common"),
             new Card('Shaman', 'to09', 4, 0, that.player_name, 3, 2, 2, 1, "common"),
@@ -111,7 +111,7 @@ var TundraOrcs = function (player_name) {
             new Card('Freeze', 'to28', 0, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Ice Wall', 'to29', 1, 1, that.player_name, 0, 0, 3, 0, "event"),
             new Card('Ice Wall', 'to30', 1, 1, that.player_name, 0, 0, 3, 0, "event"),
-            new Card('Ice Wall', 'to31', 1, 1, that.player_name, 0, 0, 3, 0, "event"),
+            new Card('Ice Wall', 'to31', 1, 1, that.player_name, 0, 0, 3, 0, "event"),*/
             new Card('Reinforcements', 'to32', 2, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Reinforcements', 'to33', 2, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('A Hero Is Born', 'to34', 5, 1, that.player_name, 0, 0, 0, 0, "event")

@@ -385,6 +385,12 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('TO_unfreeze_event', { freezed_card_id: data.freezed_card_id,});
     });
 
+    socket.on('TO_reinforcements_event', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_reinforcements_event', { card_id: data.card_id, });
+    });
+
     //ALL
     socket.on('ALL_magic_drain_event', function (data) {
 
