@@ -214,7 +214,7 @@ socket.on('summon_card', function (data) {
     }
 })
 
-//EVENTS HANDLING
+//Events and abilities handling
 socket.on('PE_event_burn', function (data) {
 
     for (var i = 0; i < page_handler.board.matrix.length; i++) {
@@ -340,7 +340,6 @@ socket.on('PE_blaze_step', function (data) {
     }
 })
 
-
 socket.on('TO_wall_summon_event', function (data) {
 
     for (var i = 0; i < opponent.faction.deck.length; i++) {
@@ -458,9 +457,6 @@ socket.on('ALL_hero_is_born_event', function (data) {
         }
     }
 })
-
-
-//socket.emit('ALL_hero_is_born_event', { room_name: room_name, card_id: card_ref.id, champion_id: player_champion_cards[i].id });
 
 /***************************CLASSES****************************/
 //-----------------------------------------------------------//
@@ -1690,8 +1686,17 @@ var PlaygroundHandler = function () {
                                         hits++;
                                 }
 
-                                if (that.matrix[card_i][card_j].precise || that.matrix[card_i][card_j].spirit_of_the_phoenix)
+
+                                //'Precise' ability, 'Spirit of the phoenix' event and 'Sluggish' ability handling
+                                if (that.matrix[card_i][card_j].precise || that.matrix[card_i][card_j].spirit_of_the_phoenix || that.matrix[i][j].name === "Smasher")
                                     hits = that.matrix[card_i][card_j].attack;
+
+                                //'Unwieldy Magic' ability handling
+                                if (that.matrix[card_i][card_j].name === "Shaman") {
+                                    if (hits != that.matrix[card_i][card_j].attack)
+                                        hits = 0;
+                                }
+
 
                                 that.matrix[card_i][card_j].attacked = true;
                                 mouse_state = 2;
