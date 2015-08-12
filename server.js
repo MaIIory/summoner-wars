@@ -360,6 +360,18 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('PE_wall_summon_event', { card_id: data.card_id, i: data.i, j: data.j });
     });
 
+    socket.on('PE_blaze_step_phase', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_blaze_step_phase');
+    });
+
+    socket.on('PE_blaze_step', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_blaze_step', { card_id: data.card_id, x: data.x, y: data.y });
+    });
+
     //TO
     socket.on('TO_wall_summon_event', function (data) {
 

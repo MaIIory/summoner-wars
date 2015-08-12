@@ -204,8 +204,10 @@ socket.on('summon_card', function (data) {
             var cost = opponent.faction.deck[i].cost;
             opponent.faction.deck.splice(i, 1);
 
-            for (var i = 0; i < cost; i++) {
-                opponent.discard_pile.push(opponent.magic_pile.pop());
+            if (game_phase != 8) {
+                for (var i = 0; i < cost; i++) {
+                    opponent.discard_pile.push(opponent.magic_pile.pop());
+                }
             }
             return
         }
@@ -302,6 +304,11 @@ socket.on('PE_spirit_of_the_phoenix_event', function (data) {
     }
 })
 
+socket.on('PE_blaze_step_phase', function (data) {
+    game_phase = 6;
+    page_handler.animations.push(new page_handler.Animation(15));
+})
+
 socket.on('PE_wall_summon_event', function (data) {
 
     for (var i = 0; i < opponent.faction.deck.length; i++) {
@@ -315,6 +322,24 @@ socket.on('PE_wall_summon_event', function (data) {
         }
     }
 })
+
+socket.on('PE_blaze_step', function (data) {
+
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.card_id) {
+
+                page_handler.board.addCard(page_handler.board.matrix[i][j], data.x, data.y);
+                page_handler.board.matrix[i][j] = null;
+                page_handler.animations.push(new page_handler.Animation(17,null,null,null,null,data.x,data.y));
+                return;
+
+            }
+        }
+    }
+})
+
 
 socket.on('TO_wall_summon_event', function (data) {
 
@@ -2007,6 +2032,157 @@ var PlaygroundHandler = function () {
             }
 
         }
+
+        that.drawBlazeStepAvailTails = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var mouse_over_board = false; //indicate if mouse is over board
+            var hovered_tile = [0, 0]; //stores point coordinates
+
+            if ((mouse_x > that.s_x) &&
+                (mouse_x < that.s_x + (6 * that.square_w)) &&
+                (mouse_y > that.s_y) &&
+                (mouse_y < that.s_y + (8 * that.square_h)))
+                mouse_over_board = true;
+
+            if (mouse_over_board) {
+                hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
+                hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
+            }
+
+            for (var m = 0; m < that.matrix.length; m++) {
+                for (var n = 0; n < that.matrix[m].length; n++) {
+
+                    if ((that.matrix[m][n] != null) && (that.matrix[m][n].name === "Warrior") && (that.matrix[m][n].selected)) {
+
+                        for (var j = 0; j < that.matrix.length; j++) {
+                            for (var k = 0; k < that.matrix[j].length; k++) {
+
+                                if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
+
+
+                                    //mark green tiles adjacent to Wall, additional check if tile is not out of board
+                                    if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                        ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
+
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                        if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
+                                            ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                    }
+                                    if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                        ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
+
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                        if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1))
+                                            ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                    }
+                                    if (that.matrix[j][k + 1] === null && (k + 1) <= 6) {
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                        ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
+
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                        if (mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j))
+                                            ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                    }
+                                    if (that.matrix[j][k - 1] === null && (k - 1) >= 0) {
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                                        ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
+
+                                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                                        if (mouse_over_board && (hovered_tile[0] === k - 1) && (hovered_tile[1] === j))
+                                            ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        that.handleBlazeStepPhase = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var mouse_over_board = false; //indicate if mouse is over board
+            var hovered_tile = [0, 0]; //stores point coordinates
+
+            if ((mouse_x > that.s_x) &&
+                (mouse_x < that.s_x + (6 * that.square_w)) &&
+                (mouse_y > that.s_y) &&
+                (mouse_y < that.s_y + (8 * that.square_h)))
+                mouse_over_board = true;
+
+            if (mouse_over_board) {
+                hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
+                hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
+            }
+
+            for (var m = 0; m < that.matrix.length; m++) {
+                for (var n = 0; n < that.matrix[m].length; n++) {
+
+                    if ((that.matrix[m][n] != null) && (that.matrix[m][n].name === "Warrior") && (that.matrix[m][n].selected)) {
+
+                        for (var j = 0; j < that.matrix.length; j++) {
+                            for (var k = 0; k < that.matrix[j].length; k++) {
+
+                                if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
+
+                                    //mark green tiles adjacent to Wall, additional check if tile is not out of board
+                                    if ((that.matrix[j + 1][k] === null) && ((j + 1) <= 8) && mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1) && (mouse_state === 1)) {
+                                        that.matrix[m][n].selected = false;
+                                        parent.animations.push(new parent.Animation(17, null, null, null, null, k, j + 1))
+                                        that.addCard(that.matrix[m][n], k, j + 1);
+                                        [k, j] = rotate180(k, j + 1);
+                                        socket.emit('PE_blaze_step', { room_name: room_name, card_id: that.matrix[m][n].id, x: k, y: j });
+                                        that.matrix[m][n] = null;
+                                        mouse_state = 2;
+                                        return;
+                                    }
+                                    if (that.matrix[j - 1][k] === null && (j - 1) >= 0 && mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1) && (mouse_state === 1)) {
+                                        that.matrix[m][n].selected = false;
+                                        parent.animations.push(new parent.Animation(17, null, null, null, null, k, j - 1))
+                                        that.addCard(that.matrix[m][n], k, j - 1);
+                                        [k, j] = rotate180(k, j - 1);
+                                        socket.emit('PE_blaze_step', { room_name: room_name, card_id: that.matrix[m][n].id, x: k, y: j });
+                                        that.matrix[m][n] = null;
+                                        mouse_state = 2;
+                                        return;
+                                    }
+                                    if (that.matrix[j][k + 1] === null && (k + 1) <= 6 && mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j) && (mouse_state === 1)) {
+                                        that.matrix[m][n].selected = false;
+                                        parent.animations.push(new parent.Animation(17, null, null, null, null, k + 1, j))
+                                        that.addCard(that.matrix[m][n], k + 1, j);
+                                        [k, j] = rotate180(k + 1, j);
+                                        socket.emit('PE_blaze_step', { room_name: room_name, card_id: that.matrix[m][n].id, x: k, y: j });
+                                        that.matrix[m][n] = null;
+                                        mouse_state = 2;
+                                        return;
+                                    }
+                                    if (that.matrix[j][k - 1] === null && (k - 1) >= 0 && mouse_over_board && (hovered_tile[0] === k - 1) && (hovered_tile[1] === j) && (mouse_state === 1)) {
+                                        that.matrix[m][n].selected = false;
+                                        parent.animations.push(new parent.Animation(17, null, null, null, null, k - 1, j))
+                                        that.addCard(that.matrix[m][n], k - 1, j);
+                                        [k, j] = rotate180(k - 1, j);
+                                        socket.emit('PE_blaze_step', { room_name: room_name, card_id: that.matrix[m][n].id, x: k, y: j });
+                                        that.matrix[m][n] = null;
+                                        mouse_state = 2;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
     var Hand = function () {
@@ -2283,8 +2459,9 @@ var PlaygroundHandler = function () {
            12- 'Unfreeze'
            13- 'The card has been summoned': x and y arguments are used
            14- 'Reinforcements'
-           15- 'Blaze step'
+           15- 'Blaze step' phase
            16- 'Fury'
+           17- 'Blaze step'
         */
 
         var that = this;
@@ -2400,6 +2577,10 @@ var PlaygroundHandler = function () {
             that.co_xywh = [0, 2570, 350, 100];
         } else if (that.type === 16) {
             that.co_xywh = [450, 2470, 200, 100];
+        } else if (that.type === 17) {
+            that.co_xywh = [0, 2570, 350, 100];
+            that.card_x = x;
+            that.card_y = y;
         }
         
 
@@ -2530,8 +2711,14 @@ var PlaygroundHandler = function () {
             }
             else if (that.type === 15) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+                ctx.drawImage(parent.image, 150, 400, 200, 100, 412, (height / 2) - (that.co_xywh[3] / 2) + 100, 200, 100);
             }
             else if (that.type === 16) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 17) {
+                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
             }
 
@@ -3545,6 +3732,35 @@ var PlaygroundHandler = function () {
             if (game_phase === 5) {
                 /* END TURN CASE */
 
+                if (player.faction.faction_name === "Pheonix Elves") {
+                    game_phase = 6;
+                    mouse_state = 2;
+                    that.animations.push(new that.Animation(15));
+                    socket.emit('PE_blaze_step_phase', { room_name: room_name });
+                    return;
+                }
+
+                that.btn_phase_frame = 0;
+                that.btn_phase_hover = false;
+                that.board.resetPreviousMoves();
+                game_phase = 1;
+                player.attacks_left = 3;
+                player.moves_left = 3;
+                your_turn = false;
+                that.btn_build_magic_state = 0;
+
+                //restore some data related to events
+                that.restoreEventsData();
+
+                //emit apropriate event
+                socket.emit('end_turn', { room_name: room_name });
+
+                mouse_state = 2;
+                return;
+
+            } else if (game_phase === 6) {
+                /* END TURN CASE for PE */
+
                 that.btn_phase_frame = 0;
                 that.btn_phase_hover = false;
                 that.board.resetPreviousMoves();
@@ -4082,6 +4298,7 @@ var gameLoop = function () {
 
                     //Phase handler handling
                     page_handler.board.handleDyingCards();
+                    page_handler.board.handleBlazeStepPhase();
                     page_handler.board.checkMouseActivity();
                     page_handler.checkHover();
                     page_handler.checkMouseAction();
@@ -4102,6 +4319,7 @@ var gameLoop = function () {
                 page_handler.board.drawPreviousMoves();
                 page_handler.hand.draw();
                 page_handler.board.draw();
+                page_handler.board.drawBlazeStepAvailTails();
                 page_handler.hand.drawBigPicture();
 
             } else if (game_phase === 7) {
