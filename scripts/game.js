@@ -1021,7 +1021,7 @@ var PlaygroundHandler = function () {
             if (attacking_card_ref.fury && attacking_card_ref.owner === player.name) {
 
                 //LUCN TODO UWAGA ZAMIIEN 0 na 4 this is for testing purpose only
-                if (Math.floor((Math.random() * 6) + 1) > 0) {
+                if (Math.floor((Math.random() * 6) + 1) > 4) {
 
                     parent.animations.push(new parent.Animation(16));
                     game_phase = 9;
@@ -1749,6 +1749,12 @@ var PlaygroundHandler = function () {
                                         if (Math.floor((Math.random() * 6) + 1) > 3)
                                             hits++;
                                     }
+                                }
+
+                                //'Reckless' ability handling
+                                if (that.matrix[card_i][card_j].name === "Maelena") {
+                                    if (hits > 0)
+                                        hits++;
                                 }
 
                                 that.matrix[card_i][card_j].attacked = true;
