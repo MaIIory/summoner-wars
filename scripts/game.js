@@ -34,7 +34,8 @@ var game_phase = 1; /* 0 - draw phase
                        5 - build magic phase
                        6 - "Blaze Step" phase (in case one of the player plays pheonix elves deck) 
                        7 - game over 
-                       8 - "Reinforcement" - specific phase for Tundra Orcs */
+                       8 - "Reinforcement" - specific phase for Tundra Orcs 
+                       9 - "Fury" phase */
 
 var your_turn = false;
 
@@ -142,6 +143,8 @@ socket.on('step_phase', function (data) {
 
     if (game_phase === 8)
         game_phase = 2;
+    else if (game_phase === 9)
+        game_phase = 4;
     else
         game_phase += 1;
 
@@ -332,7 +335,7 @@ socket.on('PE_blaze_step', function (data) {
 
                 page_handler.board.addCard(page_handler.board.matrix[i][j], data.x, data.y);
                 page_handler.board.matrix[i][j] = null;
-                page_handler.animations.push(new page_handler.Animation(17,null,null,null,null,data.x,data.y));
+                page_handler.animations.push(new page_handler.Animation(17, null, null, null, null, data.x, data.y));
                 return;
 
             }
@@ -424,6 +427,20 @@ socket.on('TO_reinforcements_event', function (data) {
             opponent.faction.deck.splice(i, 1);
             return;
         }
+    }
+})
+
+socket.on('TO_fury_phase', function (data) {
+
+    console.log("event received");
+
+    if (data.fury) {
+        console.log("point 1");
+        page_handler.animations.push(new page_handler.Animation(16));
+        game_phase = 9;
+    } else {
+        console.log("point 2");
+        page_handler.animations.push(new page_handler.Animation(18));
     }
 })
 
@@ -524,6 +541,12 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
     if (that.name === 'Guardian')
         that.precise = true;
 
+    that.fury = false;
+    that.is_fury_active = false;
+
+    if (that.name === 'Fighter' || that.name === 'Ragnor')
+        that.fury = true;
+
     //events handling
     that.spirit_of_the_phoenix = false;
     that.freezed = false;
@@ -616,9 +639,6 @@ var MainMenu = function () {
         }
 
     }
-
-    //TODO draw options
-    //TODO draw credits
 }
 
 var BriefingMenu = function () {
@@ -993,6 +1013,31 @@ var PlaygroundHandler = function () {
             parent.animations = [];
             parent.animations.push(new parent.Animation(2, hits, attack_strangth, attacking_card_id, hitted_card_id));
             parent.animations.push(new parent.Animation(1, hits, attack_strangth));
+
+            console.log("resolve attack");
+
+            //'Fury' ability handling
+            //Note: owner should be checked to avoid sending fury event twice (from opponent side)
+            if (attacking_card_ref.fury && attacking_card_ref.owner === player.name) {
+
+                //LUCN TODO UWAGA ZAMIIEN 0 na 4 this is for testing purpose only
+                if (Math.floor((Math.random() * 6) + 1) > 0) {
+
+                    parent.animations.push(new parent.Animation(16));
+                    game_phase = 9;
+                    attacking_card_ref.is_fury_active = true;
+                    attacking_card_ref.moves_left = 2;
+                    attacking_card_ref.attacked = false;
+                    socket.emit('TO_fury_phase', { room_name: room_name, fury: true });
+
+
+                } else {
+                    parent.animations.push(new parent.Animation(18));
+                    socket.emit('TO_fury_phase', { room_name: room_name, fury: false });
+
+                }
+
+            }
         }
 
         that.unselectAll = function () {
@@ -1697,11 +1742,17 @@ var PlaygroundHandler = function () {
                                         hits = 0;
                                 }
 
+                                //'Reckless' ability handling
+                                if (that.matrix[card_i][card_j].name === "Blagog") {
+                                    hits = 0;
+                                    for (var k = 0; k < that.matrix[card_i][card_j].attack; k++) {
+                                        if (Math.floor((Math.random() * 6) + 1) > 3)
+                                            hits++;
+                                    }
+                                }
 
                                 that.matrix[card_i][card_j].attacked = true;
                                 mouse_state = 2;
-
-                                that.resolveAttack(hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id);
 
                                 socket.emit('resolve_attack', {
                                     room_name: room_name,
@@ -1710,6 +1761,8 @@ var PlaygroundHandler = function () {
                                     attacking_card_id: that.matrix[card_i][card_j].id,
                                     hitted_card_id: that.matrix[i][j].id
                                 });
+
+                                that.resolveAttack(hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id);
                             }
                         }
                     }
@@ -2187,6 +2240,232 @@ var PlaygroundHandler = function () {
             }
         }
 
+        that.handleFuryPhaseLogic = function () {
+
+            var card_ref = null;
+
+            //get selected card coordinates
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //reset in_range indicator
+                    if (that.matrix[i][j] != null)
+                        that.matrix[i][j].in_range = false;
+
+                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected) && that.matrix[i][j].is_fury_active && that.matrix[i][j].owner === player.name) {
+
+                        card_ref = that.matrix[i][j];
+
+                        //type modification - add two new attributes
+                        card_ref.x = i;
+                        card_ref.y = j;
+                    }
+                }
+            }
+
+            //check some restrictions
+            if (card_ref === null || card_ref.freezed || parent.draw_big_picture || parent.draw_big_picture_from_hand || card_ref.dying || card_ref.attacked)
+                return;
+
+            //handle attacks
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //check if card is not dying
+                    if ((that.matrix[i][j] != null) && ((card_ref.x != i) || (card_ref.y != j)) && ((!that.matrix[i][j].dying))) {
+
+                        //check if card is in horizontal range
+                        if (((Math.abs(card_ref.x - i) <= card_ref.range)) && (card_ref.y === j)) {
+
+                            that.matrix[i][j].in_range = true;
+
+                            //check horizontal blocking card
+                            for (var k = 1; k < Math.abs(card_ref.x - i) ; k++) {
+                                if (that.matrix[card_ref.x - (k * ((card_ref.x - i) / (card_ref.x - i)))][j] != null) {
+                                    that.matrix[i][j].in_range = false;
+                                }
+                            }
+                        }
+
+                        //check if card is in vertical range
+                        if (((Math.abs(card_ref.y - j) <= card_ref.range)) && (card_ref.x === i)) {
+
+                            that.matrix[i][j].in_range = true;
+
+                            //check horizontal blocking card
+                            for (var k = 1; k < Math.abs(card_ref.y - j) ; k++) {
+                                if (that.matrix[i][card_ref.y - (k * ((card_ref.y - j) / (card_ref.y - j)))] != null) {
+                                    that.matrix[i][j].in_range = false;
+                                }
+                            }
+                        }
+
+                        if (!that.matrix[i][j].in_range)
+                            continue;
+
+                        if (mouse_state === 1) {
+
+                            if (
+                                (mouse_x > (that.s_x + (j * that.square_w))) &&
+                                (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
+                                (mouse_y > (that.s_y + (i * that.square_h))) &&
+                                (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
+                                ) {
+
+                                var hits = 0;
+                                for (var k = 0; k < card_ref.attack; k++) {
+                                    if (Math.floor((Math.random() * 6) + 1) > 2)
+                                        hits++;
+                                }
+
+                                card_ref.attacked = true;
+                                mouse_state = 2;
+                                card_ref.is_fury_active = false;
+
+                                socket.emit('resolve_attack', {
+                                    room_name: room_name,
+                                    hits: hits,
+                                    attack_strangth: card_ref.attack,
+                                    attacking_card_id: card_ref.id,
+                                    hitted_card_id: that.matrix[i][j].id
+                                });
+
+                                that.resolveAttack(hits, card_ref.attack, card_ref.id, that.matrix[i][j].id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //handle moves
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //draw available moves
+                    if (that.matrix[i][j] === null && (Math.abs(card_ref.x - i) + Math.abs(card_ref.y - j)) <= card_ref.moves_left) {
+
+                        //check if there is no blocking card in row
+                        if ((Math.abs(card_ref.y - j) === 2) && (that.matrix[i][j + ((card_ref.y - j) / Math.abs(card_ref.y - j))] != null)) {
+                            continue;
+                        }
+
+                        //check if there is no blocking card in column
+                        if ((Math.abs(card_ref.x - i) === 2) && (that.matrix[i + ((card_ref.x - i) / Math.abs(card_ref.x - i))][j] != null)) {
+                            continue;
+                        }
+
+                        //check if there is no blocking card diagonally
+                        if ((Math.abs(Math.abs(card_ref.x - i) === 1)) && (Math.abs(card_ref.y - j) === 1)) {
+                            if ((that.matrix[card_ref.x - (card_ref.x - i)][card_ref.y] != null) && (that.matrix[card_ref.x][card_ref.y - (card_ref.y - j)] != null)) {
+                                continue;
+                            }
+                        }
+
+                        if (mouse_state === 1) {
+
+                            //hover available tile (green)
+                            if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                                (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
+                                ((i != card_ref.x) || (j != card_ref.y))) {
+
+                                //handle user input
+
+
+                                //send move card event
+                                var dest_x = null;
+                                var dest_y = null;
+                                [dest_y, dest_x] = rotate180(j, i);
+                                socket.emit('move_card', { room_name: room_name, card_id: card_ref.id, dest_x: dest_x, dest_y: dest_y })
+
+                                //finally move card
+                                that.moveCard(card_ref.id, i, j);
+                                mouse_state = 2;
+                                return;
+                            }
+
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        that.handleFuryPhaseRender = function () {
+
+            var card_ref = null;
+
+            //get selected card coordinates
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].selected) && that.matrix[i][j].is_fury_active && that.matrix[i][j].owner === player.name) {
+
+                        card_ref = that.matrix[i][j];
+
+                        //type modification - add two new attributes
+                        card_ref.x = i;
+                        card_ref.y = j;
+                    }
+                }
+            }
+
+            //check some restrictions
+            if (card_ref === null || card_ref.freezed || parent.draw_big_picture || parent.draw_big_picture_from_hand || card_ref.dying || card_ref.attacked)
+                return;
+
+
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //draw available moves
+                    if (that.matrix[i][j] === null && (Math.abs(card_ref.x - i) + Math.abs(card_ref.y - j)) <= card_ref.moves_left) {
+
+                        //check if there is no blocking card in row
+                        if ((Math.abs(card_ref.y - j) === 2) && (that.matrix[i][j + ((card_ref.y - j) / Math.abs(card_ref.y - j))] != null)) {
+                            continue;
+                        }
+
+                        //check if there is no blocking card in column
+                        if ((Math.abs(card_ref.x - i) === 2) && (that.matrix[i + ((card_ref.x - i) / Math.abs(card_ref.x - i))][j] != null)) {
+                            continue;
+                        }
+
+                        //check if there is no blocking card diagonally
+                        if ((Math.abs(Math.abs(card_ref.x - i) === 1)) && (Math.abs(card_ref.y - j) === 1)) {
+                            if ((that.matrix[card_ref.x - (card_ref.x - i)][card_ref.y] != null) && (that.matrix[card_ref.x][card_ref.y - (card_ref.y - j)] != null)) {
+                                continue;
+                            }
+                        }
+
+                        //highlight this tile if available (soft green)
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                        //hover available tile (green)
+                        if ((parseInt((((mouse_x - that.s_x) / that.square_w))) === j) &&
+                            (parseInt((((mouse_y - that.s_y) / that.square_h))) === i) &&
+                            ((i != card_ref.x) || (j != card_ref.y))) {
+
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                            ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                        }
+
+                    } else if ((that.matrix[i][j] != null) && that.matrix[i][j].in_range) {
+
+                        //draw available attacks
+                        if (that.matrix[i][j].owner === player_login)
+                            ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
+                        else
+                            ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+
+                        ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
+
+                    }
+                }
+            }
+        }
 
     }
 
@@ -2450,7 +2729,7 @@ var PlaygroundHandler = function () {
 
         /* types definitions:
            0 - 'End Phase' animation: only 'type' argument required
-           1 - 'x/y hits' animation: 'hits' and 'shoots' animation are required
+           1 - 'x/y hits' animation: 'hits' and 'shoots' arguments are required
            2 - 'arrows' animation: all arguments are required
            3 - 'Game over' animation
            4 - 'Burn'
@@ -2465,8 +2744,9 @@ var PlaygroundHandler = function () {
            13- 'The card has been summoned': x and y arguments are used
            14- 'Reinforcements'
            15- 'Blaze step' phase
-           16- 'Fury'
+           16- 'Fury' phase
            17- 'Blaze step'
+           18- 'No Fury'
         */
 
         var that = this;
@@ -2581,13 +2861,15 @@ var PlaygroundHandler = function () {
         } else if (that.type === 15) {
             that.co_xywh = [0, 2570, 350, 100];
         } else if (that.type === 16) {
-            that.co_xywh = [450, 2470, 200, 100];
+            that.co_xywh = [450, 2570, 200, 100];
         } else if (that.type === 17) {
             that.co_xywh = [0, 2570, 350, 100];
             that.card_x = x;
             that.card_y = y;
+        } else if (that.type === 18) {
+            that.co_xywh = [350, 2570, 300, 100];
         }
-        
+
 
         that.handle = function () {
 
@@ -2719,12 +3001,16 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 150, 400, 200, 100, 412, (height / 2) - (that.co_xywh[3] / 2) + 100, 200, 100);
             }
             else if (that.type === 16) {
-                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - that.co_xywh[2], (height / 2) - (that.co_xywh[3] / 2) + that.co_xywh[3], that.co_xywh[2], that.co_xywh[3]);
+                ctx.drawImage(parent.image, 150, 400, 200, 100, (width / 2) - 25, (height / 2) - (that.co_xywh[3] / 2) + 110, 200, 100);
             }
             else if (that.type === 17) {
                 ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
                 ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 18) {
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2) + that.co_xywh[3], that.co_xywh[2], that.co_xywh[3]);
             }
 
             ctx.restore();
@@ -3797,6 +4083,30 @@ var PlaygroundHandler = function () {
 
                 mouse_state = 2;
 
+            } else if (game_phase === 9) {
+                /* FURY CASE */
+
+                game_phase = 4;
+
+                //emit apropriate event
+                socket.emit('step_phase', { room_name: room_name });
+
+                //add 'end phase' animation
+                that.animations.push(new that.Animation(0));
+
+                for (var i = 0; i < that.board.matrix.length; i++) {
+                    for (var j = 0; j < that.board.matrix[i].length; j++) {
+
+                        if (that.board.matrix[i][j] != null && that.board.matrix[i][j].is_fury_active) {
+                            that.board.matrix[i][j].is_fury_active = false;
+                            that.board.matrix[i][j].moves_left = 0;
+                            that.board.matrix[i][j].attacked = true;
+                        }
+                    }
+                }
+
+                mouse_state = 2;
+
             } else {
                 /* NORMAL CASE */
 
@@ -3883,6 +4193,7 @@ var PlaygroundHandler = function () {
         }
     }
 }
+
 
 /***************************FUNCTIONS**************************/
 //-----------------------------------------------------------/
@@ -4403,12 +4714,56 @@ var gameLoop = function () {
 
                 //render layer
                 page_handler.draw();
+                page_handler.board.drawPreviousMoves();
                 page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailSummonTailsReinforcementsPhase();
                 page_handler.hand.drawBigPicture();
 
-                
+
+            } else if (game_phase === 9) {
+                /* ============ */
+                /*  FURY PHASE  */
+                /* ============ */
+
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
+
+                ite1 += 1;
+
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //logic layer should not run always
+                    page_handler.board.handleDyingCards();
+                    page_handler.board.handleFuryPhaseLogic();
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
+                    page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
+                    lag -= MS_PER_UPDATE;
+                }
+
+                //render layer
+                page_handler.draw();
+                page_handler.board.drawPreviousMoves();
+                page_handler.hand.draw();
+                page_handler.board.draw();
+                page_handler.board.handleFuryPhaseRender();
+                page_handler.hand.drawBigPicture();
+
+
             }
 
 
@@ -4484,7 +4839,7 @@ var gameLoop = function () {
         ctx.fillText('your opponent: ' + opponent.name, 840, 500);
         ctx.fillText('your turn: ' + your_turn, 840, 510);
         ctx.fillText('game phase: ' + game_phase, 840, 520);
-        
+
 
         ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
         ctx.fillText("ite1: " + ite1, 840, 550);

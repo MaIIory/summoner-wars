@@ -394,13 +394,19 @@ io.sockets.on('connection', function (socket) {
     socket.on('TO_unfreeze_event', function (data) {
 
         //sending to all clients in 'game' room(channel) except sender
-        socket.broadcast.to(data.room_name).emit('TO_unfreeze_event', { freezed_card_id: data.freezed_card_id,});
+        socket.broadcast.to(data.room_name).emit('TO_unfreeze_event', { freezed_card_id: data.freezed_card_id });
     });
 
     socket.on('TO_reinforcements_event', function (data) {
 
         //sending to all clients in 'game' room(channel) except sender
-        socket.broadcast.to(data.room_name).emit('TO_reinforcements_event', { card_id: data.card_id, });
+        socket.broadcast.to(data.room_name).emit('TO_reinforcements_event', { card_id: data.card_id });
+    });
+
+    socket.on('TO_fury_phase', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_fury_phase', { fury: data.fury });
     });
 
     //ALL
