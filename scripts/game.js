@@ -543,6 +543,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
 
     that.fury = false;
     that.is_fury_active = false;
+    that.power_active = false;
 
     if (that.name === 'Fighter' || that.name === 'Ragnor')
         that.fury = true;
@@ -1020,7 +1021,6 @@ var PlaygroundHandler = function () {
             //Note: owner should be checked to avoid sending fury event twice (from opponent side)
             if (attacking_card_ref.fury && attacking_card_ref.owner === player.name) {
 
-                //LUCN TODO UWAGA ZAMIIEN 0 na 4 this is for testing purpose only
                 if (Math.floor((Math.random() * 6) + 1) > 4) {
 
                     parent.animations.push(new parent.Animation(16));
@@ -1082,9 +1082,11 @@ var PlaygroundHandler = function () {
             */
 
 
-            //firstly check if player want to unfreeze frezzed card
+            
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //firstly check if player want to unfreeze frezzed card
                     if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (that.matrix[i][j].freezed) && (that.matrix[i][j].owner === player.name)) {
 
                         if ((mouse_state === 1) && (player.magic_pile.length >= 2) && mouse_x > 415 && mouse_x < 610 && mouse_y > 560 && mouse_y < 640) {
@@ -1096,9 +1098,28 @@ var PlaygroundHandler = function () {
                             parent.animations.push(new parent.Animation(12));
                             return;
                         }
+                        //fire blast ability handling
+                    } else if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (that.matrix[i][j].name === 'Prince Elien') && your_turn && (that.matrix[i][j].owner === player.name)) {
+
+                        if ((mouse_state === 1) && mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545) {
+                            that.matrix[i][j].power_active = !that.matrix[i][j].power_active;
+
+                            if (that.matrix[i][j].power_active) {
+                                that.matrix[i][j].precise = true;
+                                that.matrix[i][j].range = 2;
+                                that.matrix[i][j].attack = 2;
+                            } else {
+                                that.matrix[i][j].precise = false;
+                                that.matrix[i][j].range = 3;
+                                that.matrix[i][j].attack = 3;
+                            }
+
+                            mouse_state = 2;
+                        }
                     }
                 }
             }
+
 
             //check if player want to unselect focused card
             for (var i = 0; i < that.matrix.length; i++) {
@@ -1308,7 +1329,7 @@ var PlaygroundHandler = function () {
 
                         //EVENTS ANIMATION HANDLING
                         //draw 'Spirit of the phoenix' animation
-                        if (that.matrix[i][j].spirit_of_the_phoenix)
+                        if (that.matrix[i][j].spirit_of_the_phoenix && !that.matrix[i][j].freezed)
                             ctx.drawImage(parent.image, 0, 1901, 650, 100, 350, 450, 325, 50);
 
                         //draw 'Freeze' animation
@@ -1326,7 +1347,7 @@ var PlaygroundHandler = function () {
                             //check if viewer is an owner of the card (for unfreeze purposes)
                             if (that.matrix[i][j].owner === player.name) {
 
-                                //print proper "Unfreeze" animation
+                                //print proper "Unfreeze" animation according to hover state
                                 if (player.magic_pile.length >= 2) {
 
                                     if (mouse_x > 415 && mouse_x < 610 && mouse_y > 560 && mouse_y < 640)
@@ -1340,6 +1361,30 @@ var PlaygroundHandler = function () {
                                     ctx.drawImage(parent.image, 0, 2301, 215, 100, 405, 550, 215, 100);
 
                                 }
+                            }
+
+                        }
+
+                        //ABILITIES HANDLING
+                        //Fire Blast
+                        if (that.matrix[i][j].name === 'Prince Elien' && your_turn && that.matrix[i][j].owner === player.name && !that.matrix[i][j].freezed) {
+                            
+                            if (that.matrix[i][j].power_active) {
+
+                                //draw disable
+                                if (mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545)
+                                    ctx.drawImage(parent.image, 480, 2670, 160, 60, 432, 490, 160, 60);
+                                else
+                                    ctx.drawImage(parent.image, 320, 2670, 160, 60, 432, 490, 160, 60);
+
+                            } else {
+
+                                //draw enable
+                                if (mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545)
+                                    ctx.drawImage(parent.image, 160, 2670, 160, 60, 432, 490, 160, 60);
+                                else
+                                    ctx.drawImage(parent.image, 0, 2670, 160, 60, 432, 490, 160, 60);
+
                             }
 
                         }
@@ -1968,7 +2013,6 @@ var PlaygroundHandler = function () {
                 hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
             }
 
-            //LUCN
             //find selected card in container and trigger appropriate rendering actions
             for (var i = 0; i < parent.hand.card_container.length; i++) {
 
