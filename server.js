@@ -409,6 +409,12 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('TO_fury_phase', { fury: data.fury });
     });
 
+    socket.on('TO_walls_of_ice_shards', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_walls_of_ice_shards', { dice_roll: data.dice_roll });
+    });
+
     //ALL
     socket.on('ALL_magic_drain_event', function (data) {
 

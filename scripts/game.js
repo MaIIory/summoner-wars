@@ -444,6 +444,11 @@ socket.on('TO_fury_phase', function (data) {
     }
 })
 
+socket.on('TO_walls_of_ice_shards', function (data) {
+
+    page_handler.board.handleWallsOfIceShards(data.dice_roll);
+})
+
 socket.on('ALL_magic_drain_event', function (data) {
 
     for (var i = 0; i < player.magic_pile.length && i < 2; i++) {
@@ -1011,11 +1016,9 @@ var PlaygroundHandler = function () {
             }
 
             //add 'nb of hits' animation and clear container if any animation is hanging
-            parent.animations = [];
+            //parent.animations = [];
             parent.animations.push(new parent.Animation(2, hits, attack_strangth, attacking_card_id, hitted_card_id));
             parent.animations.push(new parent.Animation(1, hits, attack_strangth));
-
-            console.log("resolve attack");
 
             //'Fury' ability handling
             //Note: owner should be checked to avoid sending fury event twice (from opponent side)
@@ -1082,12 +1085,15 @@ var PlaygroundHandler = function () {
             */
 
 
-            
+
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
 
+                    if (that.matrix[i][j] === null || that.matrix[i][j].draw_big_picture === false || that.matrix[i][j].owner != player.name)
+                        continue;
+
                     //firstly check if player want to unfreeze frezzed card
-                    if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (that.matrix[i][j].freezed) && (that.matrix[i][j].owner === player.name)) {
+                    if (that.matrix[i][j].freezed) {
 
                         if ((mouse_state === 1) && (player.magic_pile.length >= 2) && mouse_x > 415 && mouse_x < 610 && mouse_y > 560 && mouse_y < 640) {
                             that.matrix[i][j].freezed = false;
@@ -1098,8 +1104,8 @@ var PlaygroundHandler = function () {
                             parent.animations.push(new parent.Animation(12));
                             return;
                         }
-                        //fire blast ability handling
-                    } else if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true) && (that.matrix[i][j].name === 'Prince Elien') && your_turn && (that.matrix[i][j].owner === player.name)) {
+                        //FIRE BLAST - PE
+                    } else if (that.matrix[i][j].name === 'Prince Elien' && your_turn) {
 
                         if ((mouse_state === 1) && mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545) {
                             that.matrix[i][j].power_active = !that.matrix[i][j].power_active;
@@ -1115,7 +1121,36 @@ var PlaygroundHandler = function () {
                             }
 
                             mouse_state = 2;
+                            return;
                         }
+                        //WALLS OF ICE SHARD - TO 
+                    } else if (that.matrix[i][j].name === 'Grognack' && !that.matrix[i][j].attacked && your_turn && game_phase === 4 && !that.matrix[i][j].freezed) {
+
+                        var use_button_xywh = [437, 450, 150, 100];
+
+                        //check hover
+                        if ((mouse_state === 1) &&
+                            (mouse_x > use_button_xywh[0]) &&
+                            (mouse_x < use_button_xywh[0] + use_button_xywh[2]) &&
+                            (mouse_y > use_button_xywh[1]) &&
+                            (mouse_y < use_button_xywh[1] + use_button_xywh[3])) {
+
+                            that.matrix[i][j].draw_big_picture = false;
+                            parent.draw_big_picture = false;
+
+
+                            var dice_roll = Math.floor((Math.random() * 6) + 1);
+                            console.log("Dice roll: " + dice_roll);
+                            that.handleWallsOfIceShards(dice_roll);
+                            //send event to your opponent
+                            socket.emit('TO_walls_of_ice_shards', { room_name: room_name, dice_roll: dice_roll });
+
+                            player.attacks_left--;
+                            that.matrix[i][j].attacked = true;
+                            mouse_state = 2;
+                            return;
+                        }
+
                     }
                 }
             }
@@ -1368,23 +1403,35 @@ var PlaygroundHandler = function () {
                         //ABILITIES HANDLING
                         //Fire Blast
                         if (that.matrix[i][j].name === 'Prince Elien' && your_turn && that.matrix[i][j].owner === player.name && !that.matrix[i][j].freezed) {
-                            
-                            if (that.matrix[i][j].power_active) {
 
+                            if (that.matrix[i][j].power_active) {
                                 //draw disable
                                 if (mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545)
                                     ctx.drawImage(parent.image, 480, 2670, 160, 60, 432, 490, 160, 60);
                                 else
                                     ctx.drawImage(parent.image, 320, 2670, 160, 60, 432, 490, 160, 60);
-
                             } else {
-
                                 //draw enable
                                 if (mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545)
                                     ctx.drawImage(parent.image, 160, 2670, 160, 60, 432, 490, 160, 60);
                                 else
                                     ctx.drawImage(parent.image, 0, 2670, 160, 60, 432, 490, 160, 60);
+                            }
+                            //Walls of Ice Shard
+                        } else if (that.matrix[i][j].name === 'Grognack' && !that.matrix[i][j].attacked && your_turn && game_phase === 4 && that.matrix[i][j].owner === player.name && !that.matrix[i][j].freezed) {
 
+                            var use_button_src_xywh = [0, 2101, 150, 100];
+                            var use_button_xywh = [437, 450, 150, 100];
+
+                            ctx.drawImage(parent.image, use_button_src_xywh[2], use_button_src_xywh[1], use_button_src_xywh[2], use_button_src_xywh[3], use_button_xywh[0], use_button_xywh[1], use_button_xywh[2], use_button_xywh[3]);
+
+                            //check hover
+                            if ((mouse_x > use_button_xywh[0]) &&
+                                (mouse_x < use_button_xywh[0] + use_button_xywh[2]) &&
+                                (mouse_y > use_button_xywh[1]) &&
+                                (mouse_y < use_button_xywh[1] + use_button_xywh[3])) {
+
+                                ctx.drawImage(parent.image, use_button_src_xywh[2] * 2, use_button_src_xywh[1], use_button_src_xywh[2], use_button_src_xywh[3], use_button_xywh[0], use_button_xywh[1], use_button_xywh[2], use_button_xywh[3]);
                             }
 
                         }
@@ -1725,7 +1772,7 @@ var PlaygroundHandler = function () {
             if (that.matrix[card_i][card_j].freezed)
                 return;
 
-            //draw available attacks
+
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
 
@@ -1804,6 +1851,20 @@ var PlaygroundHandler = function () {
 
                                 that.matrix[card_i][card_j].attacked = true;
                                 mouse_state = 2;
+
+                                if (that.matrix[card_i][card_j].name === "Krung") {
+
+                                    var dice_roll = Math.floor((Math.random() * 6) + 1);
+
+                                    that.handleWildSwing(dice_roll, that.matrix[card_i][card_j].id, hits);
+                                    //emit wild swing event
+
+                                    if (dice_roll > 3) {
+                                        //thats mean everything has been handled already
+                                        return;
+                                    }
+
+                                }
 
                                 socket.emit('resolve_attack', {
                                     room_name: room_name,
@@ -2517,6 +2578,143 @@ var PlaygroundHandler = function () {
             }
         }
 
+        that.handleWallsOfIceShards = function (dice_roll) {
+
+            var impacted_cards_by_ids = [];
+
+            if (dice_roll > 3) {
+
+                //get name of player that has Tundra Orcs deck
+                var to_player_ref = null;
+
+                if (your_turn)
+                    to_player_ref = player;
+                else
+                    to_player_ref = opponent;
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        var card_ref = null;
+
+                        if (parent.board.matrix[i][j] === null)
+                            continue;
+
+                        if (parent.board.matrix[i][j].owner != to_player_ref.name) {
+
+                            if (((j + 1) < 6) && parent.board.matrix[i][j + 1] != null && (parent.board.matrix[i][j + 1].name === "Wall" || parent.board.matrix[i][j + 1].name === "Ice Wall") && parent.board.matrix[i][j + 1].owner === to_player_ref.name) {
+                                parent.board.matrix[i][j].wounds += 1;
+                                impacted_cards_by_ids.push(parent.board.matrix[i][j].id);
+                            }
+                            else if (((j - 1) >= 0) && parent.board.matrix[i][j - 1] != null && (parent.board.matrix[i][j - 1].name === "Wall" || parent.board.matrix[i][j - 1].name === "Ice Wall") && parent.board.matrix[i][j - 1].owner === to_player_ref.name) {
+                                parent.board.matrix[i][j].wounds += 1;
+                                impacted_cards_by_ids.push(parent.board.matrix[i][j].id);
+                            }
+                            else if (((i + 1) < 8) && parent.board.matrix[i + 1][j] != null && (parent.board.matrix[i + 1][j].name === "Wall" || parent.board.matrix[i + 1][j].name === "Ice Wall") && parent.board.matrix[i + 1][j].owner === to_player_ref.name) {
+                                parent.board.matrix[i][j].wounds += 1;
+                                impacted_cards_by_ids.push(parent.board.matrix[i][j].id);
+                            }
+                            else if (((i - 1) >= 0) && parent.board.matrix[i - 1][j] != null && (parent.board.matrix[i - 1][j].name === "Wall" || parent.board.matrix[i - 1][j].name === "Ice Wall") && parent.board.matrix[i - 1][j].owner === to_player_ref.name) {
+                                parent.board.matrix[i][j].wounds += 1;
+                                impacted_cards_by_ids.push(parent.board.matrix[i][j].id);
+                            }
+
+                        }
+
+                        if (parent.board.matrix[i][j].wounds >= parent.board.matrix[i][j].lives) {
+                            parent.board.matrix[i][j].wounds = parent.board.matrix[i][j].lives; //only for displaying purpose
+                            parent.board.matrix[i][j].killed_by = to_player_ref.name; //store card killer name
+                            parent.board.matrix[i][j].dying = true;
+                            parent.board.matrix[i][j].hover = false;
+                            parent.board.matrix[i][j].selected = false;
+
+                            //handle GAME OVER
+                            if ((parent.board.matrix[i][j].id) === 'pe31' && (parent.board.matrix[i][j].owner === player.name)) {
+                                socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                            }
+                            else if ((parent.board.matrix[i][j].id) === 'to25' && (parent.board.matrix[i][j].owner === player.name)) {
+                                socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                            }
+
+                        }
+
+                    }
+                }
+
+                parent.animations.push(new parent.Animation(19, null, null, null, null, null, null, { imp_cards_list: impacted_cards_by_ids, dice_roll: dice_roll }));
+
+            }
+            else {
+                parent.animations.push(new parent.Animation(19, null, null, null, null, null, null, { imp_cards_list: impacted_cards_by_ids, dice_roll: dice_roll }));
+
+            }
+        }
+
+        that.handleWildSwing = function (dice_roll, krung_id, hits) {
+
+            var impacted_cards_by_ids = [];
+
+            //get name of player that has Tundra Orcs deck
+            var to_player_ref = null;
+
+            if (your_turn)
+                to_player_ref = player;
+            else
+                to_player_ref = opponent;
+
+            if (dice_roll > 3) {
+
+                for (var i = 0; i < that.matrix.length; i++) {
+                    for (var j = 0; j < that.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] === null)
+                            continue;
+
+                        if (((j + 1) < 6) && that.matrix[i][j + 1] != null && that.matrix[i][j + 1].id === krung_id) {
+                            that.matrix[i][j].wounds += hits;
+                            impacted_cards_by_ids.push(that.matrix[i][j].id);
+                        }
+                        else if (((j - 1) >= 0) && that.matrix[i][j - 1] != null && that.matrix[i][j - 1].id === krung_id) {
+                            that.matrix[i][j].wounds += hits;
+                            impacted_cards_by_ids.push(that.matrix[i][j].id);
+                        }
+                        else if (((i + 1) < 8) && that.matrix[i + 1][j] != null && that.matrix[i + 1][j].id === krung_id) {
+                            that.matrix[i][j].wounds += hits;
+                            impacted_cards_by_ids.push(that.matrix[i][j].id);
+                        }
+                        else if (((i - 1) >= 0) && that.matrix[i - 1][j] != null && that.matrix[i - 1][j].id === krung_id) {
+                            that.matrix[i][j].wounds += hits;
+                            impacted_cards_by_ids.push(that.matrix[i][j].id);
+                        }
+
+                        if (that.matrix[i][j].wounds >= that.matrix[i][j].lives) {
+                            that.matrix[i][j].wounds = that.matrix[i][j].lives; //only for displaying purpose
+                            that.matrix[i][j].killed_by = to_player_ref.name; //store card killer name
+                            that.matrix[i][j].dying = true;
+                            that.matrix[i][j].hover = false;
+                            that.matrix[i][j].selected = false;
+
+                            //handle GAME OVER
+                            if ((that.matrix[i][j].id) === 'pe31' && (that.matrix[i][j].owner === player.name)) {
+                                socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                            }
+                            else if ((that.matrix[i][j].id) === 'to25' && (that.matrix[i][j].owner === player.name)) {
+                                socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                            }
+                        }
+                    }
+                }
+
+                parent.animations.push(new parent.Animation(1, hits, 3));
+                parent.animations.push(new parent.Animation(20, null, null, null, null, null, null, { imp_cards_list: impacted_cards_by_ids, dice_roll: dice_roll }));
+
+            } else {
+
+                parent.animations.push(new parent.Animation(20, null, null, null, null, null, null, { imp_cards_list: impacted_cards_by_ids, dice_roll: dice_roll }));
+            }
+
+        }
+
     }
 
     var Hand = function () {
@@ -2775,7 +2973,7 @@ var PlaygroundHandler = function () {
         }
     }
 
-    this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id, x, y) {
+    this.Animation = function (type, hits, shoots, attacking_card_id, hitted_card_id, x, y, data) {
 
         /* types definitions:
            0 - 'End Phase' animation: only 'type' argument required
@@ -2797,6 +2995,8 @@ var PlaygroundHandler = function () {
            16- 'Fury' phase
            17- 'Blaze step'
            18- 'No Fury'
+           19- 'Walls of Ice Shards': 6 skips + data parameter - list of impacted cards
+           20- 'Wild Swing': 6 skips + data parameter
         */
 
         var that = this;
@@ -2807,6 +3007,8 @@ var PlaygroundHandler = function () {
         that.sheet_hor_arrows_origin = 601; //indicates start 'y' point for horizontal arrows
         that.sheet_ver_arrows_origin = 941; //indicates start 'y' point for vertical arrows
 
+        that.hits = hits;
+        that.shoots = shoots;
         that.attacking_card_id = attacking_card_id;
         that.hitted_card_id = hitted_card_id;
 
@@ -2918,6 +3120,16 @@ var PlaygroundHandler = function () {
             that.card_y = y;
         } else if (that.type === 18) {
             that.co_xywh = [350, 2570, 300, 100];
+        } else if (that.type === 19) {
+            that.co_xywh = [0, 2730, 500, 80]; //"Walls of ..." coordinates
+            that.co_xywh_dr = [0, 2810, 80, 80]; //"dice roll:" coordinates
+            that.data = data;
+            that.cnt = -100;
+        } else if (that.type === 20) {
+            that.co_xywh = [0, 2895, 320, 75]; //"Wild Swing" coordinates
+            that.co_xywh_dr = [0, 2810, 80, 80]; //"dice roll:" coordinates
+            that.data = data;
+            that.cnt = -100;
         }
 
 
@@ -2945,9 +3157,9 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 350, 100, 337, 334, 350, 100);
             else if (that.type === 1) {
 
-                ctx.drawImage(parent.image, 50 * hits, that.sheet_origin + 100, 50, 100, 362, 334, 50, 100);
+                ctx.drawImage(parent.image, 50 * that.hits, that.sheet_origin + 100, 50, 100, 362, 334, 50, 100);
                 ctx.drawImage(parent.image, 350, that.sheet_origin + 100, 50, 100, 412, 334, 50, 100);
-                ctx.drawImage(parent.image, 50 * shoots, that.sheet_origin + 100, 50, 100, 462, 334, 50, 100);
+                ctx.drawImage(parent.image, 50 * that.shoots, that.sheet_origin + 100, 50, 100, 462, 334, 50, 100);
                 ctx.drawImage(parent.image, 400, that.sheet_origin + 100, 150, 100, 512, 334, 150, 100);
             }
             else if (that.type === 2) {
@@ -3061,6 +3273,60 @@ var PlaygroundHandler = function () {
             }
             else if (that.type === 18) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2) + that.co_xywh[3], that.co_xywh[2], that.co_xywh[3]);
+            }
+            else if (that.type === 19) {
+
+
+                for (var k = 0; k < that.data.imp_cards_list.length; k++) {
+
+                    for (var i = 0; i < parent.board.matrix.length; i++) {
+                        for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                            if (parent.board.matrix[i][j] != null) {
+
+                                if (parent.board.matrix[i][j].id === that.data.imp_cards_list[k]) {
+                                    ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                                    ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //draw dice roll animation
+                var tmp_dice_roll = that.data.dice_roll - 1;
+
+                ctx.drawImage(parent.image, that.co_xywh_dr[0] + (tmp_dice_roll * that.co_xywh_dr[2]), that.co_xywh_dr[1], that.co_xywh_dr[2], that.co_xywh_dr[3], (width / 2) - (that.co_xywh_dr[2] / 2), (height / 2) - (that.co_xywh_dr[3] / 2) - that.co_xywh_dr[3], that.co_xywh_dr[2], that.co_xywh_dr[3]);
+
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+
+            }
+            else if (that.type === 20) {
+
+
+                for (var k = 0; k < that.data.imp_cards_list.length; k++) {
+
+                    for (var i = 0; i < parent.board.matrix.length; i++) {
+                        for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                            if (parent.board.matrix[i][j] != null) {
+
+                                if (parent.board.matrix[i][j].id === that.data.imp_cards_list[k]) {
+                                    ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                                    ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //draw dice roll animation
+                var tmp_dice_roll = that.data.dice_roll - 1;
+
+                ctx.drawImage(parent.image, that.co_xywh_dr[0] + (tmp_dice_roll * that.co_xywh_dr[2]), that.co_xywh_dr[1], that.co_xywh_dr[2], that.co_xywh_dr[3], (width / 2) - (that.co_xywh_dr[2] / 2), (height / 2) - (that.co_xywh_dr[3] / 2) - that.co_xywh_dr[3] - 100, that.co_xywh_dr[2], that.co_xywh_dr[3]);
+
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2) - 100, that.co_xywh[2], that.co_xywh[3]);
+
             }
 
             ctx.restore();
