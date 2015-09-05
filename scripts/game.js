@@ -343,6 +343,26 @@ socket.on('PE_blaze_step', function (data) {
     }
 })
 
+socket.on('PE_resolve_fire_breath', function (data) {
+    page_handler.board.resolveFireBreath(data.impacted_cards);
+})
+
+socket.on('PE_blazing_consription', function (data) {
+
+    for (var i = 0; i < page_handler.board.matrix.length; i++) {
+        for (var j = 0; j < page_handler.board.matrix[i].length; j++) {
+
+            if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.card_id) {
+
+                page_handler.board.matrix[i][j].owner = opponent.name;
+                page_handler.animations.push(new page_handler.Animation(22, null, null, null, null, null, null, { id: data.card_id }));
+                return;
+
+            }
+        }
+    }
+})
+
 socket.on('TO_wall_summon_event', function (data) {
 
     for (var i = 0; i < opponent.faction.deck.length; i++) {
@@ -449,6 +469,11 @@ socket.on('TO_walls_of_ice_shards', function (data) {
     page_handler.board.handleWallsOfIceShards(data.dice_roll);
 })
 
+socket.on('TO_wild_swing', function (data) {
+
+    page_handler.board.handleWildSwing(data.dice_roll, data.krung_id, data.hits)
+})
+
 socket.on('ALL_magic_drain_event', function (data) {
 
     for (var i = 0; i < player.magic_pile.length && i < 2; i++) {
@@ -503,6 +528,7 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
     //basic data
     that.name = card_name;
     that.id = id;
+    that.original_owner = owner_name
     that.owner = owner_name;
 
     //image source and draw data
@@ -549,6 +575,10 @@ var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost
     that.fury = false;
     that.is_fury_active = false;
     that.power_active = false;
+    that.taken = false;
+
+    if (that.name === 'Kaeseeall')
+        that.power_active = true;
 
     if (that.name === 'Fighter' || that.name === 'Ragnor')
         that.fury = true;
@@ -1104,7 +1134,7 @@ var PlaygroundHandler = function () {
                             parent.animations.push(new parent.Animation(12));
                             return;
                         }
-                        //FIRE BLAST - PE
+                        //FIRE BLAST - PE 
                     } else if (that.matrix[i][j].name === 'Prince Elien' && your_turn) {
 
                         if ((mouse_state === 1) && mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545) {
@@ -1117,6 +1147,25 @@ var PlaygroundHandler = function () {
                             } else {
                                 that.matrix[i][j].precise = false;
                                 that.matrix[i][j].range = 3;
+                                that.matrix[i][j].attack = 3;
+                            }
+
+                            mouse_state = 2;
+                            return;
+                        }
+                        //BREATH OF FLAME - PE 
+                    } else if (that.matrix[i][j].name === 'Fire Drake' && your_turn) {
+
+                        if ((mouse_state === 1) && mouse_x > 447 && mouse_x < 577 && mouse_y > 495 && mouse_y < 545) {
+                            that.matrix[i][j].power_active = !that.matrix[i][j].power_active;
+
+                            if (that.matrix[i][j].power_active) {
+                                that.matrix[i][j].precise = true;
+                                that.matrix[i][j].range = 3;
+                                that.matrix[i][j].attack = 1;
+                            } else {
+                                that.matrix[i][j].precise = false;
+                                that.matrix[i][j].range = 1;
                                 that.matrix[i][j].attack = 3;
                             }
 
@@ -1156,7 +1205,7 @@ var PlaygroundHandler = function () {
             }
 
 
-            //check if player want to unselect focused card
+            //check if player wants to unselect focused card
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
                     if ((that.matrix[i][j] != null) && (that.matrix[i][j].draw_big_picture === true)) {
@@ -1268,11 +1317,11 @@ var PlaygroundHandler = function () {
                         }
 
                         //check card owner in order to load proper faction image
-                        if (that.matrix[i][j].owner === player.name)
+                        if (that.matrix[i][j].original_owner === player.name)
                             //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
                             ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, (2 * that.matrix[i][j].height) + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
                                 that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
-                        else if (that.matrix[i][j].owner === opponent.name) {
+                        else if (that.matrix[i][j].original_owner === opponent.name) {
                             ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].board_w, (2 * that.matrix[i][j].height) + (that.matrix[i][j].pos_y * that.matrix[i][j].board_h),
                                 that.matrix[i][j].board_w, that.matrix[i][j].board_h, that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                         }
@@ -1280,6 +1329,7 @@ var PlaygroundHandler = function () {
                             $("#dialog").text("Error: Card owner not found!");
                             $('#dialog').dialog('open');
                         }
+
 
                         //draw wounds on board
                         if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
@@ -1339,10 +1389,10 @@ var PlaygroundHandler = function () {
                         ctx.fillRect(12, 12, width - 22, height - 22);
 
                         //check card owner in order to load proper faction image
-                        if (that.matrix[i][j].owner === player.name)
+                        if (that.matrix[i][j].original_owner === player.name)
                             ctx.drawImage(player.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
                                 that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
-                        else if (that.matrix[i][j].owner === opponent.name)
+                        else if (that.matrix[i][j].original_owner === opponent.name)
                             ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
                                 that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
 
@@ -1401,8 +1451,8 @@ var PlaygroundHandler = function () {
                         }
 
                         //ABILITIES HANDLING
-                        //Fire Blast
-                        if (that.matrix[i][j].name === 'Prince Elien' && your_turn && that.matrix[i][j].owner === player.name && !that.matrix[i][j].freezed) {
+                        //Fire Blast and //Breath of Flame
+                        if ((that.matrix[i][j].name === 'Prince Elien' || that.matrix[i][j].name === 'Fire Drake') && your_turn && that.matrix[i][j].owner === player.name && !that.matrix[i][j].freezed) {
 
                             if (that.matrix[i][j].power_active) {
                                 //draw disable
@@ -1433,9 +1483,7 @@ var PlaygroundHandler = function () {
 
                                 ctx.drawImage(parent.image, use_button_src_xywh[2] * 2, use_button_src_xywh[1], use_button_src_xywh[2], use_button_src_xywh[3], use_button_xywh[0], use_button_xywh[1], use_button_xywh[2], use_button_xywh[3]);
                             }
-
                         }
-
                     }
                 }
             }
@@ -1730,7 +1778,6 @@ var PlaygroundHandler = function () {
 
                     if (that.matrix[i][j] != null)
                         that.matrix[i][j].in_range = false;
-
                 }
             }
 
@@ -1771,6 +1818,17 @@ var PlaygroundHandler = function () {
             //if card is freezed break function
             if (that.matrix[card_i][card_j].freezed)
                 return;
+
+            //if card is 'Fire Drake' redirect handling
+            if (that.matrix[card_i][card_j].name === 'Fire Drake' && that.matrix[card_i][card_j].power_active) {
+
+                var card_ref = that.matrix[card_i][card_j];
+                card_ref.i = card_i;
+                card_ref.j = card_j;
+
+                that.handleFireBreath(card_ref);
+                return;
+            }
 
 
             for (var i = 0; i < that.matrix.length; i++) {
@@ -1857,7 +1915,8 @@ var PlaygroundHandler = function () {
                                     var dice_roll = Math.floor((Math.random() * 6) + 1);
 
                                     that.handleWildSwing(dice_roll, that.matrix[card_i][card_j].id, hits);
-                                    //emit wild swing event
+
+                                    socket.emit('TO_wild_swing', { room_name: room_name, dice_roll: dice_roll, krung_id: that.matrix[card_i][card_j].id, hits: hits });
 
                                     if (dice_roll > 3) {
                                         //thats mean everything has been handled already
@@ -2715,6 +2774,196 @@ var PlaygroundHandler = function () {
 
         }
 
+        that.handleFireBreath = function (card_ref) {
+
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    //check if card is not dying
+                    if ((that.matrix[i][j] != null) && ((card_ref.i != i) || (card_ref.j != j)) && ((!that.matrix[i][j].dying))) {
+
+                        //check if card is in horizontal range
+                        var hor_diff = card_ref.i - i;
+                        if ((Math.abs(hor_diff) <= card_ref.range) && (card_ref.j === j)) {
+                            that.matrix[i][j].in_range = true;
+                        }
+
+                        //check if card is in vertical range
+                        var ver_diff = card_ref.j - j;
+                        if ((Math.abs(ver_diff) <= card_ref.range) && (card_ref.i === i)) {
+                            that.matrix[i][j].in_range = true;
+                        }
+
+                        if (!that.matrix[i][j].in_range)
+                            continue;
+
+                        if ((mouse_state === 1) &&
+                            (mouse_x > (that.s_x + (j * that.square_w))) &&
+                            (mouse_x < (that.s_x + (j * that.square_w) + that.square_w)) &&
+                            (mouse_y > (that.s_y + (i * that.square_h))) &&
+                            (mouse_y < (that.s_y + (i * that.square_h) + that.square_h))
+                            ) {
+
+                            var impacted_cards = [that.matrix[i][j].id];
+
+                            for (var k = 1; k < Math.abs(hor_diff) ; k++)
+                                if (that.matrix[i - k][j] != null) impacted_cards.push(that.matrix[i - k][j].id);
+
+                            for (var k = 1; k < Math.abs(ver_diff) ; k++)
+                                if (that.matrix[i][j - k] != null) impacted_cards.push(that.matrix[i][j - k].id);
+
+                            that.resolveFireBreath(impacted_cards);
+
+                            socket.emit('PE_resolve_fire_breath', { room_name: room_name, impacted_cards: impacted_cards });
+
+                            card_ref.attacked = true;
+                            mouse_state = 2;
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        that.resolveFireBreath = function (impacted_cards) {
+
+            console.log("impacted cards " + impacted_cards)
+
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if (that.matrix[i][j] === null)
+                        continue;
+
+                    for (var k = 0; k < impacted_cards.length; k++) {
+
+                        if (that.matrix[i][j].id === impacted_cards[k]) {
+
+                            console.log('id found ' + impacted_cards[k]);
+
+                            that.matrix[i][j].wounds++;
+
+                            if (that.matrix[i][j].wounds >= that.matrix[i][j].lives) {
+                                that.matrix[i][j].wounds = that.matrix[i][j].lives; //only for displaying purpose
+
+                                if (your_turn)
+                                    that.matrix[i][j].killed_by = player.name;
+                                else
+                                    that.matrix[i][j].killed_by = opponent.name;
+
+                                that.matrix[i][j].dying = true;
+                                that.matrix[i][j].hover = false;
+                                that.matrix[i][j].selected = false;
+
+                                //handle GAME OVER
+                                if ((that.matrix[i][j].id) === 'pe31' && (that.matrix[i][j].owner === player.name)) {
+                                    socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                                }
+                                else if ((that.matrix[i][j].id) === 'to25' && (that.matrix[i][j].owner === player.name)) {
+                                    socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            parent.animations.push(new parent.Animation(21, null, null, null, null, null, null, { imp_cards_list: impacted_cards }));
+        }
+
+        that.drawAvailTakeovers = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var cards_to_takeover_xy = [];
+
+            //find Kaeseeall card and highlight adjacent enemies card
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if ((that.matrix[i][j] != null) && that.matrix[i][j].name === 'Kaeseeall' && that.matrix[i][j].selected && that.matrix[i][j].power_active) {
+
+                        ctx.fillStyle = "rgba(4, 124, 10, 0.45)";
+                        if (((j + 1) < 6) && that.matrix[i][j + 1] != null && that.matrix[i][j + 1].owner != player.name && (that.matrix[i][j + 1].card_class === "common" || that.matrix[i][j + 1].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i][j + 1], i: i, j: j + 1 });
+                        }
+
+                        if (((j - 1) >= 0) && that.matrix[i][j - 1] != null && that.matrix[i][j - 1].owner != player.name && (that.matrix[i][j - 1].card_class === "common" || that.matrix[i][j - 1].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i][j - 1], i: i, j: j - 1 });
+                        }
+
+                        if (((i + 1) < 8) && that.matrix[i + 1][j] != null && that.matrix[i + 1][j].owner != player.name && (that.matrix[i + 1][j].card_class === "common" || that.matrix[i + 1][j].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i + 1][j], i: i + 1, j: j });
+                        }
+
+                        if (((i - 1) >= 0) && that.matrix[i - 1][j] != null && that.matrix[i - 1][j].owner != player.name && (that.matrix[i - 1][j].card_class === "common" || that.matrix[i - 1][j].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i - 1][j], i: i - 1, j: j });
+                        }
+
+                        for (var k = 0; k < cards_to_takeover_xy.length; k++) {
+                            ctx.fillRect(that.s_x + (cards_to_takeover_xy[k].j * that.square_w), that.s_y + (cards_to_takeover_xy[k].i * that.square_h), that.square_w, that.square_h);
+                        }
+
+                        return;
+                    }
+
+                }
+            }
+        }
+
+        that.handleTakeovers = function () {
+
+            if (parent.draw_big_picture || parent.draw_big_picture_from_hand)
+                return;
+
+            var cards_to_takeover_xy = [];
+
+            //find Kaeseeall card and highlight adjacent enemies card
+            for (var i = 0; i < that.matrix.length; i++) {
+                for (var j = 0; j < that.matrix[i].length; j++) {
+
+                    if ((that.matrix[i][j] != null) && that.matrix[i][j].name === 'Kaeseeall' && that.matrix[i][j].selected && that.matrix[i][j].power_active) {
+
+                        if (((j + 1) < 6) && that.matrix[i][j + 1] != null && that.matrix[i][j + 1].owner != player.name && (that.matrix[i][j + 1].card_class === "common" || that.matrix[i][j + 1].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i][j + 1], i: i, j: j + 1 });
+                        }
+                        if (((j - 1) >= 0) && that.matrix[i][j - 1] != null && that.matrix[i][j - 1].owner != player.name && (that.matrix[i][j - 1].card_class === "common" || that.matrix[i][j - 1].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i][j - 1], i: i, j: j - 1 });
+                        }
+                        if (((i + 1) < 8) && that.matrix[i + 1][j] != null && that.matrix[i + 1][j].owner != player.name && (that.matrix[i + 1][j].card_class === "common" || that.matrix[i + 1][j].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i + 1][j], i: i + 1, j: j });
+                        }
+                        if (((i - 1) >= 0) && that.matrix[i - 1][j] != null && that.matrix[i - 1][j].owner != player.name && (that.matrix[i - 1][j].card_class === "common" || that.matrix[i - 1][j].card_class === "champion")) {
+                            cards_to_takeover_xy.push({ card_ref: that.matrix[i - 1][j], i: i - 1, j: j });
+                        }
+                        console.log('5');
+                        for (var k = 0; k < cards_to_takeover_xy.length; k++) {
+
+                            if (
+                                (mouse_state === 1) &&
+                                (parseInt((((mouse_x - that.s_x) / that.square_w))) === cards_to_takeover_xy[k].j) &&
+                                (parseInt((((mouse_y - that.s_y) / that.square_h))) === cards_to_takeover_xy[k].i)) {
+
+                                parent.animations.push(new parent.Animation(22, null, null, null, null, null, null, { id: cards_to_takeover_xy[k].card_ref.id }));
+                                socket.emit('PE_blazing_consription', { room_name: room_name, card_id: cards_to_takeover_xy[k].card_ref.id });
+
+                                that.matrix[i][j].power_active = false;
+                                cards_to_takeover_xy[k].card_ref.owner = player.name;
+                                cards_to_takeover_xy[k].card_ref.taken = true;
+                                mouse_state = 2;
+                                return;
+
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+
     }
 
     var Hand = function () {
@@ -2997,6 +3246,8 @@ var PlaygroundHandler = function () {
            18- 'No Fury'
            19- 'Walls of Ice Shards': 6 skips + data parameter - list of impacted cards
            20- 'Wild Swing': 6 skips + data parameter
+           21- 'Breath of Flame': 6 skips + data parameter
+           22- 'Blazing Conscription': 6 skips + data parameter
         */
 
         var that = this;
@@ -3130,8 +3381,14 @@ var PlaygroundHandler = function () {
             that.co_xywh_dr = [0, 2810, 80, 80]; //"dice roll:" coordinates
             that.data = data;
             that.cnt = -100;
+        } else if (that.type === 21) {
+            that.co_xywh = [320, 2895, 330, 75]; //"Breath of flame" coordinates
+            that.data = data;
+            that.cnt = -100;
+        } else if (that.type === 22) {
+            that.co_xywh = [0, 2970, 500, 80]; //"Blazing Conscription" coordinates
+            that.data = data;
         }
-
 
         that.handle = function () {
 
@@ -3328,9 +3585,41 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2) - 100, that.co_xywh[2], that.co_xywh[3]);
 
             }
+            else if (that.type === 21) {
 
+                for (var k = 0; k < that.data.imp_cards_list.length; k++) {
+
+                    for (var i = 0; i < parent.board.matrix.length; i++) {
+                        for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                            if (parent.board.matrix[i][j] != null) {
+
+                                if (parent.board.matrix[i][j].id === that.data.imp_cards_list[k]) {
+                                    ctx.fillStyle = "rgba(216, 25, 0, 0.4)";
+                                    ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                                }
+                            }
+                        }
+                    }
+                }
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - ((that.co_xywh[2] * 1.3) / 2), (height / 2) - ((that.co_xywh[3] * 1.3) / 2), that.co_xywh[2] * 1.3, that.co_xywh[3] * 1.3);
+            }
+            else if (that.type === 22) {
+
+                for (var i = 0; i < parent.board.matrix.length; i++) {
+                    for (var j = 0; j < parent.board.matrix[i].length; j++) {
+
+                        if (parent.board.matrix[i][j] != null && (parent.board.matrix[i][j].id === that.data.id)) {
+
+                            ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                            ctx.fillRect(parent.board.s_x + (j * parent.board.square_w), parent.board.s_y + (i * parent.board.square_h), parent.board.square_w, parent.board.square_h);
+                        }
+                    }
+                }
+
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
+            }
             ctx.restore();
-
         }
     }
 
@@ -4503,8 +4792,25 @@ var PlaygroundHandler = function () {
 
         for (var i = 0; i < that.board.matrix.length; i++) {
             for (var j = 0; j < that.board.matrix[i].length; j++) {
-                if (parent.board.matrix[i][j] != null && parent.board.matrix[i][j].spirit_of_the_phoenix)
-                    parent.board.matrix[i][j].spirit_of_the_phoenix = false;
+
+                if (that.board.matrix[i][j] === null)
+                    continue;
+
+                //restore spirit of the pheonix data
+                if (that.board.matrix[i][j].spirit_of_the_phoenix)
+                    that.board.matrix[i][j].spirit_of_the_phoenix = false;
+
+                //restore taken cards
+                if (that.board.matrix[i][j].taken) {
+
+                    that.board.matrix[i][j].taken = false;
+                    that.board.matrix[i][j].owner = that.board.matrix[i][j].original_owner;
+
+                }
+
+                if (that.board.matrix[i][j].name === 'Kaeseeall')
+                    that.board.matrix[i][j].power_active = true;
+
             }
         }
     }
@@ -4720,6 +5026,7 @@ var gameLoop = function () {
 
                     //logic layer should not run always
                     page_handler.board.handleDyingCards();
+                    page_handler.board.handleTakeovers();
                     page_handler.board.checkMouseActivity();
                     page_handler.board.handleSummon();
                     page_handler.checkHover();
@@ -4741,6 +5048,7 @@ var gameLoop = function () {
                 page_handler.hand.draw();
                 page_handler.board.draw();
                 page_handler.board.drawAvailSummonTails();
+                page_handler.board.drawAvailTakeovers();
                 page_handler.hand.drawBigPicture();
 
 

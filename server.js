@@ -372,6 +372,18 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('PE_blaze_step', { card_id: data.card_id, x: data.x, y: data.y });
     });
 
+    socket.on('PE_resolve_fire_breath', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_resolve_fire_breath', { impacted_cards: data.impacted_cards });
+    });
+
+    socket.on('PE_blazing_consription', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('PE_blazing_consription', { card_id: data.card_id });
+    });
+
     //TO
     socket.on('TO_wall_summon_event', function (data) {
 
@@ -413,6 +425,12 @@ io.sockets.on('connection', function (socket) {
 
         //sending to all clients in 'game' room(channel) except sender
         socket.broadcast.to(data.room_name).emit('TO_walls_of_ice_shards', { dice_roll: data.dice_roll });
+    });
+
+    socket.on('TO_wild_swing', function (data) {
+
+        //sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('TO_wild_swing', { dice_roll: data.dice_roll, krung_id: data.krung_id, hits: data.hits });
     });
 
     //ALL
