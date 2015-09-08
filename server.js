@@ -87,11 +87,15 @@ io.sockets.on('connection', function (socket) {
 
                 if (rooms[i].first_player.name === player_name) {
                     rooms[i].first_player = "none";
+                    rooms[i].status = 0;
                     emit_update_room = true;
+                    io.sockets.in(rooms[i].name).emit('game_over', { win: rooms[i].second_player.name, lost: player_name });
                 }
                 else if (rooms[i].second_player.name === player_name) {
                     rooms[i].second_player = "none";
                     emit_update_room = true;
+                    rooms[i].status = 0;
+                    io.sockets.in(rooms[i].name).emit('game_over', { win: rooms[i].first_player.name, lost: player_name });
                 }
 
                 if ((rooms[i].first_player === "none") && (rooms[i].second_player === "none")) {

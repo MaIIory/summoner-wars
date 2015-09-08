@@ -26,7 +26,7 @@ var start_play_event = false; //indicates if 'start_play' event came
 var end_turn_event = false;   //indicates if 'end turn' event came
 
 //game phase indicators
-var game_phase = 1; /* 0 - draw phase
+var game_phase = 3; /* 0 - draw phase
                        1 - summon phase
                        2 - event phase
                        3 - move phase (start phase)
@@ -162,6 +162,11 @@ socket.on('end_turn', function (data) {
 
 //incoming game over event
 socket.on('game_over', function (data) {
+
+    if (state != 3) {
+        $("#dialog").text("Opponent has disconnected! Refresh page the page!");
+        $('#dialog').dialog('open');
+    }
 
     game_phase = 7;
 
@@ -355,6 +360,7 @@ socket.on('PE_blazing_consription', function (data) {
             if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.card_id) {
 
                 page_handler.board.matrix[i][j].owner = opponent.name;
+                page_handler.board.matrix[i][j].taken = true;
                 page_handler.animations.push(new page_handler.Animation(22, null, null, null, null, null, null, { id: data.card_id }));
                 return;
 
@@ -618,6 +624,8 @@ var MainMenu = function () {
                                    0 - mouse out
                                    1 - mouse over */
 
+    that.state = 0; /* 0 - main maenu, 1 - draw credits */
+
     that.checkHover = function () {
 
         for (var i = 0; i < that.buttons.length; i++) {
@@ -636,28 +644,42 @@ var MainMenu = function () {
     that.draw = function () {
 
         //drawImage(Image Object, source X, source Y, source Width, source Height, destination X, destination Y, Destination width, Destination height)
+        if (that.state === 0) {
+            //draw buttons
+            for (var i = 0; i < that.buttons.length; i++) {
+                ctx.drawImage(that.image,
+                    that.buttons[i] * that.b_width,
+                    that.b_height * i,
+                    that.b_width,
+                    that.b_height,
+                    (width / 2) - (that.b_width / 2),
+                    (height / 2) + (i * (that.b_height + 20)),
+                    that.b_width,
+                    that.b_height);
+            }
 
-        //draw buttons
-        for (var i = 0; i < that.buttons.length; i++) {
-            ctx.drawImage(that.image,
-                that.buttons[i] * that.b_width,
-                that.b_height * i,
-                that.b_width,
-                that.b_height,
-                (width / 2) - (that.b_width / 2),
-                (height / 2) + (i * (that.b_height + 20)),
-                that.b_width,
-                that.b_height);
+            //draw logo
+            ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
         }
+        else if (that.state === 1) {
 
-        //draw logo
-        ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
+            //ctx.font = 'Bold 20pt Times New Roman';
+            ctx.fillText("Credits: ", 400, 400);
+
+            //draw logo
+            ctx.drawImage(that.image, 0, that.logo_src_y, that.logo_width, that.logo_height, (width / 2) - (that.logo_width / 2), 50, that.logo_width, that.logo_height);
+
+        }
 
     }
 
     that.checkAction = function () {
 
-        if (that.buttons[0] && mouse_state === 1) {
+        if (mouse_state === 1 && that.state != 0) {
+            mouse_state = 2;
+            return 9;
+        }
+        else if (that.buttons[0] && mouse_state === 1) {
             mouse_state = 2;
             return 1;
         }
@@ -667,7 +689,7 @@ var MainMenu = function () {
         }
         else if (that.buttons[2] && mouse_state === 1) {
             mouse_state = 2;
-            null; //TODO draw credits
+            return 2;
         }
         else if (that.buttons[3] && mouse_state === 1) {
             mouse_state = 2;
@@ -1395,6 +1417,12 @@ var PlaygroundHandler = function () {
                         else if (that.matrix[i][j].original_owner === opponent.name)
                             ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
                                 that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
+
+                        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+                        ctx.fillText('owner: ' + that.matrix[i][j].owner, 740, 520);
+                        ctx.fillText('orig owner: ' + that.matrix[i][j].original_owner, 740, 530);
+                        ctx.fillText('attacked: ' + that.matrix[i][j].attacked, 740, 540);
+                        ctx.fillText('moves left: ' + that.matrix[i][j].moves_left, 740, 550);
 
                         //draw wounds
                         if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
@@ -3137,6 +3165,7 @@ var PlaygroundHandler = function () {
 
                 if (that.card_container[i].draw_big_picture_from_hand) {
                     that.card_container[i].draw_big_picture_from_hand = false;
+                    that.card_container[i].hover = false;
                     parent.draw_big_picture_from_hand = false;
                     mouse_state = 2;
                     return;
@@ -4596,11 +4625,55 @@ var PlaygroundHandler = function () {
         ctx.fillText("Discard: " + opponent.discard_pile.length, 870, 290);
         ctx.fillText("Deck: " + opponent.faction.deck.length, 870, 310);
 
+
+        //draw game phase name
+        ctx.font = 'Bold 12pt Times New Roman';
+        ctx.fillText("Game phase: ", 850, 410);
+
+        switch (game_phase) {
+
+            case 0:
+                ctx.fillText("Draw", 850, 435);
+                break;
+            case 1:
+                ctx.fillText("Summon", 850, 435);
+                break;
+            case 2:
+                ctx.fillText("Events", 850, 435);
+                break;
+            case 3:
+                ctx.fillText("Move", 850, 435);
+                break;
+            case 4:
+                ctx.fillText("Attack", 850, 435);
+                break;
+            case 5:
+                ctx.fillText("Build Magic", 850, 435);
+                break;
+            case 6:
+                ctx.fillText("Blaze Step", 850, 435);
+                break;
+            case 7:
+                ctx.fillText("Game Over", 850, 435);
+                break;
+            case 8:
+                ctx.fillText("Reinforcement", 850, 435);
+                break;
+            case 9:
+                ctx.fillText("Fury", 850, 435);
+                break;
+            default:
+                ctx.fillText("ERROR", 870, 435);
+
+        }
+
+
+
+
         //restore previous style
         ctx.restore();
 
         //draw end phase button
-        ctx.fillText('pahse button: ' + that.btn_phase_frame, 840, 450);
         ctx.drawImage(that.image, that.btn_phase_wh * that.btn_phase_frame, that.btn_phase_src_y, that.btn_phase_wh, that.btn_phase_wh, that.btn_phase_x, that.btn_phase_y, that.btn_phase_wh, that.btn_phase_wh);
 
         //draw 'show hand' button
@@ -4620,7 +4693,7 @@ var PlaygroundHandler = function () {
             return;
 
         //check if 'step phase' button is clicked
-        if ((that.btn_phase_hover) === true && (mouse_state === 1)) {
+        if ((that.btn_phase_hover) === true && (mouse_state === 1) && (game_phase != 7)) {
 
             //unselect card if any
             that.board.unselectAll();
@@ -4790,6 +4863,8 @@ var PlaygroundHandler = function () {
 
     that.restoreEventsData = function () {
 
+        console.log("restoring data");
+
         for (var i = 0; i < that.board.matrix.length; i++) {
             for (var j = 0; j < that.board.matrix[i].length; j++) {
 
@@ -4901,7 +4976,15 @@ var gameLoop = function () {
 
             //change game state to briefing
             state = 1;
+        } else if (result === 2) {
+
+            page_handler.state = 1;
+
+        } else if (result === 9) {
+
+            page_handler.state = 0;
         }
+
     }
     else if (state === 1) {
         /* ================== */
@@ -5459,16 +5542,10 @@ var gameLoop = function () {
         fps = 1 / delta;
         fps_sum.push(fps);
 
-        //TODO DEL temporary printouts
-        ctx.fillText('your opponent: ' + opponent.name, 840, 500);
+        //TODO remove
         ctx.fillText('your turn: ' + your_turn, 840, 510);
-        ctx.fillText('game phase: ' + game_phase, 840, 520);
+        ctx.fillText(srednia(fps_sum) + " fps", 840, 525);
 
-
-        ctx.fillText(srednia(fps_sum) + " fps", 840, 540);
-        ctx.fillText("ite1: " + ite1, 840, 550);
-        ctx.fillText("ite2: " + ite2, 840, 560);
-        ctx.fillText("ite_dif: " + (ite2 - ite1), 840, 570);
 
 
 
