@@ -33,7 +33,7 @@ var PheonixElves = function (player_name) {
             new Card('Warrior', 'pe17', 2, 0, that.player_name, 1, 2, 1, 1, "common"),
             new Card('Warrior', 'pe18', 2, 0, that.player_name, 1, 2, 1, 1, "common"),
             new Card('Fire Drake', 'pe19', 3, 0, that.player_name, 1, 3, 7, 7, "champion"),
-            //new Card('Kaeseeall', 'pe20', 4, 0, that.player_name, 3, 2, 5, 5, "champion"),
+            new Card('Kaeseeall', 'pe20', 4, 0, that.player_name, 3, 2, 5, 5, "champion"),
             new Card('Maelena', 'pe21', 5, 0, that.player_name, 3, 2, 5, 5, "champion"),
             new Card('A Hero Is Born', 'pe22', 0, 1, that.player_name, 0, 0, 0, 0, "event"),
             new Card('Burn', 'pe23', 1, 1, that.player_name, 0, 0, 0, 0, "event"),
@@ -62,8 +62,7 @@ var PheonixElves = function (player_name) {
             [new Card('Wall', 'pe32', 6, 0, that.player_name, 0, 0, 9, 0, "event"), 2, 5],
             [new Card('Prince Elien', 'pe31', 5, 1, that.player_name, 3, 3, 4, 0, "summoner"), 2, 7],
             [new Card('Archer', 'pe01', 0, 0, that.player_name, 4, 1, 1, 1, "common"), 3, 7],
-            //[new Card('Archer', 'pe02', 0, 0, that.player_name, 4, 1, 1, 1, "common"), 5, 6],
-            [new Card('Kaeseeall', 'pe20', 4, 0, that.player_name, 3, 2, 5, 5, "champion"), 2, 3]
+            [new Card('Archer', 'pe02', 0, 0, that.player_name, 4, 1, 1, 1, "common"), 5, 6]
         ]
     }
 
