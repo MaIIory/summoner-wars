@@ -1,16 +1,16 @@
 {
   "name": "socket_example",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "git://github.com/einaros/ws.git"
   },
   "dependencies": {
-    "express": "3.x",
-    "socket.io": "0.9.0"
+    "express": "latest",
+    "socket.io": "latest"
   },
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": "latest",
+    "npm": "latest"
   }
 }
