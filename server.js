@@ -79,7 +79,7 @@ io.sockets.on('connection', function (socket) {
         io.sockets.emit('ping');
     }
 
-    setTimeout(sendHeartbeat, 25000);
+    setTimeout(sendHeartbeat, 10000);
     
     socket.on('disconnect', function () {
 

@@ -8,7 +8,8 @@
 **************************************************/
 
 var socket = io.connect(window.location.hostname, {
-    'reconnect': false
+    'reconnect': false,
+    'timeout': 200000
 });
 
 /**************************************************
