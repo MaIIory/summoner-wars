@@ -101,6 +101,13 @@ canvas.addEventListener('mouseup', function (evt) {
     //mouse_state = 0;
 }, false);
 
+socket.on('ping', function (data) {
+
+    socket.emit('pong');
+    console.log('pong');
+
+})
+
 socket.on('start_play', function (data) {
 
     //create new oppponent instance and determine faction

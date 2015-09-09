@@ -7,7 +7,9 @@
 ** NODE.JS REQUIREMENTS
 **************************************************/
 
-var socket = io.connect(window.location.hostname);
+var socket = io.connect(window.location.hostname, {
+    'reconnect': false
+});
 
 /**************************************************
 ** APPLICATION VARIABLES

@@ -53,6 +53,10 @@ var Room = function (Name) {
 var players = []; // Array of connected players
 var rooms = [];   // Array of rooms
 
+
+
+
+
 /**************************************************
 ** SERVER FUNCTIONS
 **************************************************/
@@ -65,6 +69,18 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
+    
+    socket.on('pong', function () {
+        console.log("Pong received from client");
+    });
+
+    function sendHeartbeat() {
+        setTimeout(sendHeartbeat, 25000);
+        io.sockets.emit('ping');
+    }
+
+    setTimeout(sendHeartbeat, 25000);
+    
     socket.on('disconnect', function () {
 
         var player_name = "";
