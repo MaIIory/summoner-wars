@@ -12,6 +12,7 @@ var socket = io.connect(window.location.hostname, {
     'timeout': 200000
 });
 
+
 /**************************************************
 ** APPLICATION VARIABLES
 **************************************************/
