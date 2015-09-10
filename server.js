@@ -13,8 +13,9 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
-io.set('heartbeat interval', 5);
-io.set('heartbeat timeout', 20);
+//io.set('heartbeat interval', 5);
+//io.set('heartbeat timeout', 20);
+io.set('heartbeats', false);
 
 var port = process.env.PORT || 9000;
 server.listen(port);
