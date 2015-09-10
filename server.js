@@ -6,18 +6,20 @@
 
 //app.use(express.static(__dirname + "/public"));
 
-var express = require('express');
-var app = express();
-
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-
 //io.set('heartbeat interval', 5);
 //io.set('heartbeat timeout', 20);
-io.set('heartbeat timeout', 99999);
+//io.set('heartbeat timeout', 99999);
 //io.set('heartbeats', false);
+//io.set('heartbeat timeout', 99999);
+
 
 var port = process.env.PORT || 9000;
+var express = require('express');
+var app = express();
+//create server
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
+
 server.listen(port);
 
 app.use(express.static(__dirname + "/"));
@@ -25,6 +27,8 @@ app.use(express.static(__dirname + "/"));
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
+
+
 
 
 /**************************************************
@@ -79,11 +83,11 @@ io.sockets.on('connection', function (socket) {
     });
 
     function sendHeartbeat() {
-        setTimeout(sendHeartbeat, 25000);
+        setTimeout(sendHeartbeat, 1000);
         io.sockets.emit('ping');
     }
 
-    setTimeout(sendHeartbeat, 10000);
+    setTimeout(sendHeartbeat, 1000);
     
     socket.on('disconnect', function () {
 
