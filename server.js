@@ -11,7 +11,7 @@
 //io.set('heartbeat timeout', 99999);
 //io.set('heartbeats', false);
 //io.set('heartbeat timeout', 99999);
-
+require('newrelic');
 
 var port = process.env.PORT || 9000;
 var express = require('express');
