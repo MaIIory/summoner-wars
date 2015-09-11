@@ -163,8 +163,8 @@ socket.on('step_phase', function (data) {
 //incoming end turn event - start your turn
 socket.on('end_turn', function (data) {
 
-
     end_turn_event = true;
+    page_handler.animations.push(new page_handler.Animation(0));
 })
 
 //incoming game over event
@@ -240,8 +240,8 @@ socket.on('PE_event_burn', function (data) {
                 page_handler.board.matrix[i][j].wounds += 1;
 
                 //add 'Burn' animation
-                page_handler.animations.push(new page_handler.Animation(4));
-
+                page_handler.animations.push(new page_handler.Animation(4, null, null, null, null, j, i));
+                
                 if (page_handler.board.matrix[i][j].wounds >= page_handler.board.matrix[i][j].lives) {
                     page_handler.board.matrix[i][j].wounds = page_handler.board.matrix[i][j].lives; //only for displaying purpose
                     page_handler.board.matrix[i][j].killed_by = data.player_name; //store card killer name
@@ -272,7 +272,7 @@ socket.on('PE_greater_burn_event', function (data) {
                 page_handler.board.matrix[i][j].wounds += 2;
 
                 //add 'Burn' animation
-                page_handler.animations.push(new page_handler.Animation(5));
+                page_handler.animations.push(new page_handler.Animation(5, null, null, null, null, j, i));
 
                 if (page_handler.board.matrix[i][j].wounds >= page_handler.board.matrix[i][j].lives) {
                     page_handler.board.matrix[i][j].wounds = page_handler.board.matrix[i][j].lives; //only for displaying purpose
@@ -2035,8 +2035,7 @@ var PlaygroundHandler = function () {
                     for (var j = 0; j < that.matrix.length; j++) {
                         for (var k = 0; k < that.matrix[j].length; k++) {
 
-                            if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
-
+                            if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall" || that.matrix[j][k].name === "Ice Wall") && (that.matrix[j][k].owner === player.name)) {
 
                                 //mark green tiles adjacent to Wall, additional check if tile is not out of board
                                 if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
@@ -2115,17 +2114,17 @@ var PlaygroundHandler = function () {
                 hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
                 hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
 
-                if ((parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].owner === player.name) ||
-                    (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].owner === player.name) ||
-                    (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].owner === player.name) ||
-                    (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].owner === player.name)
+                if ((parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1] != null && (parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Wall" || parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Ice Wall") && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1] != null && (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Wall" || parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Ice Wall") && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]] != null && (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Wall" || parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Ice Wall") && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]] != null && (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Wall" || parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Ice Wall") && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].owner === player.name)
                     ) {
 
                     //add to board
                     that.addCard(selected_card_ref, hovered_tile[0], hovered_tile[1]);
                     mouse_state = 2;
 
-                    for (var i = 0; i < parent.hand.card_container[i].cost; i++) {
+                    for (var i = 0; i < selected_card_ref.cost; i++) {
                         player.discard_pile.push(player.magic_pile.pop());
                     }
 
@@ -2173,15 +2172,13 @@ var PlaygroundHandler = function () {
 
                 //highlights available tiles for card which meet the following requirements:
                 // - it is selected
-                // - it is unit (range > 0)
-                // - is not a Wall
                 // - it is common card
-                if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].name != "Wall" && parent.hand.card_container[i].card_class === 'common') {
+                if (parent.hand.card_container[i].selected && parent.hand.card_container[i].card_class === 'common') {
 
                     for (var j = 0; j < that.matrix.length; j++) {
                         for (var k = 0; k < that.matrix[j].length; k++) {
 
-                            if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
+                            if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall" || that.matrix[j][k].name === "Ice Wall") && (that.matrix[j][k].owner === player.name)) {
 
 
                                 //mark green tiles adjacent to Wall, additional check if tile is not out of board
@@ -2245,12 +2242,10 @@ var PlaygroundHandler = function () {
 
             //Get ref card which meet the following requirements:
             // - it is selected
-            // - it is unit (range > 0)
-            // - is not a Wall
-            // - it is common card
+            // - it is common unit card
             for (var i = 0; i < parent.hand.card_container.length; i++) {
 
-                if (parent.hand.card_container[i].selected && parent.hand.card_container[i].range > 0 && parent.hand.card_container[i].name != "Wall" && parent.hand.card_container[i].card_class === 'common') {
+                if (parent.hand.card_container[i].selected && parent.hand.card_container[i].card_class === 'common') {
                     selected_card_ref = parent.hand.card_container[i];
                     break;
                 }
@@ -2264,10 +2259,10 @@ var PlaygroundHandler = function () {
                 hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
                 hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
 
-                if ((parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].owner === player.name) ||
-                    (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1] != null && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Wall" && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].owner === player.name) ||
-                    (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].owner === player.name) ||
-                    (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]] != null && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Wall" && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].owner === player.name)
+                if ((parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1] != null && (parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Wall" || parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].name === "Ice Wall") && parent.board.matrix[hovered_tile[1]][hovered_tile[0] - 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1] != null && (parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Wall" || parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].name === "Ice Wall") && parent.board.matrix[hovered_tile[1]][hovered_tile[0] + 1].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]] != null && (parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Wall" || parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].name === "Ice Wall") && parent.board.matrix[hovered_tile[1] + 1][hovered_tile[0]].owner === player.name) ||
+                    (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]] != null && (parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Wall" || parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].name === "Ice Wall") && parent.board.matrix[hovered_tile[1] - 1][hovered_tile[0]].owner === player.name)
                     ) {
 
                     //add to board
@@ -2276,10 +2271,6 @@ var PlaygroundHandler = function () {
 
                     //decrement reinforcement counter
                     player.reinforcement_cnt--;
-
-                    for (var i = 0; i < parent.hand.card_container[i].cost; i++) {
-                        player.discard_pile.push(player.magic_pile.pop());
-                    }
 
                     var card_x = null;
                     var card_y = null;
@@ -3306,8 +3297,9 @@ var PlaygroundHandler = function () {
            a = typeof a !== 'undefined' ? a : 42;
            b = typeof b !== 'undefined' ? b : 'default_b';
        */
-
-        if (that.type === 2) {
+        if (that.type === 0) {
+            that.cnt = 150;
+        } else if (that.type === 2) {
 
             that.attacking_card_x = null;
             that.attacking_card_y = null;
@@ -3333,23 +3325,18 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
-        }
-        if (that.type === 3) {
-
+        } else if (that.type === 3) {
             //overwrite sheet settings
             that.sheet_origin = 1461; // y start coordinates
-        }
-        if (that.type === 4) {
-
-            //overwrite sheet settings
+        } else if (that.type === 4) {
             that.sheet_origin = 1801; // y start coordinates
-        }
-        if (that.type === 5) {
-
-            //overwrite sheet settings
+            that.card_x = x;
+            that.card_y = y;
+        } else if (that.type === 5) {
             that.sheet_origin = 1801; // y start coordinates
-        }
-        if (that.type === 6) {
+            that.card_x = x;
+            that.card_y = y;
+        } else if (that.type === 6) {
 
             //overwrite sheet settings
             that.sheet_origin = 1901; // y start coordinates
@@ -3370,28 +3357,17 @@ var PlaygroundHandler = function () {
                     }
                 }
             }
-        }
-        if (that.type === 7 || that.type === 8) {
-
+        } else if (that.type === 7 || that.type === 8) {
             that.sheet_origin = 2001; // y start coordinates
-        }
-        if (that.type === 9) {
-
+        } else if (that.type === 9) {
             that.co_xywh = [300, 2001, 350, 100];
-        }
-        if (that.type === 10) {
-
+        } else if (that.type === 10) {
             that.co_xywh = [0, 2201, 450, 100];
-        }
-        if (that.type === 11) {
-
+        } else if (that.type === 11) {
             that.co_xywh = [450, 1800, 200, 100];
-        }
-        if (that.type === 12) {
+        } else if (that.type === 12) {
             that.co_xywh = [430, 2301, 200, 100];
-        }
-        if (that.type === 13) {
-
+        } else if (that.type === 13) {
             that.card_x = x;
             that.card_y = y;
             that.co_xywh = [0, 2401, 650, 70];
@@ -3402,6 +3378,7 @@ var PlaygroundHandler = function () {
         } else if (that.type === 16) {
             that.co_xywh = [450, 2570, 200, 100];
         } else if (that.type === 17) {
+            that.cnt = 150;
             that.co_xywh = [0, 2570, 350, 100];
             that.card_x = x;
             that.card_y = y;
@@ -3411,16 +3388,13 @@ var PlaygroundHandler = function () {
             that.co_xywh = [0, 2730, 500, 80]; //"Walls of ..." coordinates
             that.co_xywh_dr = [0, 2810, 80, 80]; //"dice roll:" coordinates
             that.data = data;
-            that.cnt = -100;
         } else if (that.type === 20) {
             that.co_xywh = [0, 2895, 320, 75]; //"Wild Swing" coordinates
             that.co_xywh_dr = [0, 2810, 80, 80]; //"dice roll:" coordinates
             that.data = data;
-            that.cnt = -100;
         } else if (that.type === 21) {
             that.co_xywh = [320, 2895, 330, 75]; //"Breath of flame" coordinates
             that.data = data;
-            that.cnt = -100;
         } else if (that.type === 22) {
             that.co_xywh = [0, 2970, 500, 80]; //"Blazing Conscription" coordinates
             that.data = data;
@@ -3431,8 +3405,8 @@ var PlaygroundHandler = function () {
             if (that.type != 3) {
                 that.cnt++;
 
-                if (that.cnt > 100) {
-                    that.alpha -= 0.005;
+                if (that.cnt > 250) {
+                    that.alpha -= 0.01;
 
                     //alpha must not have negative value
                     if (that.alpha < 0)
@@ -3515,9 +3489,13 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 0, that.sheet_origin + 200, 650, 100, 187, 450, 650, 100);
             }
             else if (that.type === 4) {
+                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.drawImage(parent.image, 250, that.sheet_origin, 200, 100, 412, 334, 200, 100);
             }
             else if (that.type === 5) {
+                ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
+                ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 450, 100, 387, 334, 450, 100);
             }
             else if (that.type === 6) {
@@ -3529,7 +3507,7 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 130, that.sheet_origin, 200, 100, 412, 334, 200, 100);
             }
             else if (that.type === 8) {
-                ctx.drawImage(parent.image, 0, that.sheet_origin, 330, 100, 347, 334, 330, 100);
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 300, 100, 347, 334, 330, 100);
             }
             else if (that.type === 9) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 338, 334, that.co_xywh[2], that.co_xywh[3]);
@@ -3737,6 +3715,12 @@ var PlaygroundHandler = function () {
                         player.discard_pile.push(card_ref);
                         parent.hand.removeCard(card_ref);
                         parent.hand.card_container.push(player_champion_cards[i]);
+
+                        for (var j = 0; j < player.faction.deck.length; j++) {
+                            if (player.faction.deck[j].id === player_champion_cards[i].id)
+                                player.faction.deck.splice(j, 1);
+                        }
+
                         parent.draw_big_picture_from_hand = false;
                         return;
 
@@ -3763,7 +3747,7 @@ var PlaygroundHandler = function () {
                                 parent.board.matrix[i][j].wounds += 1;
 
                                 //add 'Burn' animation
-                                parent.animations.push(new parent.Animation(4));
+                                parent.animations.push(new parent.Animation(4, null, null, null, null, j, i));
 
                                 if (parent.board.matrix[i][j].wounds >= parent.board.matrix[i][j].lives) {
                                     parent.board.matrix[i][j].wounds = parent.board.matrix[i][j].lives; //only for displaying purpose
@@ -3805,7 +3789,7 @@ var PlaygroundHandler = function () {
                                 parent.board.matrix[i][j].wounds += 2;
 
                                 //add 'Greater Burn' animation
-                                parent.animations.push(new parent.Animation(5));
+                                parent.animations.push(new parent.Animation(5, null, null, null, null, j, i));
 
                                 if (parent.board.matrix[i][j].wounds >= parent.board.matrix[i][j].lives) {
                                     parent.board.matrix[i][j].wounds = parent.board.matrix[i][j].lives; //only for displaying purpose
@@ -4578,6 +4562,7 @@ var PlaygroundHandler = function () {
                 that.btn_build_magic_state = 2;
             }
             else {
+                console.log("magic btn set to 1 - checkHover");
                 that.btn_build_magic_state = 1;
             }
 
@@ -4674,9 +4659,6 @@ var PlaygroundHandler = function () {
 
         }
 
-
-
-
         //restore previous style
         ctx.restore();
 
@@ -4713,6 +4695,7 @@ var PlaygroundHandler = function () {
                     mouse_state = 2;
                     that.animations.push(new that.Animation(15));
                     socket.emit('PE_blaze_step_phase', { room_name: room_name });
+                    that.btn_build_magic_state = 0;
                     return;
                 }
 
@@ -4730,6 +4713,8 @@ var PlaygroundHandler = function () {
 
                 //emit apropriate event
                 socket.emit('end_turn', { room_name: room_name });
+
+                that.animations.push(new that.Animation(0));
 
                 mouse_state = 2;
                 return;
@@ -4751,6 +4736,8 @@ var PlaygroundHandler = function () {
 
                 //emit apropriate event
                 socket.emit('end_turn', { room_name: room_name });
+
+                that.animations.push(new that.Animation(0));
 
                 mouse_state = 2;
                 return;
@@ -4854,9 +4841,13 @@ var PlaygroundHandler = function () {
 
     that.handleBuildMagicButtonState = function () {
 
+        if (game_phase != 5)
+            return;
+
         for (var i = 0; i < that.hand.card_container.length; i++) {
 
             if (that.hand.card_container[i].selected) {
+                console.log("magic btn set to 1 - handleBuildMagicButton");
                 that.btn_build_magic_state = 1; //activate button
                 break;
             }

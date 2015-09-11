@@ -8,11 +8,9 @@
 
 //io.set('heartbeat interval', 5);
 //io.set('heartbeat timeout', 20);
-//io.set('heartbeat timeout', 99999);
 //io.set('heartbeats', false);
 //io.set('heartbeat timeout', 99999);
 require('newrelic');
-
 var port = process.env.PORT || 9000;
 var express = require('express');
 var app = express();
@@ -28,9 +26,6 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
 
-
-
-
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
@@ -43,7 +38,6 @@ var Player = function (login, socket_id) {
     that.ready_to_start_game = false;
     that.ready_to_start_play = false;
 };
-
 
 var Room = function (Name) {
     var that = this;
@@ -61,10 +55,6 @@ var Room = function (Name) {
 var players = []; // Array of connected players
 var rooms = [];   // Array of rooms
 
-
-
-
-
 /**************************************************
 ** SERVER FUNCTIONS
 **************************************************/
@@ -77,7 +67,7 @@ var rooms = [];   // Array of rooms
 //connection procedure event
 io.sockets.on('connection', function (socket) {
 
-    
+    /*
     socket.on('pong', function () {
         console.log("Pong received from client");
     });
@@ -88,6 +78,7 @@ io.sockets.on('connection', function (socket) {
     }
 
     setTimeout(sendHeartbeat, 1000);
+    */
     
     socket.on('disconnect', function () {
 
