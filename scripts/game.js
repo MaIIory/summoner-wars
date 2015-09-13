@@ -489,7 +489,9 @@ socket.on('TO_wild_swing', function (data) {
 
 socket.on('ALL_magic_drain_event', function (data) {
 
-    for (var i = 0; i < player.magic_pile.length && i < 2; i++) {
+    var magic_pile_len = player.magic_pile.length
+
+    for (var i = 0; i < magic_pile_len && i < 2; i++) {
         opponent.magic_pile.push(player.magic_pile.pop());
     }
     page_handler.animations.push(new page_handler.Animation(9));
@@ -3504,10 +3506,10 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 0, that.sheet_origin, 650, 100, 187, 334, 650, 100);
             }
             else if (that.type === 7) {
-                ctx.drawImage(parent.image, 130, that.sheet_origin, 200, 100, 412, 334, 200, 100);
+                ctx.drawImage(parent.image, 130, that.sheet_origin, 170, 100, 412, 334, 170, 100);
             }
             else if (that.type === 8) {
-                ctx.drawImage(parent.image, 0, that.sheet_origin, 300, 100, 347, 334, 330, 100);
+                ctx.drawImage(parent.image, 0, that.sheet_origin, 300, 100, 347, 334, 300, 100);
             }
             else if (that.type === 9) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 338, 334, that.co_xywh[2], that.co_xywh[3]);
@@ -3524,7 +3526,7 @@ var PlaygroundHandler = function () {
             else if (that.type === 13) {
                 ctx.fillStyle = "rgba(223, 185, 10, 0.4)";
                 ctx.fillRect(parent.board.s_x + (that.card_x * parent.board.square_w), parent.board.s_y + (that.card_y * parent.board.square_h), parent.board.square_w, parent.board.square_h);
-                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], 0, 320, that.co_xywh[2], that.co_xywh[3]);
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
             }
             else if (that.type === 14) {
                 ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2), that.co_xywh[2], that.co_xywh[3]);
@@ -3832,7 +3834,7 @@ var PlaygroundHandler = function () {
                     }
                 }
 
-                if (opponent_nb_of_units >= player_nb_of_units || opponent.magic_pile.length === 0) {
+                if (opponent_nb_of_units <= player_nb_of_units || opponent.magic_pile.length === 0) {
                     return;
                 }
 
@@ -3841,7 +3843,9 @@ var PlaygroundHandler = function () {
                     (mouse_y > that.use_button_xywh[1]) &&
                     (mouse_y < that.use_button_xywh[1] + that.use_button_xywh[3])) {
 
-                    for (var i = 0; i < opponent.magic_pile.length && i < 2; i++)
+                    var oponent_magig_pile_len = opponent.magic_pile.length;
+
+                    for (var i = 0; i < oponent_magig_pile_len && i < 2; i++)
                         player.magic_pile.push(opponent.magic_pile.pop());
 
                     page_handler.animations.push(new parent.Animation(9));
@@ -4096,7 +4100,7 @@ var PlaygroundHandler = function () {
                     }
                 }
 
-                if (opponent_nb_of_units >= player_nb_of_units || opponent.magic_pile.length === 0) {
+                if ((opponent_nb_of_units <= player_nb_of_units) || (opponent.magic_pile.length === 0)) {
                     ctx.drawImage(parent.image, that.use_button_src_xywh[0], that.use_button_src_xywh[1], that.use_button_src_xywh[2], that.use_button_src_xywh[3], that.use_button_xywh[0], that.use_button_xywh[1], that.use_button_xywh[2], that.use_button_xywh[3]);
                     return;
                 }
