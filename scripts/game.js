@@ -443,6 +443,12 @@ socket.on('TO_unfreeze_event', function (data) {
 
             if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.freezed_card_id) {
                 page_handler.board.matrix[i][j].freezed = false;
+
+                for (var i = 0; i < 2; i++) {
+
+                    if (opponent.magic_pile.length > 0)
+                        opponent.discard_pile.push(opponent.magic_pile.pop());
+                }
             }
         }
     }
@@ -2040,7 +2046,7 @@ var PlaygroundHandler = function () {
                             if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall" || that.matrix[j][k].name === "Ice Wall") && (that.matrix[j][k].owner === player.name)) {
 
                                 //mark green tiles adjacent to Wall, additional check if tile is not out of board
-                                if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
+                                if ((j + 1) <= 7 && that.matrix[j + 1][k] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
 
@@ -2048,7 +2054,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
+                                if ((j - 1) >= 0 && that.matrix[j - 1][k] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
 
@@ -2056,7 +2062,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j][k + 1] === null && (k + 1) <= 6) {
+                                if ((k + 1) <= 5 && that.matrix[j][k + 1] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -2064,7 +2070,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j][k - 1] === null && (k - 1) >= 0) {
+                                if ((k - 1) >= 0 && that.matrix[j][k - 1] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -2184,7 +2190,7 @@ var PlaygroundHandler = function () {
 
 
                                 //mark green tiles adjacent to Wall, additional check if tile is not out of board
-                                if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
+                                if ((j + 1) <= 7 && that.matrix[j + 1][k] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
 
@@ -2192,7 +2198,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
+                                if ((j - 1) >= 0 && that.matrix[j - 1][k] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
 
@@ -2200,7 +2206,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j][k + 1] === null && (k + 1) <= 6) {
+                                if ((k + 1) <= 5 && that.matrix[j][k + 1] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -2208,7 +2214,7 @@ var PlaygroundHandler = function () {
                                     if (mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j))
                                         ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                 }
-                                if (that.matrix[j][k - 1] === null && (k - 1) >= 0) {
+                                if ((k - 1) >= 0 && that.matrix[j][k - 1] === null) {
                                     ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                     ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -2320,7 +2326,7 @@ var PlaygroundHandler = function () {
 
 
                                     //mark green tiles adjacent to Wall, additional check if tile is not out of board
-                                    if (that.matrix[j + 1][k] === null && (j + 1) <= 8) {
+                                    if ((j + 1) <= 7 && that.matrix[j + 1][k] === null) {
                                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                         ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j + 1) * that.square_h), that.square_w, that.square_h);
 
@@ -2328,7 +2334,7 @@ var PlaygroundHandler = function () {
                                         if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1))
                                             ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                     }
-                                    if (that.matrix[j - 1][k] === null && (j - 1) >= 0) {
+                                    if ((j - 1) >= 0 && that.matrix[j - 1][k] === null) {
                                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                         ctx.fillRect(that.s_x + (k * that.square_w), that.s_y + ((j - 1) * that.square_h), that.square_w, that.square_h);
 
@@ -2336,7 +2342,7 @@ var PlaygroundHandler = function () {
                                         if (mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1))
                                             ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                     }
-                                    if (that.matrix[j][k + 1] === null && (k + 1) <= 6) {
+                                    if ((k + 1) <= 5 && that.matrix[j][k + 1] === null) {
                                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                         ctx.fillRect(that.s_x + ((k + 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -2344,7 +2350,7 @@ var PlaygroundHandler = function () {
                                         if (mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j))
                                             ctx.fillRect(that.s_x + (hovered_tile[0] * that.square_w), that.s_y + (hovered_tile[1] * that.square_h), that.square_w, that.square_h);
                                     }
-                                    if (that.matrix[j][k - 1] === null && (k - 1) >= 0) {
+                                    if ((k - 1) >= 0 && that.matrix[j][k - 1] === null) {
                                         ctx.fillStyle = "rgba(4, 124, 10, 0.4)";
                                         ctx.fillRect(that.s_x + ((k - 1) * that.square_w), that.s_y + (j * that.square_h), that.square_w, that.square_h);
 
@@ -2390,7 +2396,7 @@ var PlaygroundHandler = function () {
                                 if ((that.matrix[j][k] != null) && (that.matrix[j][k].name === "Wall") && (that.matrix[j][k].owner === player.name)) {
 
                                     //mark green tiles adjacent to Wall, additional check if tile is not out of board
-                                    if ((that.matrix[j + 1][k] === null) && ((j + 1) <= 8) && mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1) && (mouse_state === 1)) {
+                                    if (((j + 1) <= 7) && (that.matrix[j + 1][k] === null) && mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j + 1) && (mouse_state === 1)) {
                                         that.matrix[m][n].selected = false;
                                         parent.animations.push(new parent.Animation(17, null, null, null, null, k, j + 1))
                                         that.addCard(that.matrix[m][n], k, j + 1);
@@ -2400,7 +2406,7 @@ var PlaygroundHandler = function () {
                                         mouse_state = 2;
                                         return;
                                     }
-                                    if (that.matrix[j - 1][k] === null && (j - 1) >= 0 && mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1) && (mouse_state === 1)) {
+                                    if ((j - 1) >= 0 && that.matrix[j - 1][k] === null &&  mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1) && (mouse_state === 1)) {
                                         that.matrix[m][n].selected = false;
                                         parent.animations.push(new parent.Animation(17, null, null, null, null, k, j - 1))
                                         that.addCard(that.matrix[m][n], k, j - 1);
@@ -2410,7 +2416,7 @@ var PlaygroundHandler = function () {
                                         mouse_state = 2;
                                         return;
                                     }
-                                    if (that.matrix[j][k + 1] === null && (k + 1) <= 6 && mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j) && (mouse_state === 1)) {
+                                    if ((k + 1) <= 5 && that.matrix[j][k + 1] === null && mouse_over_board && (hovered_tile[0] === k + 1) && (hovered_tile[1] === j) && (mouse_state === 1)) {
                                         that.matrix[m][n].selected = false;
                                         parent.animations.push(new parent.Animation(17, null, null, null, null, k + 1, j))
                                         that.addCard(that.matrix[m][n], k + 1, j);
@@ -2420,7 +2426,7 @@ var PlaygroundHandler = function () {
                                         mouse_state = 2;
                                         return;
                                     }
-                                    if (that.matrix[j][k - 1] === null && (k - 1) >= 0 && mouse_over_board && (hovered_tile[0] === k - 1) && (hovered_tile[1] === j) && (mouse_state === 1)) {
+                                    if ((k - 1) >= 0 && that.matrix[j][k - 1] === null && mouse_over_board && (hovered_tile[0] === k - 1) && (hovered_tile[1] === j) && (mouse_state === 1)) {
                                         that.matrix[m][n].selected = false;
                                         parent.animations.push(new parent.Animation(17, null, null, null, null, k - 1, j))
                                         that.addCard(that.matrix[m][n], k - 1, j);
@@ -2811,14 +2817,14 @@ var PlaygroundHandler = function () {
                     if ((that.matrix[i][j] != null) && ((card_ref.i != i) || (card_ref.j != j)) && ((!that.matrix[i][j].dying))) {
 
                         //check if card is in horizontal range
-                        var hor_diff = card_ref.i - i;
-                        if ((Math.abs(hor_diff) <= card_ref.range) && (card_ref.j === j)) {
+                        var ver_diff = card_ref.i - i;
+                        if ((Math.abs(ver_diff) <= card_ref.range) && (card_ref.j === j)) {
                             that.matrix[i][j].in_range = true;
                         }
 
                         //check if card is in vertical range
-                        var ver_diff = card_ref.j - j;
-                        if ((Math.abs(ver_diff) <= card_ref.range) && (card_ref.i === i)) {
+                        var hor_diff = card_ref.j - j;
+                        if ((Math.abs(hor_diff) <= card_ref.range) && (card_ref.i === i)) {
                             that.matrix[i][j].in_range = true;
                         }
 
@@ -2834,11 +2840,23 @@ var PlaygroundHandler = function () {
 
                             var impacted_cards = [that.matrix[i][j].id];
 
-                            for (var k = 1; k < Math.abs(hor_diff) ; k++)
-                                if (that.matrix[i - k][j] != null) impacted_cards.push(that.matrix[i - k][j].id);
+                            if (hor_diff >= 0) {
+                                for (var k = 1; k < Math.abs(hor_diff) ; k++)
+                                    if (that.matrix[card_ref.i][card_ref.j - k] != null) impacted_cards.push(that.matrix[card_ref.i][card_ref.j - k].id);
+                            } else {
+                                for (var k = 1; k < Math.abs(hor_diff) ; k++)
+                                    if (that.matrix[card_ref.i][card_ref.j + k] != null) impacted_cards.push(that.matrix[card_ref.i][card_ref.j + k].id);
+                            }
 
-                            for (var k = 1; k < Math.abs(ver_diff) ; k++)
-                                if (that.matrix[i][j - k] != null) impacted_cards.push(that.matrix[i][j - k].id);
+                            if (ver_diff >= 0) {
+                                for (var k = 1; k < Math.abs(ver_diff) ; k++)
+                                    if (that.matrix[card_ref.i - k][card_ref.j] != null) impacted_cards.push(that.matrix[card_ref.i - k][card_ref.j].id);
+                            } else {
+                                for (var k = 1; k < Math.abs(ver_diff) ; k++)
+                                    if (that.matrix[card_ref.i + k][card_ref.j] != null) impacted_cards.push(that.matrix[card_ref.i + k][card_ref.j].id);
+                            }
+
+                            console.log("impacted cards: " + impacted_cards);
 
                             that.resolveFireBreath(impacted_cards);
 
@@ -4872,6 +4890,8 @@ var PlaygroundHandler = function () {
 
                 if (that.board.matrix[i][j] === null)
                     continue;
+
+                that.board.matrix[i][j].power_active = false;
 
                 //restore spirit of the pheonix data
                 if (that.board.matrix[i][j].spirit_of_the_phoenix)
