@@ -444,7 +444,7 @@ socket.on('TO_unfreeze_event', function (data) {
             if (page_handler.board.matrix[i][j] != null && page_handler.board.matrix[i][j].id === data.freezed_card_id) {
                 page_handler.board.matrix[i][j].freezed = false;
 
-                for (var i = 0; i < 2; i++) {
+                for (var k = 0; k < 2; k++) {
 
                     if (opponent.magic_pile.length > 0)
                         opponent.discard_pile.push(opponent.magic_pile.pop());
