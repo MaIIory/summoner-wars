@@ -15,8 +15,7 @@ var PheonixElves = function (player_name) {
             /* new Card(name, id, pos_x, pos_y, owner_name, range, attack, lives, summon_cost) */
             /* position in faction sheet, example:
                [0,0][1,0][2,0]
-               [0,1][1,1][2,1]
-            */
+               [0,1][1,1][2,1] */
             
             new Card('Archer', 'pe03', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
             new Card('Archer', 'pe04', 0, 0, that.player_name, 4, 1, 1, 1, "common"),
