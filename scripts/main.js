@@ -190,7 +190,7 @@ var rebuildStatusSection = function () {
     var new_status_section = document.createElement('div');
     new_status_section.setAttribute('id', 'connection_status_section');
     var p = document.createElement('p');
-    p.innerHTML = "Connection with server in progress... Please wait...";
+    p.innerHTML = "Connecting with server. Please wait...";
     new_status_section.appendChild(p);
     page_content.appendChild(new_status_section);
 }
