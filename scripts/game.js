@@ -1869,6 +1869,8 @@ var PlaygroundHandler = function () {
                 card_ref.i = card_i;
                 card_ref.j = card_j;
 
+
+                //LUCN ERROR TODO handleFireBreath may also contains same error
                 that.handleFireBreath(card_ref);
                 return;
             }
@@ -1884,10 +1886,14 @@ var PlaygroundHandler = function () {
                         if (((Math.abs(card_i - i) <= that.matrix[card_i][card_j].range)) && (card_j === j)) {
 
                             that.matrix[i][j].in_range = true;
-
+                            console.log("card_i: " + card_i);
+                            console.log("i:      " + i);
+                            console.log("card_j: " + card_j);
+                            console.log("j:      " + j);
                             //check horizontal blocking card
                             for (var k = 1; k < Math.abs(card_i - i) ; k++) {
-                                if (that.matrix[card_i - (k * ((card_i - i) / (card_i - i)))][j] != null) {
+                                //LUCN ERROR TODO 
+                                if (that.matrix[card_i - (k * ((card_i - i) / Math.abs(card_i - i)))][j] != null) {
                                     that.matrix[i][j].in_range = false;
                                 }
                             }
