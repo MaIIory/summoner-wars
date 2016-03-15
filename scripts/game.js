@@ -1073,13 +1073,9 @@ var PlaygroundHandler = function () {
                 that.matrix[hit_card_i][hit_card_j].selected = false;
 
                 //handle GAME OVER
-                if ((that.matrix[hit_card_i][hit_card_j].id) === 'pe31' && (that.matrix[hit_card_i][hit_card_j].owner === player.name)) {
+                if (that.matrix[hit_card_i][hit_card_j].card_class === 'summoner' && (that.matrix[hit_card_i][hit_card_j].owner === player.name)) {
                     socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
                 }
-                else if ((that.matrix[hit_card_i][hit_card_j].id) === 'to25' && (that.matrix[hit_card_i][hit_card_j].owner === player.name)) {
-                    socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
-                }
-
             }
 
             //add 'nb of hits' animation and clear container if any animation is hanging
@@ -2728,13 +2724,9 @@ var PlaygroundHandler = function () {
                             parent.board.matrix[i][j].selected = false;
 
                             //handle GAME OVER
-                            if ((parent.board.matrix[i][j].id) === 'pe31' && (parent.board.matrix[i][j].owner === player.name)) {
+                            if (parent.board.matrix[i][j].card_class === 'summoner' && (parent.board.matrix[i][j].owner === player.name)) {
                                 socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
                             }
-                            else if ((parent.board.matrix[i][j].id) === 'to25' && (parent.board.matrix[i][j].owner === player.name)) {
-                                socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
-                            }
-
                         }
 
                     }
@@ -2794,10 +2786,7 @@ var PlaygroundHandler = function () {
                             that.matrix[i][j].selected = false;
 
                             //handle GAME OVER
-                            if ((that.matrix[i][j].id) === 'pe31' && (that.matrix[i][j].owner === player.name)) {
-                                socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
-                            }
-                            else if ((that.matrix[i][j].id) === 'to25' && (that.matrix[i][j].owner === player.name)) {
+                            if (that.matrix[i][j].card_class === 'summoner' && (that.matrix[i][j].owner === player.name)) {
                                 socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
                             }
                         }
@@ -2909,10 +2898,7 @@ var PlaygroundHandler = function () {
                                 that.matrix[i][j].selected = false;
 
                                 //handle GAME OVER
-                                if ((that.matrix[i][j].id) === 'pe31' && (that.matrix[i][j].owner === player.name)) {
-                                    socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
-                                }
-                                else if ((that.matrix[i][j].id) === 'to25' && (that.matrix[i][j].owner === player.name)) {
+                                if (that.matrix[i][j].card_class === 'summoner' && (that.matrix[i][j].owner === player.name)) {
                                     socket.emit('game_over', { room_name: room_name, win: opponent.name, lost: player.name });
                                 }
                             }
