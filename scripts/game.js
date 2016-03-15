@@ -2808,7 +2808,7 @@ var PlaygroundHandler = function () {
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
 
-                    //check if card is not dying
+                    //check if card is not dying 
                     if ((that.matrix[i][j] != null) && ((card_ref.i != i) || (card_ref.j != j)) && ((!that.matrix[i][j].dying))) {
 
                         //check if card is in horizontal range
