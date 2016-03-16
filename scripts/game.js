@@ -2314,7 +2314,7 @@ var PlaygroundHandler = function () {
             for (var m = 0; m < that.matrix.length; m++) {
                 for (var n = 0; n < that.matrix[m].length; n++) {
 
-                    if ((that.matrix[m][n] != null) && (that.matrix[m][n].name === "Warrior") && (that.matrix[m][n].selected)) {
+                    if ((that.matrix[m][n] != null) && (that.matrix[m][n].owner === player.name) && (that.matrix[m][n].name === "Warrior") && (that.matrix[m][n].selected)) {
 
                         for (var j = 0; j < that.matrix.length; j++) {
                             for (var k = 0; k < that.matrix[j].length; k++) {
@@ -2385,7 +2385,7 @@ var PlaygroundHandler = function () {
             for (var m = 0; m < that.matrix.length; m++) {
                 for (var n = 0; n < that.matrix[m].length; n++) {
 
-                    if ((that.matrix[m][n] != null) && (that.matrix[m][n].name === "Warrior") && (that.matrix[m][n].selected)) {
+                    if ((that.matrix[m][n] != null) && (that.matrix[m][n].owner === player.name) && (that.matrix[m][n].name === "Warrior") && (that.matrix[m][n].selected)) {
 
                         for (var j = 0; j < that.matrix.length; j++) {
                             for (var k = 0; k < that.matrix[j].length; k++) {
