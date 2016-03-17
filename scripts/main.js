@@ -23,6 +23,48 @@ var player_login = ""; //store player login after typing
 var room_name = "";    //room name that player joined
 
 /**************************************************
+** INCOMING EVENTS
+**************************************************/
+
+socket.on('login_validation', function (data) {
+
+    alert("enter");
+    if (data.is_occupied) {
+        $("#dialog").text('Nickname is occupied!');
+        $('#dialog').dialog('open');
+        return;
+    }
+    else {
+        rebuildBriefingSection();
+
+        socket.on('update_players_list', function (data) {
+            var players_list = document.getElementById('players_list');
+
+            if (players_list === undefined) {
+                alert("ZONK");
+            }
+
+            players_list.value = "";
+
+            for (var i = 0; i < data.players.length; i = i + 1) {
+                players_list.value += data.players[i].name;
+                players_list.value += "\n";
+            }
+            return;
+        });
+
+        socket.on('update_room_table', function (data) {
+            rebuildRoomTable(data.rooms);
+            return;
+        });
+
+        socket.emit('add_new_player', { login: data.login });
+        removeLoginSection();
+        return;
+    }
+});
+
+/**************************************************
 ** APPLICATION FUNCTIONS
 **************************************************/
 
@@ -125,7 +167,7 @@ var rebuildLoginSection = function () {
     var btn = document.createElement('input');
     btn.setAttribute('type', 'button');
     btn.setAttribute('id', 'btn_join_game');
-    btn.setAttribute('value','Join');
+    btn.setAttribute('value', 'Join');
 
     btn.onclick = function (e) {
 
@@ -135,38 +177,13 @@ var rebuildLoginSection = function () {
         player_login = document.getElementById('txt_login').value;
         player_login = player_login.trim();
         if (player_login === "") {
-            //alert("login is empty!" + player_login);
-
             $("#dialog").text('Login is empty!');
             $('#dialog').dialog('open');
             return;
         }
 
-        rebuildBriefingSection();
-
-        socket.on('update_players_list', function (data) {
-            var players_list = document.getElementById('players_list');
-
-            if (players_list === undefined) {
-                alert("ZONK");
-            }
-
-            players_list.value = "";
-
-            for (var i = 0; i < data.players.length; i = i + 1) {
-                players_list.value += data.players[i].name;
-                players_list.value += "\n";
-            }
-        });
-
-        socket.on('update_room_table', function (data) {
-            rebuildRoomTable(data.rooms);
-        });
-
-        socket.emit('add_new_player', { login: player_login });
-
-        removeLoginSection();
-
+        //validate login and add user
+        socket.emit('login_validation', { login: player_login });
     };
 
     new_section.appendChild(btn);
@@ -218,7 +235,7 @@ var rebuildRoomTable = function (rooms) {
     if (old_table_holder != undefined) {
         briefing_section.removeChild(old_table_holder);
     }
-    
+
     //create table holder
     var table_holder = document.createElement('div');
     table_holder.setAttribute('class', 'CSSTableGenerator');
@@ -264,7 +281,7 @@ var rebuildRoomTable = function (rooms) {
                 var td = document.createElement('td');
 
                 var btn = document.createElement('input');
-                
+
                 btn.setAttribute('type', 'button');
                 btn.setAttribute('id', 'btn_join_room');
                 btn.setAttribute('value', 'Click to start');

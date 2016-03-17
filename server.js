@@ -130,6 +130,7 @@ io.sockets.on('connection', function (socket) {
 
     //creating new player
     socket.on('add_new_player', function (data) {
+
         var new_player = new Player(data.login, socket.id)
         players.push(new_player);
 
@@ -140,10 +141,22 @@ io.sockets.on('connection', function (socket) {
         socket.emit('update_room_table', { rooms: rooms });
     });
 
+    //login validation
+    socket.on('login_validation', function (data) {
+
+        var is_occupied = false;
+        for (var i = 0; i < players.length; i++) {
+            if (data.login === players[i].name) is_occupied = true;
+        }
+
+        //init room table for new player
+        socket.emit('login_validation', { is_occupied: is_occupied, login: data.login });
+    });
+
     //listen for new room creation request
     socket.on('create_new_room', function (data) {
 
-        //check if this room dont exist already
+        //check if this room name is not occupied
         for (var i = 0; i < rooms.length; i = i + 1) {
             if (rooms[i].name === data.room_name) {
                 socket.emit('error', { message: "Room already exist" });
