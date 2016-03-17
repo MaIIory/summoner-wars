@@ -704,7 +704,7 @@ var MainMenu = function () {
         }
         else if (that.buttons[2] && mouse_state === 1) {
             mouse_state = 2;
-            return 2;
+            null;
         }
         else if (that.buttons[3] && mouse_state === 1) {
             mouse_state = 2;
@@ -1429,12 +1429,6 @@ var PlaygroundHandler = function () {
                             ctx.drawImage(opponent.faction.board_image, that.matrix[i][j].pos_x * that.matrix[i][j].width, that.matrix[i][j].pos_y * that.matrix[i][j].height,
                                 that.matrix[i][j].width, that.matrix[i][j].height, 329, 200, that.matrix[i][j].width, that.matrix[i][j].height);
 
-                        ctx.fillStyle = "rgba(0, 0, 0, 1)";
-                        ctx.fillText('owner: ' + that.matrix[i][j].owner, 740, 520);
-                        ctx.fillText('orig owner: ' + that.matrix[i][j].original_owner, 740, 530);
-                        ctx.fillText('attacked: ' + that.matrix[i][j].attacked, 740, 540);
-                        ctx.fillText('moves left: ' + that.matrix[i][j].moves_left, 740, 550);
-
                         //draw wounds
                         if (that.matrix[i][j].name != 'Wall' && that.matrix[i][j].name != 'Ice Wall') {
                             for (var k = 0; k < that.matrix[i][j].wounds; k++) {
@@ -1639,6 +1633,8 @@ var PlaygroundHandler = function () {
 
         that.handleMoves = function () {
 
+            if (player.moves_left <= 0)
+                return;
 
             var card_i = null;
             var card_j = null;
@@ -1705,6 +1701,7 @@ var PlaygroundHandler = function () {
                                 //handle user input
                                 if (mouse_state === 1) {
 
+                                    player.moves_left--;
                                     //send move card event
                                     var dest_x = null;
                                     var dest_y = null;
@@ -1727,6 +1724,8 @@ var PlaygroundHandler = function () {
 
         that.drawAvailMoves = function () {
 
+            if (player.moves_left <= 0)
+                return;
 
             var card_i = null;
             var card_j = null;
@@ -1809,6 +1808,9 @@ var PlaygroundHandler = function () {
         that.handleAttacks = function () {
 
             if (parent.draw_big_picture_from_hand)
+                return;
+
+            if (player.attacks_left <= 0)
                 return;
 
             //reset in_range indicator
@@ -1921,7 +1923,6 @@ var PlaygroundHandler = function () {
                                     var roll = Math.floor((Math.random() * 6) + 1);
                                     if (roll > 2) hits++;
                                     dice_rolls.push(roll);
-                                    console.log('lucn');
                                 }
 
                                 //'Unwieldy Magic' ability handling
@@ -1972,6 +1973,8 @@ var PlaygroundHandler = function () {
 
                                 }
 
+                                player.attacks_left--;
+
                                 socket.emit('resolve_attack', {
                                     room_name: room_name,
                                     hits: hits,
@@ -1991,6 +1994,9 @@ var PlaygroundHandler = function () {
 
         that.drawAvailAttacks = function () {
 
+            if (player.attacks_left <= 0)
+                return;
+
             //draw available attacks
             for (var i = 0; i < that.matrix.length; i++) {
                 for (var j = 0; j < that.matrix[i].length; j++) {
@@ -2005,7 +2011,6 @@ var PlaygroundHandler = function () {
 
                         ctx.fillRect(that.s_x + (j * that.square_w), that.s_y + (i * that.square_h), that.square_w, that.square_h);
                     }
-
                 }
             }
         }
@@ -2029,9 +2034,6 @@ var PlaygroundHandler = function () {
 
                 hovered_tile[0] = parseInt((mouse_x - that.s_x) / that.square_w);
                 hovered_tile[1] = parseInt((mouse_y - that.s_y) / that.square_h);
-
-                ctx.fillText("hovered_tile_x: " + hovered_tile[0], 840, 580);
-                ctx.fillText("hovered_tile_y: " + hovered_tile[1], 840, 590);
 
             }
 
@@ -4236,9 +4238,6 @@ var PlaygroundHandler = function () {
                 var s_x = 100;
                 var s_y = 500;
 
-                if (parent.draw_big_picture_from_hand === false)
-                    return;
-
                 var player_champion_cards = [];
 
                 //get champion cards ref 
@@ -4276,6 +4275,12 @@ var PlaygroundHandler = function () {
                         player.discard_pile.push(card_ref);
                         parent.hand.removeCard(card_ref);
                         parent.hand.card_container.push(player_champion_cards[i]);
+
+                        for (var j = 0; j < player.faction.deck.length; j++) {
+                            if (player.faction.deck[j].id === player_champion_cards[i].id)
+                                player.faction.deck.splice(j, 1);
+                        }
+
                         parent.draw_big_picture_from_hand = false;
                         return;
 
@@ -4692,6 +4697,21 @@ var PlaygroundHandler = function () {
 
         }
 
+        //draw player left moves
+        ctx.fillText("Moves left: ", 850, 460);
+        ctx.fillText(player.moves_left, 935, 460);
+        
+        //draw player attacks left
+        ctx.fillText("Attacks left: ", 850, 485);
+        ctx.fillText(player.attacks_left, 945, 485);
+
+        //turn indicator
+        ctx.fillText("Turn: ", 850, 510);
+        if (your_turn)
+            ctx.fillText(player.name, 900, 510);
+        else
+            ctx.fillText(opponent.name, 900, 510);
+
         //restore previous style
         ctx.restore();
 
@@ -4941,8 +4961,8 @@ var Clear = function () {
     //ctx.fillStyle = 'black'; //set active color 
     //ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white'; //set active color    
-    ctx.fillText('mouse x: ' + mouse_x + ', mouse_y: ' + mouse_y, 50, 50);
-    ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
+    ctx.fillText('mouse x: ' + Math.floor(mouse_x) + ', mouse_y: ' + Math.floor(mouse_y), 50, 50);
+    //ctx.fillText('mouse down: ' + mouse_button_down, 50, 60);
     ctx.fillText('Game state: ' + state, 50, 70);
     ctx.fillText('Room name: ' + room_name, 50, 90);
     ctx.fillText('Player login: ' + player_login, 50, 100);
@@ -5448,7 +5468,6 @@ var gameLoop = function () {
                     for (var i = 0; i < page_handler.animations.length; i++) {
                         page_handler.animations[i].handle();
                     }
-
                     lag -= MS_PER_UPDATE;
                 }
 
@@ -5502,8 +5521,6 @@ var gameLoop = function () {
                 page_handler.board.draw();
                 page_handler.board.handleFuryPhaseRender();
                 page_handler.hand.drawBigPicture();
-
-
             }
 
 
@@ -5575,14 +5592,10 @@ var gameLoop = function () {
         fps = 1 / delta;
         fps_sum.push(fps);
 
-        //TODO remove
-        ctx.fillText('your turn: ' + your_turn, 840, 510);
-        ctx.fillText(srednia(fps_sum) + " fps", 840, 525);
+        ctx.fillStyle = 'white'; //set active color    
 
-
-
-
-
+        var fps = Math.round(srednia(fps_sum) * 10) / 10;
+        ctx.fillText(fps + " fps", 50, 60);
     }
 
     requestAnimFrame(gameLoop);
