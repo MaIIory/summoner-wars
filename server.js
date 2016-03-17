@@ -325,7 +325,8 @@ io.sockets.on('connection', function (socket) {
             hits: data.hits,
             attack_strangth: data.attack_strangth,
             attacking_card_id: data.attacking_card_id,
-            hitted_card_id: data.hitted_card_id
+            hitted_card_id: data.hitted_card_id,
+            rolls: data.rolls
         });
     });
 
@@ -462,7 +463,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('TO_wild_swing', function (data) {
 
         //sending to all clients in 'game' room(channel) except sender
-        socket.broadcast.to(data.room_name).emit('TO_wild_swing', { dice_roll: data.dice_roll, krung_id: data.krung_id, hits: data.hits });
+        socket.broadcast.to(data.room_name).emit('TO_wild_swing', { dice_roll: data.dice_roll, krung_id: data.krung_id, hits: data.hits, rolls: data.rolls });
     });
 
     //ALL

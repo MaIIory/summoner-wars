@@ -142,7 +142,7 @@ socket.on('move_card', function (data) {
 
 //incoming resolve attack event
 socket.on('resolve_attack', function (data) {
-    page_handler.board.resolveAttack(data.hits, data.attack_strangth, data.attacking_card_id, data.hitted_card_id);
+    page_handler.board.resolveAttack(data.hits, data.attack_strangth, data.attacking_card_id, data.hitted_card_id, data.rolls);
 })
 
 //incoming step phase event
@@ -241,7 +241,7 @@ socket.on('PE_event_burn', function (data) {
 
                 //add 'Burn' animation
                 page_handler.animations.push(new page_handler.Animation(4, null, null, null, null, j, i));
-                
+
                 if (page_handler.board.matrix[i][j].wounds >= page_handler.board.matrix[i][j].lives) {
                     page_handler.board.matrix[i][j].wounds = page_handler.board.matrix[i][j].lives; //only for displaying purpose
                     page_handler.board.matrix[i][j].killed_by = data.player_name; //store card killer name
@@ -490,7 +490,7 @@ socket.on('TO_walls_of_ice_shards', function (data) {
 
 socket.on('TO_wild_swing', function (data) {
 
-    page_handler.board.handleWildSwing(data.dice_roll, data.krung_id, data.hits)
+    page_handler.board.handleWildSwing(data.dice_roll, data.krung_id, data.hits, data.rolls)
 })
 
 socket.on('ALL_magic_drain_event', function (data) {
@@ -1034,7 +1034,7 @@ var PlaygroundHandler = function () {
             that.matrix[card_i][card_j] = null;
         }
 
-        that.resolveAttack = function (hits, attack_strangth, attacking_card_id, hitted_card_id) {
+        that.resolveAttack = function (hits, attack_strangth, attacking_card_id, hitted_card_id, dice_rolls) {
 
             //hitted card coordinates
             var hit_card_i = null;
@@ -1081,7 +1081,7 @@ var PlaygroundHandler = function () {
             //add 'nb of hits' animation and clear container if any animation is hanging
             //parent.animations = [];
             parent.animations.push(new parent.Animation(2, hits, attack_strangth, attacking_card_id, hitted_card_id));
-            parent.animations.push(new parent.Animation(1, hits, attack_strangth));
+            parent.animations.push(new parent.Animation(1, hits, attack_strangth, null, null, null, null, { dice_rolls: dice_rolls }));
 
             //'Fury' ability handling
             //Note: owner should be checked to avoid sending fury event twice (from opponent side)
@@ -1883,7 +1883,7 @@ var PlaygroundHandler = function () {
 
                             //check horizontal blocking card
                             for (var k = 1; k < Math.abs(card_i - i) ; k++) {
-                                //LUCN ERROR - FIXED - TODO remove comment
+
                                 if (that.matrix[card_i - (k * ((card_i - i) / Math.abs(card_i - i)))][j] != null) {
                                     that.matrix[i][j].in_range = false;
                                 }
@@ -1916,15 +1916,13 @@ var PlaygroundHandler = function () {
                                 ) {
 
                                 var hits = 0;
+                                var dice_rolls = [];
                                 for (var k = 0; k < that.matrix[card_i][card_j].attack; k++) {
-                                    if (Math.floor((Math.random() * 6) + 1) > 2)
-                                        hits++;
+                                    var roll = Math.floor((Math.random() * 6) + 1);
+                                    if (roll > 2) hits++;
+                                    dice_rolls.push(roll);
+                                    console.log('lucn');
                                 }
-
-
-                                //'Precise' ability, 'Spirit of the phoenix' event and 'Sluggish' ability handling
-                                if (that.matrix[card_i][card_j].precise || that.matrix[card_i][card_j].spirit_of_the_phoenix || that.matrix[i][j].name === "Smasher")
-                                    hits = that.matrix[card_i][card_j].attack;
 
                                 //'Unwieldy Magic' ability handling
                                 if (that.matrix[card_i][card_j].name === "Shaman") {
@@ -1935,10 +1933,19 @@ var PlaygroundHandler = function () {
                                 //'Reckless' ability handling
                                 if (that.matrix[card_i][card_j].name === "Blagog") {
                                     hits = 0;
+                                    dice_rolls = [];
                                     for (var k = 0; k < that.matrix[card_i][card_j].attack; k++) {
-                                        if (Math.floor((Math.random() * 6) + 1) > 3)
-                                            hits++;
+                                        var roll = Math.floor((Math.random() * 6) + 1);
+                                        if (roll > 3) hits++;
+                                        dice_rolls.push(roll);
+
                                     }
+                                }
+
+                                //'Precise' ability, 'Spirit of the phoenix' event and 'Sluggish' ability handling
+                                if (that.matrix[card_i][card_j].precise || that.matrix[card_i][card_j].spirit_of_the_phoenix || that.matrix[i][j].name === "Smasher") {
+                                    hits = that.matrix[card_i][card_j].attack;
+                                    dice_rolls = [];
                                 }
 
                                 //'Reckless' ability handling
@@ -1954,12 +1961,12 @@ var PlaygroundHandler = function () {
 
                                     var dice_roll = Math.floor((Math.random() * 6) + 1);
 
-                                    that.handleWildSwing(dice_roll, that.matrix[card_i][card_j].id, hits);
+                                    that.handleWildSwing(dice_roll, that.matrix[card_i][card_j].id, hits, dice_rolls);
 
-                                    socket.emit('TO_wild_swing', { room_name: room_name, dice_roll: dice_roll, krung_id: that.matrix[card_i][card_j].id, hits: hits });
+                                    socket.emit('TO_wild_swing', { room_name: room_name, dice_roll: dice_roll, krung_id: that.matrix[card_i][card_j].id, hits: hits, rolls: dice_rolls });
 
                                     if (dice_roll > 3) {
-                                        //thats mean everything has been handled already
+                                        //that means everything has been handled already
                                         return;
                                     }
 
@@ -1970,10 +1977,11 @@ var PlaygroundHandler = function () {
                                     hits: hits,
                                     attack_strangth: that.matrix[card_i][card_j].attack,
                                     attacking_card_id: that.matrix[card_i][card_j].id,
-                                    hitted_card_id: that.matrix[i][j].id
+                                    hitted_card_id: that.matrix[i][j].id,
+                                    rolls: dice_rolls
                                 });
-
-                                that.resolveAttack(hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id);
+                                console.log('dice rolls: ' + dice_rolls)
+                                that.resolveAttack(hits, that.matrix[card_i][card_j].attack, that.matrix[card_i][card_j].id, that.matrix[i][j].id, dice_rolls);
                             }
                         }
                     }
@@ -2403,7 +2411,7 @@ var PlaygroundHandler = function () {
                                         mouse_state = 2;
                                         return;
                                     }
-                                    if ((j - 1) >= 0 && that.matrix[j - 1][k] === null &&  mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1) && (mouse_state === 1)) {
+                                    if ((j - 1) >= 0 && that.matrix[j - 1][k] === null && mouse_over_board && (hovered_tile[0] === k) && (hovered_tile[1] === j - 1) && (mouse_state === 1)) {
                                         that.matrix[m][n].selected = false;
                                         parent.animations.push(new parent.Animation(17, null, null, null, null, k, j - 1))
                                         that.addCard(that.matrix[m][n], k, j - 1);
@@ -2514,9 +2522,11 @@ var PlaygroundHandler = function () {
                                 ) {
 
                                 var hits = 0;
+                                var dice_rolls = [];
                                 for (var k = 0; k < card_ref.attack; k++) {
-                                    if (Math.floor((Math.random() * 6) + 1) > 2)
-                                        hits++;
+                                    var roll = Math.floor((Math.random() * 6) + 1);
+                                    if (roll > 2) hits++;
+                                    dice_rolls.push(roll);
                                 }
 
                                 card_ref.attacked = true;
@@ -2528,10 +2538,11 @@ var PlaygroundHandler = function () {
                                     hits: hits,
                                     attack_strangth: card_ref.attack,
                                     attacking_card_id: card_ref.id,
-                                    hitted_card_id: that.matrix[i][j].id
+                                    hitted_card_id: that.matrix[i][j].id,
+                                    rolls: dice_rolls
                                 });
 
-                                that.resolveAttack(hits, card_ref.attack, card_ref.id, that.matrix[i][j].id);
+                                that.resolveAttack(hits, card_ref.attack, card_ref.id, that.matrix[i][j].id, dice_rolls);
                             }
                         }
                     }
@@ -2736,7 +2747,7 @@ var PlaygroundHandler = function () {
             }
         }
 
-        that.handleWildSwing = function (dice_roll, krung_id, hits) {
+        that.handleWildSwing = function (dice_roll, krung_id, hits, dice_rolls) {
 
             var impacted_cards_by_ids = [];
 
@@ -2787,8 +2798,8 @@ var PlaygroundHandler = function () {
                         }
                     }
                 }
-
-                parent.animations.push(new parent.Animation(1, hits, 3));
+ 
+                parent.animations.push(new parent.Animation(1, hits, 3, null, null, null, null, { dice_rolls: dice_rolls }));
                 parent.animations.push(new parent.Animation(20, null, null, null, null, null, null, { imp_cards_list: impacted_cards_by_ids, dice_roll: dice_roll }));
 
             } else {
@@ -3260,7 +3271,7 @@ var PlaygroundHandler = function () {
 
         /* types definitions:
            0 - 'End Phase' animation: only 'type' argument required
-           1 - 'x/y hits' animation: 'hits' and 'shoots' arguments are required
+           1 - 'x/y hits' animation: 'hits' and 'shoots' arguments are required + 4 skips + data
            2 - 'arrows' animation: all arguments are required
            3 - 'Game over' animation
            4 - 'Burn'
@@ -3303,9 +3314,12 @@ var PlaygroundHandler = function () {
         /* for education purpose
            a = typeof a !== 'undefined' ? a : 42;
            b = typeof b !== 'undefined' ? b : 'default_b';
-       */
+        */
         if (that.type === 0) {
             that.cnt = 150;
+        } else if (that.type === 1) {
+            that.data = data;
+            that.co_xywh_dr = [0, 2810, 80, 80]; //"dice roll:" coordinates
         } else if (that.type === 2) {
 
             that.attacking_card_x = null;
@@ -3328,7 +3342,6 @@ var PlaygroundHandler = function () {
                             that.hitted_card_x = i;
                             that.hitted_card_y = j;
                         }
-
                     }
                 }
             }
@@ -3435,6 +3448,18 @@ var PlaygroundHandler = function () {
                 ctx.drawImage(parent.image, 350, that.sheet_origin + 100, 50, 100, 412, 334, 50, 100);
                 ctx.drawImage(parent.image, 50 * that.shoots, that.sheet_origin + 100, 50, 100, 462, 334, 50, 100);
                 ctx.drawImage(parent.image, 400, that.sheet_origin + 100, 150, 100, 512, 334, 150, 100);
+
+                //draw dice roll animation
+                var tmp_dice_roll = that.data.dice_rolls - 1;
+
+                for (var i = 0; i < that.data.dice_rolls.length; i++) {
+                    var tmp_dice_roll = that.data.dice_rolls[i] - 1;
+                    ctx.drawImage(parent.image, that.co_xywh_dr[0] + (tmp_dice_roll * that.co_xywh_dr[2]), that.co_xywh_dr[1], that.co_xywh_dr[2], that.co_xywh_dr[3],
+                        (width / 2) - (((that.data.dice_rolls.length * that.co_xywh_dr[2]) + ((that.data.dice_rolls.length - 1) * 10)) / 2) + (i * that.co_xywh_dr[2]) + (i * 10),
+                        (height / 2) - (that.co_xywh_dr[3] / 2) - that.co_xywh_dr[3], that.co_xywh_dr[2], that.co_xywh_dr[3]);
+                }
+
+
             }
             else if (that.type === 2) {
 
@@ -3601,9 +3626,8 @@ var PlaygroundHandler = function () {
                 //draw dice roll animation
                 var tmp_dice_roll = that.data.dice_roll - 1;
 
-                ctx.drawImage(parent.image, that.co_xywh_dr[0] + (tmp_dice_roll * that.co_xywh_dr[2]), that.co_xywh_dr[1], that.co_xywh_dr[2], that.co_xywh_dr[3], (width / 2) - (that.co_xywh_dr[2] / 2), (height / 2) - (that.co_xywh_dr[3] / 2) - that.co_xywh_dr[3] - 100, that.co_xywh_dr[2], that.co_xywh_dr[3]);
-
-                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2) - 100, that.co_xywh[2], that.co_xywh[3]);
+                ctx.drawImage(parent.image, that.co_xywh_dr[0] + (tmp_dice_roll * that.co_xywh_dr[2]), that.co_xywh_dr[1], that.co_xywh_dr[2], that.co_xywh_dr[3], (width / 2) - (that.co_xywh_dr[2] / 2), (height / 2) - (that.co_xywh_dr[3] / 2) + 200, that.co_xywh_dr[2], that.co_xywh_dr[3]);
+                ctx.drawImage(parent.image, that.co_xywh[0], that.co_xywh[1], that.co_xywh[2], that.co_xywh[3], (width / 2) - (that.co_xywh[2] / 2), (height / 2) - (that.co_xywh[3] / 2) + 100, that.co_xywh[2], that.co_xywh[3]);
 
             }
             else if (that.type === 21) {

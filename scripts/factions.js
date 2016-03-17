@@ -62,6 +62,7 @@ var PheonixElves = function (player_name) {
             [new Card('Prince Elien', that.player_name + 'pe31', 5, 1, that.player_name, 3, 3, 4, 0, "summoner"), 2, 7],
             [new Card('Archer', that.player_name + 'pe01', 0, 0, that.player_name, 4, 1, 1, 1, "common"), 3, 7],
             [new Card('Archer', that.player_name + 'pe02', 0, 0, that.player_name, 4, 1, 1, 1, "common"), 5, 6]
+
         ]
     }
 
@@ -130,6 +131,7 @@ var TundraOrcs = function (player_name) {
             [new Card('Smasher', that.player_name + 'to13', 5, 0, that.player_name, 1, 2, 4, 2, "common"), 1, 5],
             [new Card('Wall', that.player_name + 'to22', 4, 1, that.player_name, 0, 0, 9, 0, "event"), 3, 5],
             [new Card('Grognack', that.player_name + 'to25', 3, 1, that.player_name, 1, 4, 7, 0, "summoner"), 3, 7]
+
         ]
     }
 

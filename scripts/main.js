@@ -28,7 +28,6 @@ var room_name = "";    //room name that player joined
 
 socket.on('login_validation', function (data) {
 
-    alert("enter");
     if (data.is_occupied) {
         $("#dialog").text('Nickname is occupied!');
         $('#dialog').dialog('open');
