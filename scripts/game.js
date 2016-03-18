@@ -26,7 +26,7 @@ var start_play_event = false; //indicates if 'start_play' event came
 var end_turn_event = false;   //indicates if 'end turn' event came
 
 //game phase indicators
-var game_phase = 3; /* 0 - draw phase
+var game_phase = 0; /* 0 - waiting for boards activation on both sides
                        1 - summon phase
                        2 - event phase
                        3 - move phase (start phase)
@@ -133,6 +133,14 @@ socket.on('start_play', function (data) {
     }
 
     start_play_event = true;
+})
+
+//incoming player ready event
+socket.on('player_ready', function (data) {
+    if (opponent.name = data.player_name)
+        opponent.ready = true;
+    else
+        alert('It should not happen');
 })
 
 //incoming move card event
@@ -541,6 +549,7 @@ var Player = function (name) {
     that.discard_pile = [];
     that.win = 0; //0 - player lost, 1 - player win
     that.reinforcement_cnt = 0; //for reinforcement event purpose
+    that.ready = false;
 }
 
 var Card = function (card_name, id, x, y, owner_name, range, attack, lives, cost, card_class) {
@@ -4663,7 +4672,7 @@ var PlaygroundHandler = function () {
         switch (game_phase) {
 
             case 0:
-                ctx.fillText("Draw", 850, 435);
+                ctx.fillText("PLAESE WAIT", 850, 435);
                 break;
             case 1:
                 ctx.fillText("Summon", 850, 435);
@@ -4740,7 +4749,10 @@ var PlaygroundHandler = function () {
             //unselect card if any
             that.board.unselectAll();
 
-            if (game_phase === 5) {
+            if (game_phase === 0) {
+                return;
+            }
+            else if (game_phase === 5) {
                 /* END TURN CASE */
 
                 if (player.faction.faction_name === "Pheonix Elves") {
@@ -5108,7 +5120,6 @@ var gameLoop = function () {
 
             //set proper page handler
             page_handler = new PlaygroundHandler();
-            console.log("zmiana pagehandlera na PlaygroundHandler");
 
             //add opponents start cards to board
             var start_cards = opponent.faction.getStartCards();
@@ -5135,6 +5146,8 @@ var gameLoop = function () {
 
             state = 3; //play in progress
             start_play_event = false;
+            player.ready = true;
+            socket.emit('player_ready', { room_name: room_name, player_name: player.name });
         }
     }
     else if (state === 3) {
@@ -5144,7 +5157,51 @@ var gameLoop = function () {
 
         if (your_turn) {
 
-            if (game_phase === 1) {
+            if (game_phase === 0) {
+                /* ======================= */
+                /* BOARDS ACTICATION PHASE */
+                /* ======================= */
+                var current = Date.now();
+                var elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
+
+                ite1 += 1;
+
+                while (lag >= MS_PER_UPDATE) {
+
+                    ite2 += 1;
+
+                    //logic layer should not run always
+                    page_handler.board.checkMouseActivity();
+                    page_handler.checkHover();
+                    page_handler.checkMouseAction();
+                    page_handler.hand.handleAnimation();
+                    page_handler.hand.checkHover();
+                    page_handler.hand.checkMouseAction();
+
+                    //handle animation in queue
+                    for (var i = 0; i < page_handler.animations.length; i++) {
+                        page_handler.animations[i].handle();
+                    }
+
+                    if (player.ready && opponent.ready) {
+                        game_phase = 3;
+                        break;
+                    }
+
+                    lag -= MS_PER_UPDATE;
+                }
+
+                //render layer
+                page_handler.draw();
+                page_handler.hand.draw();
+                page_handler.board.draw();
+                page_handler.hand.drawBigPicture();
+
+
+            }
+            else if (game_phase === 1) {
                 /* ============ */
                 /* SUMMON PHASE */
                 /* ============ */
@@ -5545,7 +5602,9 @@ var gameLoop = function () {
                 page_handler.hand.checkHover();
                 page_handler.hand.checkMouseAction();
 
-
+                if (game_phase === 0 && player.ready && opponent.ready) {
+                    game_phase = 3;
+                }
 
                 //handle animation in queue
                 for (var i = 0; i < page_handler.animations.length; i++) {

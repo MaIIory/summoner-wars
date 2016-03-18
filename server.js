@@ -318,6 +318,13 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.to(data.room_name).emit('move_card', { card_id: data.card_id, dest_x: data.dest_x, dest_y: data.dest_y });
     });
 
+    //player ready event
+    socket.on('player_ready', function (data) {
+
+        // sending to all clients in 'game' room(channel) except sender
+        socket.broadcast.to(data.room_name).emit('player_ready', { player_name: data.player_name });
+    });
+
     //resolve attack
     socket.on('resolve_attack', function (data) {
         // sending to all clients in 'game' room(channel) except sender
