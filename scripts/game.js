@@ -54,6 +54,7 @@ var mouse_used = false; //additional indicator for cohesction purpose
 //players settings
 var player = null;
 var opponent = null;
+var opponent_ready = false; //indicates if opponents board is active
 
 //fps counter
 var fps = 0;
@@ -138,7 +139,7 @@ socket.on('start_play', function (data) {
 //incoming player ready event
 socket.on('player_ready', function (data) {
     if (opponent.name = data.player_name)
-        opponent.ready = true;
+        opponent_ready = true;
     else
         alert('It should not happen');
 })
@@ -5185,7 +5186,7 @@ var gameLoop = function () {
                         page_handler.animations[i].handle();
                     }
 
-                    if (player.ready && opponent.ready) {
+                    if (player.ready && opponent_ready) {
                         game_phase = 3;
                         break;
                     }
@@ -5602,7 +5603,7 @@ var gameLoop = function () {
                 page_handler.hand.checkHover();
                 page_handler.hand.checkMouseAction();
 
-                if (game_phase === 0 && player.ready && opponent.ready) {
+                if (game_phase === 0 && player.ready && opponent_ready) {
                     game_phase = 3;
                 }
 
