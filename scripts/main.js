@@ -39,8 +39,8 @@ socket.on('login_validation', function (data) {
         socket.on('update_players_list', function (data) {
             var players_list = document.getElementById('players_list');
 
-            if (players_list === undefined) {
-                alert("ZONK");
+            if (players_list === null) {
+                return;
             }
 
             players_list.value = "";
